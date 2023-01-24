@@ -1,0 +1,44 @@
+<mat-drawer-container class="example-container" autosize>
+  <mat-drawer #drawer class="example-sidenav" mode="side" opened>
+    <mat-toolbar class="text-center items-center h-auto">
+      <div class="m-auto text-center flex items-center">
+        <img src="../../assets/logo.png" alt="Logo BDV" class="w-16 h-16" />
+        <span class="text-3xl">BDV</span>
+      </div>
+    </mat-toolbar>
+    <mat-list>
+      <mat-list-item routerLink="">
+        <button mat-button class="w-full h-full">
+          <mat-icon>list</mat-icon> Dashboard
+        </button>
+      </mat-list-item>
+      <mat-list-item routerLink="">
+        <button mat-button class="w-full h-full">
+          <mat-icon>group</mat-icon> BDV en linea personas
+        </button>
+      </mat-list-item>
+      <mat-list-item routerLink="">
+        <button mat-button class="w-full h-full">
+          <mat-icon>business</mat-icon> BDV en linea Empresas
+        </button>
+      </mat-list-item>
+      <mat-list-item routerLink="">
+        <button mat-button class="w-full h-full">
+          <mat-icon>stay_primary_portrait</mat-icon> BDV Digital
+        </button>
+      </mat-list-item>
+      <mat-list-item routerLink="">
+        <button mat-button class="w-full h-full">
+          <mat-icon>store</mat-icon> Punto Ya
+        </button>
+      </mat-list-item>
+    </mat-list>
+  </mat-drawer>
+  <div class="min-h-screen">
+    <mat-toolbar color="primary" class="fixed">
+      <span>Agente Monitor</span>
+    </mat-toolbar>
+    <div id="espacer" class="h-20"></div>
+    <router-outlet></router-outlet>
+  </div>
+</mat-drawer-container>
