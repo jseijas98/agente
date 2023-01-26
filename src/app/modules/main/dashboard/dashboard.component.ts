@@ -1,5 +1,9 @@
+import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { Color, ScaleType } from '@swimlane/ngx-charts';
+import { Observable } from 'rxjs';
+import { Applications } from '../../interfaces/model.applications';
 
 @Component({
   selector: 'app-dashboard',
@@ -7,50 +11,65 @@ import { Router } from '@angular/router';
   styleUrls: ['./dashboard.component.css'],
 })
 export class DashboardComponent implements OnInit {
-  single = [
-    {
-      name: 'BDV en linea Personas',
-      value: 100,
-      extra: 'graph-app',
-    },
-    {
-      name: 'BDV en linea Empresas',
-      value: 80,
-      extra: 'graph-app',
-    },
-    {
-      name: 'BDV Digital',
-      value: 92,
-      extra: 'graph-app',
-    },
-    {
-      name: 'Punto Ya',
-      value: 99,
-      extra: 'graph-app',
-    },
-  ];
 
-  colorScheme = {
-    domain: ['#5AA454', '#E44D25', '#CFC0BB', '#7aa3e5', '#a8385d', '#aae3f5'],
-  };
+  dataCard: Applications[] = [];
+
+  colorScheme(data: any): Color{
+
+    let colores = data.map((x: any)=>x.value<50?'#f44336':x.value<80?'#ffd740':'#69f0ae')
+
+    return  {
+      name: 'string',
+      selectable: true,
+      group: ScaleType.Ordinal,
+      domain: colores
+    };
+  }
   cardColor: string = '#232837';
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private http:HttpClient) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
 
-  onSelect(event: any) {
-    console.log(event);
-    sessionStorage.setItem('Graph', JSON.stringify(event));
-    this.redirec(event.extra);
+    this.aplication()
+
+  }
+  url: string = 'https://63cfffb8e52f587829a9baea.mockapi.io/aplications/aplications';
+
+  aplication(): any{
+    this.http.get(this.url).subscribe({
+      next: this.aplicacionSuccess.bind(this),
+      error: this.aplicacionError.bind(this)
+    })
   }
 
-  redirec(ruta: string) {
-    this.router.navigateByUrl(ruta);
+  aplicacionSuccess(respose:any){
+    let data: Array<Applications> = respose;
+    let format: any[] =[]
+    data.forEach(app => {
+      format.push({
+        name: app.applicationName,
+        value: app.status,
+      })
+    })
+    this.dataCard = format;
+    console.log(this.dataCard);
+  }
+
+  aplicacionError(error:any){
+    console.error(error);
+  }
+
+  onSelect(event: any) {
+    sessionStorage.setItem('Graph', JSON.stringify(event));
+    this.redirec();
+  }
+
+  redirec() {
+    this.router.navigateByUrl('graph-app');
   }
 
   axisFormat(val: any) {
-    console.log(val);
     return val.value.toString() + '%';
   }
 }
