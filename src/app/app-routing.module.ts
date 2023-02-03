@@ -1,6 +1,8 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { AlgoComponent } from './modules/algo/algo.component';
+import {ApiListComponent} from './modules/main/api-list/api-list.component'
+import {ApiReplicasComponent} from './modules/main/api-replicas/api-replicas.component';
+import {RegistrysApisReplicasComponent} from './modules/main/registrys-apis-replicas/registrys-apis-replicas.component';
 
 const routes: Routes = [
   {
@@ -12,12 +14,8 @@ const routes: Routes = [
     path: 'login',
     loadChildren: () =>
       import('./modules/login/login.module').then((m) => m.LoginModule),
-  },
-  {
-      path: 'algo',
-      component: AlgoComponent,
-    
-  },
+  }
+  
 ];
 
 @NgModule({

@@ -2,7 +2,6 @@ import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Color, ScaleType } from '@swimlane/ngx-charts';
-import { Observable } from 'rxjs';
 import { Applications } from '../../interfaces/model.applications';
 
 @Component({
@@ -14,7 +13,7 @@ export class DashboardComponent implements OnInit {
 
   dataCard: Applications[] = [];
 
-  colorScheme(data: any): Color{
+  colorScheme(data:any): Color{
 
     let colores = data.map((x: any)=>x.value<50?'#f44336':x.value<80?'#ffd740':'#69f0ae')
 
@@ -25,16 +24,16 @@ export class DashboardComponent implements OnInit {
       domain: colores
     };
   }
-  cardColor: string = '#232837';
+
+ cardColor: string = '#232837';
 
   constructor(private router: Router, private http:HttpClient) {}
 
   ngOnInit(): void {
-
     this.aplication()
-
   }
-  url: string = 'https://63cfffb8e52f587829a9baea.mockapi.io/aplications/aplications';
+
+  url: string ='https://180.183.170.56:30445/monitor-agent-service/list/application';
 
   aplication(): any{
     this.http.get(this.url).subscribe({
@@ -42,7 +41,6 @@ export class DashboardComponent implements OnInit {
       error: this.aplicacionError.bind(this)
     })
   }
-
   aplicacionSuccess(respose:any){
     let data: Array<Applications> = respose;
     let format: any[] =[]
@@ -53,7 +51,7 @@ export class DashboardComponent implements OnInit {
       })
     })
     this.dataCard = format;
-    console.log(this.dataCard);
+    console.log(respose);
   }
 
   aplicacionError(error:any){

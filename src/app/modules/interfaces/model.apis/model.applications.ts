@@ -16,3 +16,4 @@ export interface Applications {
     reqSeg:                    string,
     testInterv:                string,
 }
+

@@ -1,0 +1,18 @@
+<div mat-dialog-title>Metadata:</div>
+<mat-dialog-content>
+  <pre>{{ data }}</pre>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button
+  
+    mat-fab
+    color="primary"
+    [mat-dialog-close]="true"
+    [matTooltip]="clickboard"
+    
+    (click)="copyHeroName()"
+  
+  >
+    <mat-icon>file_copy</mat-icon>
+  </button>
+</mat-dialog-actions>

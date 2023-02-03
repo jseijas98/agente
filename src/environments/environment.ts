@@ -3,7 +3,8 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false
+  production: false,
+  baseUrl :'https://180.183.170.56:30445/monitor-agent-service/'
 };
 
 /*

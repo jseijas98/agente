@@ -14,6 +14,15 @@ import { NgxGraphModule } from '@swimlane/ngx-graph';
 import { DiagramaComponent } from '../../components/diagrama/diagrama.component';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { GraphAppComponent } from './graph-app/graph-app.component';
+import { ApiListComponent } from './api-list/api-list.component';
+import {MaterialModule} from '../material.module';
+import { RegistrysApisComponent } from './registrys-apis/registrys-apis.component';
+import { ApiReplicasComponent } from './api-replicas/api-replicas.component';
+import { RegistrysApisReplicasComponent } from './registrys-apis-replicas/registrys-apis-replicas.component'
+import { ChartsComponent } from 'src/app/components/charts/charts.component';
+import { MetadataComponent } from './metadata/metadata.component';
+import { LayoutModule } from '@angular/cdk/layout';
+
 
 @NgModule({
   imports: [
@@ -28,12 +37,20 @@ import { GraphAppComponent } from './graph-app/graph-app.component';
     MatIconModule,
     NgxGraphModule,
     NgxChartsModule,
+    MaterialModule,
+    LayoutModule,
   ],
   declarations: [
     MainComponent,
     DashboardComponent,
     DiagramaComponent,
     GraphAppComponent,
+    ApiListComponent,
+    RegistrysApisComponent,
+    ApiReplicasComponent,
+    RegistrysApisReplicasComponent,
+    ChartsComponent,
+    MetadataComponent,
   ],
 })
 export class MainModule {}
