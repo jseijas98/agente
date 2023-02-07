@@ -1,0 +1,8 @@
+
+
+.flow-chart-wrapper {
+    margin-top: 55px;
+    width: 100%;
+    height: calc(100% - 55px);
+    text-align: center;
+}

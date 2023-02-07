@@ -1,8 +1,8 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import {ApiListComponent} from './modules/main/api-list/api-list.component'
-import {ApiReplicasComponent} from './modules/main/api-replicas/api-replicas.component';
-import {RegistrysApisReplicasComponent} from './modules/main/registrys-apis-replicas/registrys-apis-replicas.component';
+import {ApiListComponent} from './modules/main/apisM/api-list/api-list.component'
+import {ApiReplicasComponent} from './modules/main/apisM/api-replicas/api-replicas.component';
+import {RegistrysApisReplicasComponent} from './modules/main/apisM/registrys-apis-replicas/registrys-apis-replicas.component';
 
 const routes: Routes = [
   {

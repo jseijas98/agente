@@ -1,21 +1,22 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { environment } from 'src/environments/environment';
-import { ApiReplicas } from '../../interfaces/model.apis/model.ApiReplicas';
-import StringUtils from '../../../common/util/stringUtils';
-import { MatTableDataSource } from '@angular/material/table';
+import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
+import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute } from '@angular/router';
-import { MatDialog } from '@angular/material/dialog';
-import { MetadataComponent } from '../metadata/metadata.component';
+import StringUtils from 'src/app/common/util/stringUtils';
+import { ServicesReplica } from 'src/app/modules/interfaces/model.services/model.servicesReplica';
+import { environment } from 'src/environments/environment';
+import { MetadataComponent } from '../../metadata/metadata.component';
 
 @Component({
-  selector: 'app-api-replicas',
-  templateUrl: './api-replicas.component.html',
-  styleUrls: ['./api-replicas.component.css'],
+  selector: 'app-services-replica',
+  templateUrl: './services-replica.component.html',
+  styleUrls: ['./services-replica.component.css']
 })
-export class ApiReplicasComponent implements OnInit {
+export class ServicesReplicaComponent implements OnInit {
+
   constructor(
     public dialog: MatDialog,
     private http: HttpClient,
@@ -23,14 +24,14 @@ export class ApiReplicasComponent implements OnInit {
     private activateRouter: ActivatedRoute
   ) {
     this.activateRouter.params.subscribe((params) => {
-      this.Api_replicas(params['id']);
+      this.Services_replicas(params['id']);
     });
   }
 
   ngOnInit(): void {}
 
   displayedColumns: string[] = [
-    'apiId',
+    'servicesId',
     'replicaIp',
     'metadata',
     'status',
@@ -50,32 +51,32 @@ export class ApiReplicasComponent implements OnInit {
   @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
-  Api_replicas(index: number) {
+  Services_replicas(index: number) {
     this.http
-      .get<ApiReplicas>(`${this.baseUrl}actualState/apis/${index}/replica`)
+      .get<ServicesReplica>(`${this.baseUrl}actualState/service/${index}/replica`)
       .subscribe({
-        next: this.getReplicasApisSuccess.bind(this),
-        error: this.getReplicasApisError.bind(this),
+        next: this.getReplicasServicesSuccess.bind(this),
+        error: this.getReplicasServicesError.bind(this),
       });
   }
   metadata1: string = 'ver la metadata';
 
-  getReplicasApisSuccess(respose: any) {
-    let apisReplicalist: Array<ApiReplicas> = respose;
+  getReplicasServicesSuccess(respose: any) {
+    let ServicesReplicalist: Array<ServicesReplica> = respose;
 
-    apisReplicalist.forEach((apiReplicas) => {
-      console.log(apiReplicas.metadata);
+    ServicesReplicalist.forEach((servicesReplica) => {
+      console.log(servicesReplica.metadata);
 
       this.data.push({
-        replica_id: apiReplicas.replica_id,
-        apiId: apiReplicas.apiId,
-        replicaIp: apiReplicas.replicaIp,
-        metadata: apiReplicas.metadata,
-        status: apiReplicas.status,
-        creation_date: apiReplicas.creation_date,
-        replica_name: apiReplicas.replica_name,
-        lastTestDate: this.utils.convertDate(apiReplicas.lastTestDate),
-        label_hash: apiReplicas.label_hash,
+        replica_id: servicesReplica.replica_id,
+        servicesId: servicesReplica.serviceId,
+        replicaIp: servicesReplica.replicaIp,
+        metadata: servicesReplica.metadata,
+        status: servicesReplica.status,
+        creation_date: servicesReplica.creation_date,
+        replica_name: servicesReplica.replica_name,
+        lastTestDate: this.utils.convertDate(servicesReplica.lastTestDate),
+        label_hash: servicesReplica.label_hash,
       });
     });
     console.log(this.data);
@@ -83,7 +84,7 @@ export class ApiReplicasComponent implements OnInit {
     this.dataSource.paginator = this.paginator;
   }
 
-  getReplicasApisError(error: any) {
+  getReplicasServicesError(error: any) {
     console.error(error);
   }
 
@@ -110,3 +111,4 @@ export class ApiReplicasComponent implements OnInit {
     });
   }
 }
+

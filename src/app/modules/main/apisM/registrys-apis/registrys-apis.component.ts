@@ -5,8 +5,8 @@ import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute } from '@angular/router';
 import { environment } from 'src/environments/environment';
-import StringUtils from '../../../common/util/stringUtils';
-import { ApiRegistry } from '../../interfaces/model.apis/model.apiResgistry';
+import StringUtils from '../../../../common/util/stringUtils';
+import { ApiRegistry } from '../../../interfaces/model.apis/model.apiResgistry';
 
 @Component({
   selector: 'app-registrys-apis',
@@ -62,7 +62,7 @@ export class RegistrysApisComponent implements OnInit {
         health: apiRegistry.health,        
         applicationId: apiRegistry.applicationId,         
         label_app: apiRegistry.label_app,    
-        nameSpace: apiRegistry.health,   
+        nameSpace: apiRegistry.nameSpace,  
         consecutiveFailedTest: apiRegistry.consecutiveFailedTest, 
         histFailedTest: apiRegistry.histFailedTest,
         lastTestDate: this.utils.convertDate(apiRegistry.lastTestDate),

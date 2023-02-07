@@ -22,7 +22,7 @@
     "@angular/router": "^14.2.0",
     "@mui/icons-material": "^5.11.0",
     "@swimlane/ngx-charts": "^20.1.2",
-    "@swimlane/ngx-graph": "^8.0.2",
+    "@swimlane/ngx-graph": "^8.0.3",
     "rxjs": "~7.5.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.11.4"

@@ -1,2 +1,8 @@
-<h1>{{graph.label}}</h1>
-<app-diagrama></app-diagrama>
+<h1 class="text-center">{{ graph.label }}</h1>
+
+<div class="w-5/6 text-center ml-auto">
+
+  <div #zoneFlowChart class="flow-chart-wrapper">
+    <app-diagrama></app-diagrama>
+  </div>
+</div>

@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-diagrama',
@@ -10,7 +11,6 @@ export class DiagramaComponent implements OnInit {
 
   ngOnInit() {}
 
-  log(evento: any) {
-    console.log(evento);
-  }
+
+  
 }

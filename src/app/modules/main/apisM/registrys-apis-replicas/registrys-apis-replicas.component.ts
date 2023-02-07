@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { ApiReplicasResgistry } from '../../interfaces/model.apis/model.apiReplicasResgistry';
-import StringUtils from '../../../common/util/stringUtils';
+import { ApiReplicasResgistry } from '../../../interfaces/model.apis/model.apiReplicasResgistry';
+import StringUtils from '../../../../common/util/stringUtils';
 import { environment } from 'src/environments/environment';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';

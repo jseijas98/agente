@@ -4,8 +4,8 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
-import { GetApis } from '../../interfaces/model.apis/model.getApis';
-import StringUtils from '../../../common/util/stringUtils';
+import { GetApis } from '../../../interfaces/model.apis/model.getApis';
+import StringUtils from '../../../../common/util/stringUtils';
 import { environment } from 'src/environments/environment';
 
 @Component({
@@ -17,7 +17,7 @@ export class ApiListComponent implements OnInit {
 
   baseUrl = environment.baseUrl;
 
-  index:number= 2
+  index:number= 1
 
 
   constructor(private http:HttpClient, private router:Router, public utils:StringUtils) { }

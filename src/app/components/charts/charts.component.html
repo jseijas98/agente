@@ -1,24 +1,24 @@
-
 <mat-card class="w-4/5 mt-10 mx-auto text-center">
     <mat-card-header class="text-center justify-center">
-
-        <mat-card-title-group class="">
-            <mat-card-title>Grafica de Apis</mat-card-title>
-            <mat-card-subtitle>aqui podras ver informacin relacionada a las apis</mat-card-subtitle>
-        </mat-card-title-group>
+      <mat-card-title-group class="">
+        <mat-card-title>Grafica de Apis</mat-card-title>
+        <mat-card-subtitle
+          >aqui podras ver informacin relacionada a las apis</mat-card-subtitle
+        >
+      </mat-card-title-group>
     </mat-card-header>
 
     <ngx-charts-area-chart
-    scheme="cool"
-    [view]="[850, 400]"
-    [results]="multi"
-    [legend]="true"
-    [animations]="false"
-    [xAxis]="true"
-    [yAxis]="true"
-    [legendTitle]="'APIS'"
-    [gradient]="true"
-    (select)="pedro($event)"
+      scheme="cool"
+      [view]="[850, 400]"
+      [results]="multi"
+      [legend]="true"
+      [animations]="false"
+      [xAxis]="true"
+      [yAxis]="true"
+      [legendTitle]="'APIS'"
+      [gradient]="true"
+      (select)="pedro($event)"
     >
-</ngx-charts-area-chart>
-</mat-card>
+    </ngx-charts-area-chart>
+  </mat-card>

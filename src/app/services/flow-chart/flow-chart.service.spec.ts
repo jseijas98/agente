@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { PersistenceService } from './persistence.service';
+import { FlowChartService } from './flow-chart.service';
 
-describe('PersistenceService', () => {
-  let service: PersistenceService;
+describe('FlowChartService', () => {
+  let service: FlowChartService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(PersistenceService);
+    service = TestBed.inject(FlowChartService);
   });
 
   it('should be created', () => {

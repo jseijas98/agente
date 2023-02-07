@@ -9,11 +9,12 @@ import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { MaterialModule } from './modules/material.module';
 import StringUtils from './common/util/stringUtils';
+import { FlowChartNodeComponent } from './components/flow-chart-node/flow-chart-node.component';
 
 
 
 @NgModule({
-  declarations: [AppComponent],
+  declarations: [AppComponent, FlowChartNodeComponent],
   imports: [
     BrowserModule,
     HttpClientModule,
