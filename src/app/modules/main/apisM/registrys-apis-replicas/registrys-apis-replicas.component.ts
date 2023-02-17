@@ -6,6 +6,9 @@ import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { HttpClient } from '@angular/common/http';
+import { MatDialog } from '@angular/material/dialog';
+import { ActivatedRoute } from '@angular/router';
+import { MetadataComponent } from '../../../../components/modals/metadata/metadata.component';
 
 
 
@@ -16,50 +19,102 @@ import { HttpClient } from '@angular/common/http';
 })
 export class RegistrysApisReplicasComponent implements OnInit {
 
-  constructor(private http:HttpClient) { }
 
-  baseUrl = environment.baseUrl;
-
-  displayedColumns: string[] = ["api_id","nameSpace","test_interval","label_app","response_time","last_test","status","health"];
-
- data: any[]=[];
-
- //configuración del dataSource
- dataSource = new MatTableDataSource<any>(this.data);
-
- //paginacion del las tablas
- @ViewChild(MatPaginator, { static: true }) paginator!:MatPaginator;
- @ViewChild(MatSort) sort!: MatSort;
-
-
-  ngOnInit(): void {
-    this.Api(1);
-  }
-
-  Api(index: number){
-    this.http.get<ApiReplicasResgistry>(`${this.baseUrl}registry/apis/replica/${index}/10.244.2.141`).subscribe({
-      next: this. getApiReplicasResgistry.bind(this),
-      error: this.getApiReplicasResgistryError.bind(this)
+  constructor(
+    public dialog: MatDialog,
+    private http: HttpClient,
+    public utils: StringUtils,
+    private activateRouter: ActivatedRoute
+  ) {
+    this.activateRouter.params.subscribe((params) => {
+      this.Api_Replicas_Resgistry(params['id'],params['ip']);
+      
     });
   }
 
-  getApiReplicasResgistry(respose:any){
-    let apisList: Array<ApiReplicasResgistry>=respose
-    console.log(apisList)
+  ngOnInit(): void {}
+
+  displayedColumns: string[] = [
+    'apiId',
+    'replicaIp',
+    'metadata',
+    'status',
+    'creation_date',
+    'replica_name',
+    'lastTestDate',
+    'label_hash',
+  ];
+
+  data: any[] = [];
+
+  baseUrl = environment.baseUrl;
+
+
+  dataSource = new MatTableDataSource<any>(this.data);
+
+  @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
+  @ViewChild(MatSort) sort!: MatSort;
+
+  Api_Replicas_Resgistry(id:any, ip:any) {
+    this.http
+      .get<ApiReplicasResgistry>(`${this.baseUrl}registry/apis/${id}/replica/${ip}`)
+      .subscribe({
+        next: this.getReplicasApisRegistrySuccess.bind(this),
+        error: this.getReplicasApisResgistryError.bind(this),
+      });
+  }
+  metadataModal: string = 'ver la metadata';
+  registro: string = 'registros';
+
+  getReplicasApisRegistrySuccess(respose: any) {
+    let apisReplicaesgistrylist: Array<ApiReplicasResgistry> = respose;
+
+    apisReplicaesgistrylist.forEach((apiReplicasResgistry) => {
+      console.log(apiReplicasResgistry.metadata);
+
+      this.data.push({
+        replica_id: apiReplicasResgistry.replica_id,
+        apiId: apiReplicasResgistry.apiId,
+        replicaIp: apiReplicasResgistry.replicaIp,
+        metadata: apiReplicasResgistry.metadata,
+        status: apiReplicasResgistry.status,
+        creation_date: apiReplicasResgistry.creation_date,
+        replica_name: apiReplicasResgistry.replica_name,
+        lastTestDate: this.utils.convertDate(apiReplicasResgistry.lastTestDate),
+        label_hash: apiReplicasResgistry.label_hash,
+      });
+    });
+    console.log(this.data);
+    this.dataSource = new MatTableDataSource<any>(this.data);
+    this.dataSource.paginator = this.paginator;
   }
 
-  getApiReplicasResgistryError(error:any){
-    console.log(error);
+  getReplicasApisResgistryError(error: any) {
+    console.error(error);
   }
 
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
-  
+
     if (this.dataSource.paginator) {
       this.dataSource.paginator.firstPage();
     }
   }
 
+  // metadata
+
+  openDialog(replica: any) {
+    console.log(replica);
+
+    const dialogRef = this.dialog.open(MetadataComponent, {
+      data: replica.metadata,
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      console.log(`Dialog result: ${result}`);
+    });
+  }
+ 
 
 }

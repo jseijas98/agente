@@ -3,7 +3,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { environment } from 'src/environments/environment';
 import StringUtils from '../../../../common/util/stringUtils';
 import { ApiRegistry } from '../../../interfaces/model.apis/model.apiResgistry';
@@ -15,9 +15,8 @@ import { ApiRegistry } from '../../../interfaces/model.apis/model.apiResgistry';
 })
 export class RegistrysApisComponent implements OnInit {
 
-
  
-  constructor(private http:HttpClient, public utils:StringUtils, private activateRouter:ActivatedRoute) {
+  constructor(private http:HttpClient, public utils:StringUtils, private activateRouter:ActivatedRoute, private router:Router) {
 
     this.activateRouter.params.subscribe(params => {
       this.Api_registry(params['id']);
@@ -89,6 +88,8 @@ export class RegistrysApisComponent implements OnInit {
       this.dataSource.paginator.firstPage();
     }
   }
+
+   
 
 }
   

@@ -6,9 +6,9 @@ import StringUtils from '../../../../common/util/stringUtils';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
-import { MetadataComponent } from '../../metadata/metadata.component';
+import { MetadataComponent } from '../../../../components/modals/metadata/metadata.component';
 
 @Component({
   selector: 'app-api-replicas',
@@ -20,7 +20,8 @@ export class ApiReplicasComponent implements OnInit {
     public dialog: MatDialog,
     private http: HttpClient,
     public utils: StringUtils,
-    private activateRouter: ActivatedRoute
+    private activateRouter: ActivatedRoute,
+    private router: Router
   ) {
     this.activateRouter.params.subscribe((params) => {
       this.Api_replicas(params['id']);
@@ -38,12 +39,12 @@ export class ApiReplicasComponent implements OnInit {
     'replica_name',
     'lastTestDate',
     'label_hash',
+    'registros',
   ];
 
   data: any[] = [];
 
   baseUrl = environment.baseUrl;
-
 
   dataSource = new MatTableDataSource<any>(this.data);
 
@@ -59,6 +60,7 @@ export class ApiReplicasComponent implements OnInit {
       });
   }
   metadata1: string = 'ver la metadata';
+  registro: string = 'registro';
 
   getReplicasApisSuccess(respose: any) {
     let apisReplicalist: Array<ApiReplicas> = respose;
@@ -108,5 +110,11 @@ export class ApiReplicasComponent implements OnInit {
     dialogRef.afterClosed().subscribe((result) => {
       console.log(`Dialog result: ${result}`);
     });
+  }
+
+  //get api_ip and api_id
+
+  rowGetApiId_apiIP(api_id: any, api_ip: any) {
+    this.router.navigateByUrl(`apis-replicas-registry/${api_id}/${api_ip}`);
   }
 }

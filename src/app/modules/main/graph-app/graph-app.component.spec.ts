@@ -2,8 +2,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { DebugElement } from '@angular/core';
-
-import GraphAppComponent from './graph-app.component';
+import {GraphAppComponent} from './graph-app.component';
 
 describe('GraphAppComponent', () => {
   let component: GraphAppComponent;

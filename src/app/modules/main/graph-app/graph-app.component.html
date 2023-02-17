@@ -1,8 +1,23 @@
 <h1 class="text-center">{{ graph.label }}</h1>
 
-<div class="w-5/6 text-center ml-auto">
+<div class="w-5/6 text-center self-center m-auto">
+
+  <button mat-flat-button class="m-auto" color="primary" (click)="redirect()">Apis de {{ graph.label }}
+  </button>
+
+  <button mat-flat-button color="primary" (click)="redirect()">servicos de {{ graph.label }}
+
+    <button mat-flat-button color="primary" (click)="redirect()">bases de datos de {{ graph.label }}
+    </button>
+
+    <button mat-flat-button color="primary" (click)="redirect()">PIC {{ graph.label }}
+    </button>
+
+  </button>
+
+
 
   <div #zoneFlowChart class="flow-chart-wrapper">
     <app-diagrama></app-diagrama>
   </div>
-</div>
+</div> 

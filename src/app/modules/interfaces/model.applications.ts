@@ -1,5 +1,6 @@
 export interface Applications {
 
+    applicationId:             string;
     applicationName:           string,
     description:               string,
     status:                    string,

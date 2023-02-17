@@ -12,10 +12,10 @@ export interface GetApis {
     numTest:                   number;
     consecutiveFailedTest:     number;
     histFailedTest:            number;
-    minTestFailed:             number;
-    maxTestFailed:             number;
-    lowAlarm:                  string;
-    highAlarm:                 string;
+    lowTrigger  :              number;
+    highTrigger :              number;
+    lowAlarm:                  boolean;
+    highAlarm:                 boolean;
     lastTestDate:              number[];
     response_time:             number;
     testInterv:                number;

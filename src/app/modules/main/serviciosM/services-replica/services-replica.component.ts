@@ -4,24 +4,24 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import StringUtils from 'src/app/common/util/stringUtils';
 import { ServicesReplica } from 'src/app/modules/interfaces/model.services/model.servicesReplica';
 import { environment } from 'src/environments/environment';
-import { MetadataComponent } from '../../metadata/metadata.component';
+import { MetadataComponent } from '../../../../components/modals/metadata/metadata.component';
 
 @Component({
   selector: 'app-services-replica',
   templateUrl: './services-replica.component.html',
-  styleUrls: ['./services-replica.component.css']
+  styleUrls: ['./services-replica.component.css'],
 })
 export class ServicesReplicaComponent implements OnInit {
-
   constructor(
     public dialog: MatDialog,
     private http: HttpClient,
     public utils: StringUtils,
-    private activateRouter: ActivatedRoute
+    private activateRouter: ActivatedRoute,
+    private router: Router
   ) {
     this.activateRouter.params.subscribe((params) => {
       this.Services_replicas(params['id']);
@@ -45,7 +45,6 @@ export class ServicesReplicaComponent implements OnInit {
 
   baseUrl = environment.baseUrl;
 
-
   dataSource = new MatTableDataSource<any>(this.data);
 
   @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
@@ -53,13 +52,14 @@ export class ServicesReplicaComponent implements OnInit {
 
   Services_replicas(index: number) {
     this.http
-      .get<ServicesReplica>(`${this.baseUrl}actualState/service/${index}/replica`)
+      .get<ServicesReplica>(
+        `${this.baseUrl}actualState/service/${index}/replica`
+      )
       .subscribe({
         next: this.getReplicasServicesSuccess.bind(this),
         error: this.getReplicasServicesError.bind(this),
       });
   }
-  metadata1: string = 'ver la metadata';
 
   getReplicasServicesSuccess(respose: any) {
     let ServicesReplicalist: Array<ServicesReplica> = respose;
@@ -97,6 +97,9 @@ export class ServicesReplicaComponent implements OnInit {
     }
   }
 
+  metadata1: string = 'ver la metadata';
+  registro: string = 'registro';
+
   // metadata
 
   openDialog(replica: any) {
@@ -110,5 +113,8 @@ export class ServicesReplicaComponent implements OnInit {
       console.log(`Dialog result: ${result}`);
     });
   }
-}
 
+  rowGetServiceId_serviceIP(api_id: any, api_ip: any) {
+    this.router.navigateByUrl(`apis-replicas-registry/${api_id}/${api_ip}`);
+  }
+}

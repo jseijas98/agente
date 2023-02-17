@@ -20,7 +20,7 @@ import { RegistrysApisComponent } from './apisM/registrys-apis/registrys-apis.co
 import { ApiReplicasComponent } from './apisM/api-replicas/api-replicas.component';
 import { RegistrysApisReplicasComponent } from './apisM/registrys-apis-replicas/registrys-apis-replicas.component'
 import { ChartsComponent } from 'src/app/components/charts/charts.component';
-import { MetadataComponent } from './metadata/metadata.component';
+import { MetadataComponent } from '../../components/modals/metadata/metadata.component';
 import { LayoutModule } from '@angular/cdk/layout';
 import { ServicesListComponent } from './serviciosM/services-list/services-list.component';
 import { ServicesRegistryComponent } from './serviciosM/services-registry/services-registry.component';
@@ -47,6 +47,7 @@ import { PersistenceRegistryComponent } from './persistenceM/persistence-registr
     MaterialModule,
     LayoutModule,
   ],
+  
   declarations: [
     MainComponent,
     DashboardComponent,
@@ -64,7 +65,8 @@ import { PersistenceRegistryComponent } from './persistenceM/persistence-registr
     PicListComponent,
     PicRegistryComponent,
     PersistenceListComponent,
-    PersistenceRegistryComponent
+    PersistenceRegistryComponent,
+    
   ],
 })
 export class MainModule {}

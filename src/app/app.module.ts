@@ -10,11 +10,16 @@ import { HttpClientModule } from '@angular/common/http';
 import { MaterialModule } from './modules/material.module';
 import StringUtils from './common/util/stringUtils';
 import { FlowChartNodeComponent } from './components/flow-chart-node/flow-chart-node.component';
-
-
+import { UpdateParamsComponent } from './components/modals/update-params/update-params.component';
+import { NotificationComponent } from './components/notification/notification.component';
 
 @NgModule({
-  declarations: [AppComponent, FlowChartNodeComponent],
+  declarations: [
+    AppComponent,
+    FlowChartNodeComponent,
+    UpdateParamsComponent,
+    NotificationComponent,
+  ],
   imports: [
     BrowserModule,
     HttpClientModule,

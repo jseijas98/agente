@@ -1,4 +1,11 @@
-import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { FlowChartService } from 'src/app/services/flow-chart/flow-chart.service';
 
 @Component({
@@ -6,19 +13,23 @@ import { FlowChartService } from 'src/app/services/flow-chart/flow-chart.service
   templateUrl: './graph-app.component.html',
   styleUrls: ['./graph-app.component.css'],
 })
-export class GraphAppComponent implements AfterViewInit {
+export class GraphAppComponent implements OnInit {
   public graph: any = JSON.parse(sessionStorage.getItem('Graph')!);
 
-  @ViewChild('zoneFlowChart') zoneFlowChart: ElementRef = new ElementRef('')
+  @ViewChild('zoneFlowChart') zoneFlowChart: ElementRef = new ElementRef('');
 
-  constructor(private flowChartService: FlowChartService) {}
+  constructor(
+    private flowChartService: FlowChartService,
+    private activateRouter: ActivatedRoute,
+    private router: Router
+  ) {}
 
+  ngOnInit(): void {}
 
-  ngAfterViewInit(): void {
-    const el = this.zoneFlowChart.nativeElement
-    console.log(el);
-    this.flowChartService.calculateDimensions(el)
+  redirect() {
+    this.activateRouter.params.subscribe((params) => {
+      this.router.navigateByUrl(`apis-list/${params['id']}`);
+    });
   }
 
-  
 }
