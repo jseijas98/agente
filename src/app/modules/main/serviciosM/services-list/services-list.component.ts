@@ -1,10 +1,13 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit, ViewChild } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import StringUtils from 'src/app/common/util/stringUtils';
+import { UpdateparamsComponent } from 'src/app/components/modals/updateparams/updateparams.component';
 import { ServicesList } from 'src/app/modules/interfaces/model.services/model.services-list';
 import { environment } from 'src/environments/environment';
 
@@ -16,16 +19,21 @@ import { environment } from 'src/environments/environment';
 export class ServicesListComponent implements OnInit {
   baseUrl = environment.baseUrl;
 
-  index: number = 1;
-
   constructor(
     private http: HttpClient,
     private router: Router,
-    public utils: StringUtils
+    public utils: StringUtils,
+    private activateRouter: ActivatedRoute,
+    public dialog: MatDialog,
+    private snakbar: MatSnackBar
   ) {}
 
+  public index: string = 'service';
+
   ngOnInit(): void {
-    this.Api(this.index);
+    this.activateRouter.params.subscribe((params) => {
+      this.service(params['id']);
+    });
   }
 
   //columnsas que se muestran
@@ -33,27 +41,28 @@ export class ServicesListComponent implements OnInit {
     'applId',
     'services_id',
     'nameSpace',
+    'triggerLow',
     'test_interval',
     'label_app',
     'response_time',
+    'triggerHigh',
     'last_test',
     'status',
     'health',
     'registros',
+    'replicas',
+    'lowAlarm',
+    'highAlarm',
   ];
 
-  data: any[] = [];
-
-  juan: any[] = [];
-
   //configuración del dataSource
-  dataSource = new MatTableDataSource<any>(this.data);
+  dataSource = new MatTableDataSource<any>();
 
   //paginacion del las tablas
   @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
-  Api(index: number) {
+  service(index: number) {
     this.http
       .get<ServicesList>(`${this.baseUrl}list/application/${index}/service`)
       .subscribe({
@@ -65,11 +74,12 @@ export class ServicesListComponent implements OnInit {
   registro: string = 'registros historicos';
   replicas: string = 'replicas del servicio ';
 
-  getServicesSuccess(respose: any) {
-    let serviceLIst: Array<ServicesList> = respose;
+  getServicesSuccess(response: any) {
+    let serviceLIst: Array<ServicesList> = response;
+    let data: any[] = [];
 
     serviceLIst.forEach((services) => {
-      this.data.push({
+      data.push({
         services_id: services.serviceId,
         status: services.status,
         nameSpace: services.nameSpace,
@@ -79,21 +89,20 @@ export class ServicesListComponent implements OnInit {
         last_test: this.utils.convertDate(services.lastTestsDate),
         health: services.health,
         applId: services.applicationId,
+        triggerLow: services.lowTrigger,
+        triggerHigh: services.highTrigger,
+        lowAlarm: services.lowAlarm,
+        highAlarm: services.highAlarm,
       });
-      console.log(this.data);
+      console.log(data);
     });
 
-    this.dataSource = new MatTableDataSource<any>(this.data);
+    this.dataSource = new MatTableDataSource<any>(data);
     this.dataSource.paginator = this.paginator;
   }
 
   getServicesError(error: any) {
     console.error(error);
-  }
-
-  ngAfterViewInit() {
-    this.dataSource.paginator = this.paginator;
-    this.dataSource.sort = this.sort;
   }
 
   applyFilter(event: Event) {
@@ -105,11 +114,56 @@ export class ServicesListComponent implements OnInit {
     }
   }
 
-  rowGetApiId(services_id: number) {
-    this.router.navigateByUrl(`services-replicas/${services_id}`);
+  changeParameters(dataupdate: any) {
+    this.http.post<any>(this.baseUrl + 'params', dataupdate).subscribe({
+      next: this.updateResponse.bind(this),
+      error: this.updateError.bind(this),
+    });
   }
 
-  ApiRegiistry(registry: any, services_id: any) {
+  updateResponse(response: boolean) {
+    console.log('update response:', response);
+  }
+
+  updateError(error: any) {
+    console.log(error);
+  }
+
+  open(row: any) {
+    const dialogRef = this.dialog.open(UpdateparamsComponent, {
+      disableClose: true,
+      data: {
+        item_id: row.services_id,
+        type: this.index,
+        appid: row.applId,
+        label: row.label_app,
+        space: row.nameSpace,
+      },
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      console.log('dialog:', result?._value.data);
+
+      this.snakbar.open(
+        result?._value.data
+          ? 'se actualizaron los parametros'
+          : 'Error en la actualizacion de parametros',
+        'ACEPTAR'
+      );
+    });
+
+    this.activateRouter.params.subscribe((params) => {
+      this.service(params['id']);
+
+      this.dataSource.paginator = this.paginator;
+    });
+  }
+
+  ApiRegiistry(services_id: any) {
     this.router.navigateByUrl(`services-registry/${services_id}`);
+  }
+
+  getServicesReplica(api_id: any): void {
+    this.router.navigateByUrl(`services-replicas/${api_id}`);
   }
 }

@@ -116,5 +116,8 @@ export class ApiReplicasComponent implements OnInit {
 
   rowGetApiId_apiIP(api_id: any, api_ip: any) {
     this.router.navigateByUrl(`apis-replicas-registry/${api_id}/${api_ip}`);
+
+    console.log(api_id,api_ip,name);
+    
   }
 }

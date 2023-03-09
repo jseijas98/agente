@@ -5,27 +5,14 @@ import { Applications } from '../interfaces/model.applications';
 @Component({
   selector: 'app-main',
   templateUrl: './main.component.html',
-  styleUrls: ['./main.component.css']
+  styleUrls: ['./main.component.css'],
 })
-
 export class MainComponent implements OnInit {
+  constructor(private http: HttpClient) {}
 
-  constructor( private http:HttpClient) {}
+  ngOnInit(): void {}
 
-  ngOnInit(): void {
-
-  }
-  
-  name: string = 'Application'
-  
-  algo() :string{
-
-    return this.name
-  }
-    
-  }
-  
-
+  redirect(){}
 
   
-
+}

@@ -9,8 +9,8 @@ export interface ServicesList {
     numTest:                   number;
     consecutiveFailedTest:     number;
     histFailedTest:            number;
-    maxFailedTest:             number;
-    minFailedTest:             number;
+    highTrigger:               number;
+    lowTrigger:                number;
     lowAlarm:                  null;
     highAlarm:                 null;
     reqSeg:                    null;
@@ -22,3 +22,4 @@ export interface ServicesList {
     consecutiveSuccessfulTest: number;
     response_time:             number;
 }
+

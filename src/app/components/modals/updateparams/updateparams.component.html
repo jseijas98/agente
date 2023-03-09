@@ -1,0 +1,83 @@
+<div mat-dialog-title class="text-center">actualizacion de parametros de</div>
+<mat-dialog-content>
+  <div class="text-center">
+    <h3>
+      {{ data.label }}
+      <span *ngIf="space(data.space)"> | namespace: {{ data.space }}</span>
+    </h3>
+  </div>
+  <div>
+    <h3></h3>
+    <mat-form-field appearance="fill">
+      <mat-label><b>Testinterval</b></mat-label>
+      <input
+        matInput
+        #input
+        matInput
+        #Interval
+        id="Interval"
+        type="text"
+        [formControl]="intervalCtrl"
+      />
+      <mat-hint align="end"></mat-hint>
+    </mat-form-field>
+  </div>
+  <div>
+    <mat-form-field appearance="fill">
+      <mat-label> <b>triggerLow</b></mat-label>
+      <input
+        matInput
+        #input
+        matInput
+        #Low
+        id="Low"
+        type="text"
+        [formControl]="Lowctrl"
+      />
+      <mat-hint align="start"></mat-hint>
+    </mat-form-field>
+  </div>
+  <div>
+    <mat-form-field appearance="fill">
+      <label for="a"></label>
+      <mat-label><b>triggerHigh</b></mat-label>
+      <input
+        matInput
+        #input
+        matInput
+        #High
+        id="high"
+        type="text"
+        [formControl]="Highctrl"
+      />
+    </mat-form-field>
+  </div>
+
+  <!-- <pre>{{ data?.item_id }}</pre> -->
+</mat-dialog-content>
+
+<mat-dialog-actions class="text-center justify-center">
+  <button
+    mat-raised-button
+    color="primary"
+    [disabled]="intervalCtrl.invalid"
+    [disabled]="Lowctrl.invalid"
+    [disabled]="Highctrl.invalid"
+    [mat-dialog-close]="data$"
+    (click)="updateTeParams(Interval.value, Low.value, High.value)"
+  >
+    actualizar
+    <mat-icon>autorenew</mat-icon>
+  </button>
+  <button
+    mat-raised-button
+    color="primary"
+    [disabled]="intervalCtrl.invalid"
+    [disabled]="Lowctrl.invalid"
+    [disabled]="Highctrl.invalid"
+    [mat-dialog-close]="true"
+  >
+    cerrar
+    <mat-icon>close</mat-icon>
+  </button>
+</mat-dialog-actions>

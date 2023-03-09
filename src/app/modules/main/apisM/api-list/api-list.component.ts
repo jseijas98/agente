@@ -1,5 +1,14 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  EventEmitter,
+  inject,
+  Input,
+  OnInit,
+  Output,
+  ViewChild,
+} from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
@@ -7,13 +16,18 @@ import { ActivatedRoute, Params, Router } from '@angular/router';
 import { GetApis } from '../../../interfaces/model.apis/model.getApis';
 import StringUtils from '../../../../common/util/stringUtils';
 import { environment } from 'src/environments/environment';
-import { MatInput } from '@angular/material/input';
-import { Parameters } from '../../../interfaces/model.parameters';
-import { Observable } from 'rxjs';
 import { __values } from 'tslib';
 import { MatDialog } from '@angular/material/dialog';
-import { UpdateParamsComponent } from 'src/app/components/modals/update-params/update-params.component';
 import { NotificationsService } from 'src/app/services/service/notifications.service';
+import { ComponentList } from '../../../interfaces/model.componetList/componentList';
+import {
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  Validators,
+} from '@angular/forms';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { UpdateparamsComponent } from 'src/app/components/modals/updateparams/updateparams.component';
 
 @Component({
   selector: 'app-api-list',
@@ -31,24 +45,20 @@ export class ApiListComponent implements OnInit {
     public utils: StringUtils,
     private activateRouter: ActivatedRoute,
     public dialog: MatDialog,
-    protected notificationSvc: NotificationsService
+    protected notificationSvc: NotificationsService,
+    private formBuldier: FormBuilder,
+    private snakbar: MatSnackBar
   ) {}
 
-  value:boolean | undefined;
+  value: boolean | undefined;
 
-  
   @Output() newItemEvent = new EventEmitter<boolean>();
 
   ngOnInit(): void {
     this.activateRouter.params.subscribe((params) => {
       this.Api(params['id']);
-
-
     });
-
-
   }
-
 
   //columnsas que se muestran
   displayedColumns: string[] = [
@@ -69,16 +79,12 @@ export class ApiListComponent implements OnInit {
     'highAlarm',
   ];
 
-  data: any[] = [];
-
-  juan: any[] = [];
-
   //configuración del dataSource
-  dataSource = new MatTableDataSource<any>(this.data);
+  dataSource = new MatTableDataSource<any>();
 
   //paginacion del las tablas
   @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
-  @ViewChild(MatSort) sort!: MatSort;
+  @ViewChild(MatSort) sort: MatSort;
 
   Api(index: number) {
     this.activateRouter;
@@ -95,9 +101,10 @@ export class ApiListComponent implements OnInit {
 
   getApisSuccess(respose: any) {
     let apisList: Array<GetApis> = respose;
+    let data: any[] = [];
 
     apisList.forEach((api) => {
-      this.data.push({
+      data.push({
         api_id: api.apiId,
         status: api.status,
         nameSpace: api.nameSpace,
@@ -110,20 +117,15 @@ export class ApiListComponent implements OnInit {
         triggerLow: api.lowTrigger,
         triggerHigh: api.highTrigger,
         lowAlarm: api.lowAlarm,
-        highAlarm: api.highAlarm
+        highAlarm: api.highAlarm,
       });
-      console.log('response', this.data);
+      console.log('response', data);
     });
 
-    this.dataSource = new MatTableDataSource<any>(this.data);
+    this.dataSource = new MatTableDataSource<any>(data);
+
     this.dataSource.paginator = this.paginator;
-
   }
-
-  algo!: boolean;
-
-
-
 
   getApisError(error: any) {
     console.error(error);
@@ -138,97 +140,61 @@ export class ApiListComponent implements OnInit {
     }
   }
 
-  updateTestInterval(interval: number, api: any, id: any) {
-    let dataUpdate = {
-      type: api,
-      idNumber: id,
-      testInterv: interval,
-      lowTrigger: 0,
-      highTrigger: 0,
-    };
-
-    console.log(dataUpdate);
-    this.changeParameters(dataUpdate);
-    console.log('data enviadia', dataUpdate);
-  }
-
-  updateTriggerLow(api: any, id: any, tLow: number) {
-    let dataUpdate = {
-      type: api,
-      idNumber: id,
-      testInterv: 0,
-      lowTrigger: tLow,
-      highTrigger: 0,
-    };
-    this.changeParameters(dataUpdate);
-    console.log('data enviadia', dataUpdate);
-  }
-
-  updateTriggerHigh(api: any, id: any, tHigh: number) {
-    let dataUpdate = {
-      type: api,
-      idNumber: id,
-      testInterv: 0,
-      lowTrigger: 0,
-      highTrigger: tHigh,
-    };
-    this.changeParameters(dataUpdate);
-
-    console.log('data enviadia', dataUpdate);
-  }
-
   getApiReplica(api_id: any): void {
     this.router.navigateByUrl(`apis-replicas/${api_id}`);
   }
 
-  ApiRegiistry(registry: any, applId: any) {
+  ApiRegiistry(applId: any) {
     this.router.navigateByUrl(`apis-registry/${applId}`);
   }
 
-  changeParameters(dataupdate: any) {
-    this.http.post<any>(this.baseUrl + 'params', dataupdate).subscribe({
-      next: this.updateResponse.bind(this),
-      error: this.updateError.bind(this),
-    });
-  }
+  open(row: any) {
+    const dialogRef = this.dialog.open(UpdateparamsComponent, {
+      disableClose: true,
 
-  updateResponse(response: boolean) {
-    console.log('update response:', response);
-    this.openDialog(response);
-  }
-
-  updateError(error: any) {
-    console.log(error);
-  }
-
-  openDialog(response: boolean) {
-    console.log('opendialog response ', response);
-    const dialogRef = this.dialog.open(UpdateParamsComponent, {
-      data: response,
+      data: {
+        item_id: row.api_id,
+        type: this.index,
+        appid: row.applId,
+        label: row.label_app,
+        space: row.nameSpace,
+      },
     });
 
     dialogRef.afterClosed().subscribe((result) => {
-      console.log(`Dialog result: ${result}`);
+
+      console.log('dialog:', result?._value.data);
+
+      this.snakbar.open(
+        result?._value.data
+          ? 'se actualizaron los parametros'
+          : 'Error en la actualizacion de parametros',
+        'ACEPTAR'
+      );
+    });
+
+    this.activateRouter.params.subscribe((params) => {
+      this.Api(params['id']);
+
+      this.dataSource.paginator = this.paginator;
     });
   }
 
-  
+  // sendWarning(alarm: boolean, label_app: string, triggerLow: string) {
+  //   if (alarm === true) {
+  //     this.notificationSvc.warning(
+  //       'advertencia',
+  //       `el estado de ${label_app} se encuentra por debajo de ${triggerLow}`
+  //     );
+  //   }
+  // }
 
-  sendWarning(alarm: boolean, label_app: string, triggerLow: string) {
-    if (alarm === true) {
-      this.notificationSvc.warning(
-        'advertencia',
-        `el estado de ${label_app} se encuentra por debajo de ${triggerLow}`
-      );
-    }
-  }
-
-  sendError(alarm: boolean, label_app: string, triggerLow: string) {
-    if (alarm === true) {
-      this.notificationSvc.warning(
-        'ADVERTENCIA!!!',
-        `el estado de ${label_app} se encuentra por debajo de ${triggerLow}`
-      );
-    }
-  }
+  // sendError(alarm: boolean, label_app: string, triggerLow: string) {
+  //   if (alarm === true) {
+  //     this.notificationSvc.warning(
+  //       'ADVERTENCIA!!!',
+  //       `el estado de ${label_app} se encuentra por debajo de ${triggerLow}`
+  //     );
+  //   }
+  // }
 }

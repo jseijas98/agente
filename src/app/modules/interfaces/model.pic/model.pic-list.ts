@@ -20,4 +20,6 @@ export interface PicList {
     historyFailedTest:         number;
     historySuccessfulTest:     number;
     response_time:             number;
+    lowTrigger:                number,
+    highTrigger:               number
 }

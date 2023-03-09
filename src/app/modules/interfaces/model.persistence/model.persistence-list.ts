@@ -7,8 +7,10 @@ export interface PersistenceList {
     numTest:                   number;
     consecutiveFailedTest:     number;
     historyFailedTest:         number;
-    lowAlarm:                  null;
-    highAlarm:                 null;
+    lowTrigger:                number;
+    highTrigger:               number;
+    lowAlarm:                  boolean;
+    highAlarm:                 boolean;
     lastTestDate:              number[];
     reqSeg:                    null;
     testInterv:                number;

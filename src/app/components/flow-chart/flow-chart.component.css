@@ -1,0 +1,5 @@
+
+::ng-deep.graph ::ng-deep.panning-rect{
+  cursor: default !important;
+}
+

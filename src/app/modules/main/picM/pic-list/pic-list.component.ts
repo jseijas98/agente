@@ -1,10 +1,13 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit, ViewChild } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import StringUtils from 'src/app/common/util/stringUtils';
+import { UpdateparamsComponent } from 'src/app/components/modals/updateparams/updateparams.component';
 import { PicList } from 'src/app/modules/interfaces/model.pic/model.pic-list';
 import { environment } from 'src/environments/environment';
 
@@ -16,16 +19,19 @@ import { environment } from 'src/environments/environment';
 export class PicListComponent implements OnInit {
   baseUrl = environment.baseUrl;
 
-  index: number = 1;
-
   constructor(
     private http: HttpClient,
     private router: Router,
-    public utils: StringUtils
+    public utils: StringUtils,
+    private activateRouter: ActivatedRoute,
+    public dialog: MatDialog,
+    private snakbar: MatSnackBar
   ) {}
 
   ngOnInit(): void {
-    this.Pic(this.index);
+    this.activateRouter.params.subscribe((params) => {
+      this.Pic(params['id']);
+    });
   }
 
   //columnsas que se muestran
@@ -40,14 +46,13 @@ export class PicListComponent implements OnInit {
     'status',
     'consecutiveFailedTest',
     'consecutiveSuccessfulTest',
+    'lowT',
+    'highT',
+    'registros',
   ];
 
-  data: any[] = [];
-
-  juan: any[] = [];
-
   //configuración del dataSource
-  dataSource = new MatTableDataSource<any>(this.data);
+  dataSource = new MatTableDataSource<any>();
 
   //paginacion del las tablas
   @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
@@ -67,9 +72,10 @@ export class PicListComponent implements OnInit {
 
   getPicSuccess(respose: any) {
     let picList: Array<PicList> = respose;
+    let data: any[] = [];
 
     picList.forEach((pic) => {
-      this.data.push({
+      data.push({
         pic_id: pic.integrationId,
         status: pic.status,
         channel: pic.channel,
@@ -80,11 +86,13 @@ export class PicListComponent implements OnInit {
         consecutiveFailedTest: pic.consecutiveFailedTest,
         consecutiveSuccessfulTest: pic.consecutiveSuccessfulTest,
         description: pic.description,
+        lowT: pic.highTrigger,
+        highT: pic.lowTrigger,
       });
-      console.log(this.data);
+      console.log(data);
     });
 
-    this.dataSource = new MatTableDataSource<any>(this.data);
+    this.dataSource = new MatTableDataSource<any>(data);
     this.dataSource.paginator = this.paginator;
   }
 
@@ -101,8 +109,39 @@ export class PicListComponent implements OnInit {
     }
   }
 
- 
   PicRegistry(applId: any) {
     this.router.navigateByUrl(`pic-registry/${applId}`);
+  }
+  index = 'integration';
+
+  open(row: any) {
+    const dialogRef = this.dialog.open(UpdateparamsComponent, {
+
+      disableClose: true,
+      data: {
+        item_id: row.pic_id,
+        type: this.index,
+        appid: row.applId,
+        label: row.description,
+        space: row.nameSpace,
+      },
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      console.log('dialog:', result?._value.data);
+
+      this.snakbar.open(
+        result?._value.data
+          ? 'se actualizaron los parametros'
+          : 'Error en la actualizacion de parametros',
+        'ACEPTAR'
+      );
+    });
+
+    this.activateRouter.params.subscribe((params) => {
+      this.Pic(params['id']);
+
+      this.dataSource.paginator = this.paginator;
+    });
   }
 }

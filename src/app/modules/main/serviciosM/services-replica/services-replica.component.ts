@@ -39,6 +39,7 @@ export class ServicesReplicaComponent implements OnInit {
     'replica_name',
     'lastTestDate',
     'label_hash',
+    'registros'
   ];
 
   data: any[] = [];

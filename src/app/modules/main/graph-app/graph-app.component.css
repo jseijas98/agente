@@ -1,8 +1,18 @@
 
 
-.flow-chart-wrapper {
-    margin-top: 55px;
-    width: 100%;
-    height: calc(100% - 55px);
-    text-align: center;
-}
+  
+  .flow-chart-wrapper {
+
+     margin: -5% 5% 5% 5%;
+   
+  }
+
+  .title{
+    margin-top: 15px;
+    font: 400 30px / 32px Roboto, "Helvetica Neue", sans-serif;
+  }
+  
+  
+  .algo{
+    cursor: pointer;
+  }

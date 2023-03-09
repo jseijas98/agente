@@ -1,20 +1,24 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit, ViewChild } from '@angular/core';
+import { FormBuilder } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import StringUtils from 'src/app/common/util/stringUtils';
+import { UpdateparamsComponent } from 'src/app/components/modals/updateparams/updateparams.component';
 import { PersistenceList } from 'src/app/modules/interfaces/model.persistence/model.persistence-list';
+import { NotificationsService } from 'src/app/services/service/notifications.service';
 import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-persistence-list',
   templateUrl: './persistence-list.component.html',
-  styleUrls: ['./persistence-list.component.css']
+  styleUrls: ['./persistence-list.component.css'],
 })
 export class PersistenceListComponent implements OnInit {
-
   baseUrl = environment.baseUrl;
 
   index: number = 1;
@@ -22,7 +26,12 @@ export class PersistenceListComponent implements OnInit {
   constructor(
     private http: HttpClient,
     private router: Router,
-    public utils: StringUtils
+    public utils: StringUtils,
+    private activateRouter: ActivatedRoute,
+    public dialog: MatDialog,
+    protected notificationSvc: NotificationsService,
+    private formBuldier: FormBuilder,
+    private snakbar: MatSnackBar
   ) {}
 
   ngOnInit(): void {
@@ -40,14 +49,12 @@ export class PersistenceListComponent implements OnInit {
     'status',
     'consecutiveFailedTest',
     'consecutiveSuccessfulTest',
+    'lowT',
+    'highT',
   ];
 
-  data: any[] = [];
-
-  juan: any[] = [];
-
   //configuración del dataSource
-  dataSource = new MatTableDataSource<any>(this.data);
+  dataSource = new MatTableDataSource<any>();
 
   //paginacion del las tablas
   @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
@@ -55,7 +62,9 @@ export class PersistenceListComponent implements OnInit {
 
   persistence(index: number) {
     this.http
-      .get<PersistenceList>(`${this.baseUrl}list/application/${index}/persistence`)
+      .get<PersistenceList>(
+        `${this.baseUrl}list/application/${index}/persistence`
+      )
       .subscribe({
         next: this.getPersistenceSuccess.bind(this),
         error: this.getPersistenceError.bind(this),
@@ -67,8 +76,10 @@ export class PersistenceListComponent implements OnInit {
   getPersistenceSuccess(respose: any) {
     let PersistenceList: Array<PersistenceList> = respose;
 
+    let data: any[] = [];
+
     PersistenceList.forEach((persistence) => {
-      this.data.push({
+      data.push({
         persistence_id: persistence.dbId,
         status: persistence.status,
         test_interval: persistence.testInterv,
@@ -78,11 +89,13 @@ export class PersistenceListComponent implements OnInit {
         consecutiveFailedTest: persistence.consecutiveFailedTest,
         consecutiveSuccessfulTest: persistence.consecutiveSuccessfulTest,
         description: persistence.description,
+        lowT: persistence.highTrigger,
+        highT: persistence.lowTrigger,
       });
-      console.log(this.data);
+      console.log(data);
     });
 
-    this.dataSource = new MatTableDataSource<any>(this.data);
+    this.dataSource = new MatTableDataSource<any>(data);
     this.dataSource.paginator = this.paginator;
   }
 
@@ -99,9 +112,42 @@ export class PersistenceListComponent implements OnInit {
     }
   }
 
- 
   persistenceRegistry(applId: any) {
     this.router.navigateByUrl(`persistence-registry/${applId}`);
   }
 
+  
+  open(row: any) {
+    const dialogRef = this.dialog.open(UpdateparamsComponent, {
+      disableClose: true,
+
+      data: {
+        item_id: row.persistence_id,
+        type: this.index,
+        appid: row.applId,
+        label: row.label_app,
+        space: row.nameSpace,
+      },
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+
+      console.log('dialog:', result?._value.data);
+
+      this.snakbar.open(
+        result?._value.data
+          ? 'se actualizaron los parametros'
+          : 'Error en la actualizacion de parametros',
+        'ACEPTAR'
+      );
+    });
+
+    this.activateRouter.params.subscribe((params) => {
+      this.persistence(params['id']);
+
+      this.dataSource.paginator = this.paginator;
+    });
+  }
+
+  updateTestInterval() {}
 }

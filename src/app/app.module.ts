@@ -9,17 +9,14 @@ import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { MaterialModule } from './modules/material.module';
 import StringUtils from './common/util/stringUtils';
-import { FlowChartNodeComponent } from './components/flow-chart-node/flow-chart-node.component';
-import { UpdateParamsComponent } from './components/modals/update-params/update-params.component';
 import { NotificationComponent } from './components/notification/notification.component';
+import { NodeFlowChartComponent } from './components/node-flow-chart/node-flow-chart.component';
+import { NgxGraphModule } from '@swimlane/ngx-graph';
+import { UpdateparamsComponent } from './components/modals/updateparams/updateparams.component';
+import { ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    FlowChartNodeComponent,
-    UpdateParamsComponent,
-    NotificationComponent,
-  ],
+  declarations: [AppComponent, NotificationComponent, UpdateparamsComponent],
   imports: [
     BrowserModule,
     HttpClientModule,
@@ -29,6 +26,9 @@ import { NotificationComponent } from './components/notification/notification.co
     LoginModule,
     MainModule,
     MaterialModule,
+    NgxGraphModule,
+    ReactiveFormsModule
+    
   ],
   providers: [StringUtils],
   bootstrap: [AppComponent],

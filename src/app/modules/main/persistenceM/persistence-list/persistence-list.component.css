@@ -1,6 +1,6 @@
 .container {
   width: 100%;
-  margin-top: 20px;
+  margin-top: 5px;
   text-align: center;
   position: absolute;
 }
@@ -13,20 +13,19 @@ table {
 
 .mat-header-cell {
   color: black;
-  font-size: 15px;
-  font-weight: bold;
+  font-size: 14px;
   text-align: center;
   background-color: #b9c5fe;
-}
-
-.mat-mdc-form-field {
-  font-size: 14px;
-  width: 100%;
 }
 
 .mat-row:hover {
   cursor: pointer;
   box-shadow: inset 0 0 0 3px black;
+}
+
+
+.mat-expansion-panel {
+  width: 98%;
 }
 
 .mat-form-field {
@@ -36,7 +35,7 @@ table {
   padding: 5px;
 }
 
-td,
-th {
-  width: 10%;
+th,
+td {
+  width: 5%;
 }

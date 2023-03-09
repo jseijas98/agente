@@ -8,7 +8,9 @@ import {
 } from '@angular/core';
 import { Router } from '@angular/router';
 import { Color, ScaleType } from '@swimlane/ngx-charts';
+import { BehaviorSubject } from 'rxjs';
 import { FlowChartService } from 'src/app/services/flow-chart/flow-chart.service';
+import { environment } from 'src/environments/environment';
 import { Applications } from '../../interfaces/model.applications';
 
 @Component({
@@ -16,8 +18,9 @@ import { Applications } from '../../interfaces/model.applications';
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css'],
 })
-export class DashboardComponent implements AfterViewInit {
-  @ViewChild('zoneFlowChart') zoneFlowChart: ElementRef = new ElementRef('');
+export class DashboardComponent implements OnInit {
+  
+  public application$: BehaviorSubject<any> = new BehaviorSubject(null);
 
   //data de la charts cards
   dataCard: Applications[] = [];
@@ -41,22 +44,16 @@ export class DashboardComponent implements AfterViewInit {
   constructor(
     private router: Router,
     private http: HttpClient,
-    private flowChartService: FlowChartService
   ) {}
 
-  ngAfterViewInit(): void {
-    const el = this.zoneFlowChart.nativeElement;
-    console.log(el);
-    this.flowChartService.calculateDimensions(el);
-  }
 
   ngOnInit(): void {
     this.aplication();
   }
 
   //url de las aplicaciones
-  url: string =
-    'https://180.183.170.56:30445/monitor-agent-service/list/application';
+
+  url = environment.baseUrl;
 
   //formato del valor numerico
   axisFormat(val: any) {
@@ -65,7 +62,7 @@ export class DashboardComponent implements AfterViewInit {
 
   //funcion para obtener la de data de las aplicacione desde el api
   aplication(): any {
-    this.http.get(this.url).subscribe({
+    this.http.get(this.url+'list/application').subscribe({
       next: this.aplicacionSuccess.bind(this),
       error: this.aplicacionError.bind(this),
     });
@@ -102,4 +99,6 @@ export class DashboardComponent implements AfterViewInit {
     this.router.navigateByUrl(`graph-app/${app_id}`);
     console.log(app_id);
   }
+
+  
 }

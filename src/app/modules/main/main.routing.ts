@@ -49,7 +49,7 @@ const routes: Routes = [
         component: MetadataComponent,
       },
       {
-        path: 'services-list',
+        path: 'services-list/:id',
         component: ServicesListComponent,
       },
       {
@@ -61,7 +61,7 @@ const routes: Routes = [
         component: ServicesReplicaComponent,
       },
       {
-        path: 'pic-list',
+        path: 'pic-list/:id',
         component: PicListComponent,
       },
       {
@@ -69,18 +69,15 @@ const routes: Routes = [
         component: PicRegistryComponent,
       },
       {
-        path: 'persistence-list',
+        path: 'persistence-list/:id',
         component: PersistenceListComponent,
-      }
-      ,
+      },
       {
         path: 'services-replicas-registry/:id/:ip',
         component: ServicesRegistryReplicaComponent,
-      }
-
+      },
     ],
   },
 ];
 
 export const MainRoutes = RouterModule.forChild(routes);
-

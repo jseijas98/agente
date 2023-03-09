@@ -7,19 +7,15 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { HttpClient } from '@angular/common/http';
 import { MatDialog } from '@angular/material/dialog';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Data } from '@angular/router';
 import { MetadataComponent } from '../../../../components/modals/metadata/metadata.component';
-
-
 
 @Component({
   selector: 'app-registrys-apis-replicas',
   templateUrl: './registrys-apis-replicas.component.html',
-  styleUrls: ['./registrys-apis-replicas.component.css']
+  styleUrls: ['./registrys-apis-replicas.component.css'],
 })
 export class RegistrysApisReplicasComponent implements OnInit {
-
-
   constructor(
     public dialog: MatDialog,
     private http: HttpClient,
@@ -27,8 +23,7 @@ export class RegistrysApisReplicasComponent implements OnInit {
     private activateRouter: ActivatedRoute
   ) {
     this.activateRouter.params.subscribe((params) => {
-      this.Api_Replicas_Resgistry(params['id'],params['ip']);
-      
+      this.Api_Replicas_Resgistry(params['id'], params['ip']);
     });
   }
 
@@ -49,15 +44,16 @@ export class RegistrysApisReplicasComponent implements OnInit {
 
   baseUrl = environment.baseUrl;
 
-
   dataSource = new MatTableDataSource<any>(this.data);
 
   @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
-  Api_Replicas_Resgistry(id:any, ip:any) {
+  Api_Replicas_Resgistry(id: any, ip: any) {
     this.http
-      .get<ApiReplicasResgistry>(`${this.baseUrl}registry/apis/${id}/replica/${ip}`)
+      .get<ApiReplicasResgistry>(
+        `${this.baseUrl}registry/apis/${id}/replica/${ip}`
+      )
       .subscribe({
         next: this.getReplicasApisRegistrySuccess.bind(this),
         error: this.getReplicasApisResgistryError.bind(this),
@@ -70,8 +66,6 @@ export class RegistrysApisReplicasComponent implements OnInit {
     let apisReplicaesgistrylist: Array<ApiReplicasResgistry> = respose;
 
     apisReplicaesgistrylist.forEach((apiReplicasResgistry) => {
-      console.log(apiReplicasResgistry.metadata);
-
       this.data.push({
         replica_id: apiReplicasResgistry.replica_id,
         apiId: apiReplicasResgistry.apiId,
@@ -83,11 +77,19 @@ export class RegistrysApisReplicasComponent implements OnInit {
         lastTestDate: this.utils.convertDate(apiReplicasResgistry.lastTestDate),
         label_hash: apiReplicasResgistry.label_hash,
       });
+
+      this.nombre_de_replica = apiReplicasResgistry.replica_name
+      console.log(this.nombre_de_replica);
+      
+
     });
+
     console.log(this.data);
     this.dataSource = new MatTableDataSource<any>(this.data);
     this.dataSource.paginator = this.paginator;
   }
+
+  nombre_de_replica:string
 
   getReplicasApisResgistryError(error: any) {
     console.error(error);
@@ -115,6 +117,4 @@ export class RegistrysApisReplicasComponent implements OnInit {
       console.log(`Dialog result: ${result}`);
     });
   }
- 
-
 }
