@@ -14,6 +14,7 @@ import { NodeFlowChartComponent } from './components/node-flow-chart/node-flow-c
 import { NgxGraphModule } from '@swimlane/ngx-graph';
 import { UpdateparamsComponent } from './components/modals/updateparams/updateparams.component';
 import { ReactiveFormsModule } from '@angular/forms';
+import { GoBackComponent } from './components/go-back/go-back.component';
 
 @NgModule({
   declarations: [AppComponent, NotificationComponent, UpdateparamsComponent],

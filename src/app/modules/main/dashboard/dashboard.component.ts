@@ -43,7 +43,7 @@ export class DashboardComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private http: HttpClient,
+    private http: HttpClient
   ) {}
 
 
@@ -67,6 +67,8 @@ export class DashboardComponent implements OnInit {
       error: this.aplicacionError.bind(this),
     });
   }
+
+  //TODO obntener dato del hhtp para pasarle el % de sauld al main component por un view child
 
   aplicacionSuccess(respose: any) {
     let data: Array<Applications> = respose;
@@ -99,6 +101,8 @@ export class DashboardComponent implements OnInit {
     this.router.navigateByUrl(`graph-app/${app_id}`);
     console.log(app_id);
   }
+
+
 
   
 }

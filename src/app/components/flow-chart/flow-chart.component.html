@@ -1,8 +1,7 @@
 <ngx-graph
-  #myChart
   class="chart-container "
-  *ngIf="showRender"
-  [view]="dimensions"
+  *ngIf="true"
+  [view]="[1100,450]"
   [links]="dataLink"
   [curve]="curve"
   [animate]="false"
@@ -11,7 +10,7 @@
   [panningEnabled]="false"
   [nodes]="dataNode"
   [layoutSettings]="layoutSettings"
-  layout="dagreCluster"
+  layout=''
   [autoCenter]="false"
 >
   <!-- #1 Esto es la punta de la flecha! 🔴-->
@@ -40,7 +39,6 @@
       </svg:foreignObject>
     </svg:g>
   </ng-template>
-
 
 
   <!-- #3 Esto son las lineas-->

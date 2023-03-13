@@ -79,11 +79,14 @@ export class ApiReplicasComponent implements OnInit {
         lastTestDate: this.utils.convertDate(apiReplicas.lastTestDate),
         label_hash: apiReplicas.label_hash,
       });
+
+    
     });
     console.log(this.data);
     this.dataSource = new MatTableDataSource<any>(this.data);
     this.dataSource.paginator = this.paginator;
   }
+
 
   getReplicasApisError(error: any) {
     console.error(error);
@@ -117,7 +120,6 @@ export class ApiReplicasComponent implements OnInit {
   rowGetApiId_apiIP(api_id: any, api_ip: any) {
     this.router.navigateByUrl(`apis-replicas-registry/${api_id}/${api_ip}`);
 
-    console.log(api_id,api_ip,name);
-    
+    console.log(api_id, api_ip, name);
   }
 }

@@ -35,18 +35,26 @@ export class GraphAppComponent implements OnInit, AfterViewInit {
   ) {}
   //--------------------------------------------Oninit()-----------------------------------
   ngOnInit(): void {
-    this.nodeHealth();
+
+ 
+    this.nodeHealth()
+
   }
   //---------------------------------------------------------------------------------------
 
   nodeHealth() {
+
+       
     this.activateRouter.params.subscribe((params) => {
       this.flowChartService.setData(params['id']);
       console.log('params', params['id']);
     });
   }
 
-  ngAfterViewInit(): void {}
+  ngAfterViewInit(): void {
+    // const el = this.zoneFlowChart.nativeElement;
+    // this.flowChartService.calculateDimensions(el);
+  }
 
   redirect(prefix: string) {
     this.activateRouter.params.subscribe((params) => {

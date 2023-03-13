@@ -7,6 +7,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute } from '@angular/router';
 import StringUtils from 'src/app/common/util/stringUtils';
 import { ApiReplicasResgistry } from 'src/app/modules/interfaces/model.apis/model.apiReplicasResgistry';
+import { ServicesReplicasRegistry } from 'src/app/modules/interfaces/model.services/model.registryServicesReplica';
 import { environment } from 'src/environments/environment';
 import { MetadataComponent } from '../../../../components/modals/metadata/metadata.component';
 
@@ -26,7 +27,7 @@ export class ServicesRegistryReplicaComponent implements OnInit {
     private activateRouter: ActivatedRoute
   ) {
     this.activateRouter.params.subscribe((params) => {
-      this.Service_Replicas_Resgistry(params['ip'],params['id']);
+      this.Service_Replicas_Resgistry(params['id'],params['ip']);
       
     });
   }
@@ -66,27 +67,33 @@ export class ServicesRegistryReplicaComponent implements OnInit {
   registro: string = 'registros';
 
   getReplicasServiceRegistrySuccess(respose: any) {
-    let apisReplicaesgistrylist: Array<ApiReplicasResgistry> = respose;
+    let ServicesReplicaesgistrylist: Array<ServicesReplicasRegistry> = respose;
 
-    apisReplicaesgistrylist.forEach((apiReplicasResgistry) => {
-      console.log(apiReplicasResgistry.metadata);
+    ServicesReplicaesgistrylist.forEach((ServiceReplicasResgistry) => {
+      console.log(ServiceReplicasResgistry.metadata);
 
       this.data.push({
-        replica_id: apiReplicasResgistry.replica_id,
-        serviceId: apiReplicasResgistry.apiId,
-        replicaIp: apiReplicasResgistry.replicaIp,
-        metadata: apiReplicasResgistry.metadata,
-        status: apiReplicasResgistry.status,
-        creation_date: apiReplicasResgistry.creation_date,
-        replica_name: apiReplicasResgistry.replica_name,
-        lastTestDate: this.utils.convertDate(apiReplicasResgistry.lastTestDate),
-        label_hash: apiReplicasResgistry.label_hash,
+        replica_id: ServiceReplicasResgistry.replica_id,
+        serviceId: ServiceReplicasResgistry.serviceId,
+        replicaIp: ServiceReplicasResgistry.replicaIp,
+        metadata: ServiceReplicasResgistry.metadata,
+        status: ServiceReplicasResgistry.status,
+        creation_date: ServiceReplicasResgistry.creation_date,
+        replica_name: ServiceReplicasResgistry.replica_name,
+        lastTestDate: this.utils.convertDate(ServiceReplicasResgistry.lastTestDate),
+        label_hash: ServiceReplicasResgistry.label_hash,
       });
+
+      this.nombre_de_replica = ServiceReplicasResgistry.replica_name
+      console.log(this.nombre_de_replica);
+      
     });
-    console.log(this.data);
+    console.log('data service',this.data);
     this.dataSource = new MatTableDataSource<any>(this.data);
     this.dataSource.paginator = this.paginator;
   }
+
+  nombre_de_replica:string
 
   getReplicasServiceResgistryError(error: any) {
     console.error(error);

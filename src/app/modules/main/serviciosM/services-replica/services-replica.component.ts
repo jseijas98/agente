@@ -39,7 +39,7 @@ export class ServicesReplicaComponent implements OnInit {
     'replica_name',
     'lastTestDate',
     'label_hash',
-    'registros'
+    'registros',
   ];
 
   data: any[] = [];
@@ -115,7 +115,9 @@ export class ServicesReplicaComponent implements OnInit {
     });
   }
 
-  rowGetServiceId_serviceIP(api_id: any, api_ip: any) {
-    this.router.navigateByUrl(`apis-replicas-registry/${api_id}/${api_ip}`);
+  rowGetServiceId_serviceIP(service_id: any, api_ip: any) {
+    this.router.navigateByUrl(
+      `services-replicas-registry/${service_id}/${api_ip}`
+    );
   }
 }

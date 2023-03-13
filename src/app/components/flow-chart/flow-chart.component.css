@@ -3,3 +3,20 @@
   cursor: default !important;
 }
 
+/* filter for color */
+
+/* color red
+filter: invert(46%) sepia(82%) saturate(6915%) hue-rotate(349deg) brightness(95%) contrast(90%); */
+
+
+/* color yellow
+filter: invert(90%) sepia(87%) saturate(5956%) hue-rotate(314deg) brightness(94%) contrast(99%); */
+
+/* color veder
+filter: invert(65%) sepia(22%) saturate(850%) hue-rotate(52deg) brightness(94%) contrast(88%); */
+
+/* color gris
+filter: invert(45%) sepia(38%) saturate(10%) hue-rotate(142deg) brightness(104%) contrast(93%); */
+
+
+

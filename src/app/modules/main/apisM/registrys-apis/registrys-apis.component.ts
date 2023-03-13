@@ -69,12 +69,16 @@ export class RegistrysApisComponent implements OnInit {
         consecutiveSuccessfulTest: apiRegistry.consecutiveSuccessfulTest,
         histSuccessfulTest: apiRegistry.histSuccessfulTest ,
       })
+
+      this.apiID = apiRegistry.applicationId
       
     });
     console.log(this.data);  
     this.dataSource = new MatTableDataSource<any>(this.data);
         this.dataSource.paginator = this.paginator;
   }
+
+  apiID:Number
   
   getApisResgistryError(error:any){
     console.error(error);

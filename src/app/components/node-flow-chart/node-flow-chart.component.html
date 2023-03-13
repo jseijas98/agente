@@ -6,9 +6,11 @@
         (click)="redirect(dataIn?.data?.link)"
         *ngIf="dataIn?.data?.img"
       >
-        <span class="tooltip-text" id="top">{{ dataIn?.data?.msg }} </span>
-        <img
-          ngClass=""
+        <h1 class="tooltip-text" id="top">{{ dataIn?.data?.msg }} </h1>
+        <img  
+
+        [ngStyle]="{'filter': colorScheme(dataIn?.data?.Color)}"
+
           class="text-center"
           [src]="dataIn?.data?.img"
           width="150px"
@@ -16,7 +18,7 @@
           alt=""
         />
       </div>
-      <div [innerHTML]="dataIn?.data?.text">
+      <div > <font color={{dataIn?.data?.Color}}>{{dataIn?.data?.text}}</font>
       </div>
     </div>
   </div>

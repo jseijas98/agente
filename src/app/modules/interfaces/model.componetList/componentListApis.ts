@@ -1,5 +1,5 @@
 export interface ComponentListApis {
-    componentList: ComponentListElement[];
+    componentList: ComponentListElement;
     health:        number;
 }
 

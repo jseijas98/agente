@@ -9,6 +9,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import StringUtils from 'src/app/common/util/stringUtils';
 import { UpdateparamsComponent } from 'src/app/components/modals/updateparams/updateparams.component';
 import { PicList } from 'src/app/modules/interfaces/model.pic/model.pic-list';
+import { RowAlertService } from 'src/app/services/row-alert/row-alert.service';
 import { environment } from 'src/environments/environment';
 
 @Component({
@@ -25,7 +26,8 @@ export class PicListComponent implements OnInit {
     public utils: StringUtils,
     private activateRouter: ActivatedRoute,
     public dialog: MatDialog,
-    private snakbar: MatSnackBar
+    private snakbar: MatSnackBar,
+    public rowAlertService:RowAlertService
   ) {}
 
   ngOnInit(): void {

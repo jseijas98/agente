@@ -25,6 +25,7 @@ export class PicRegistryComponent implements OnInit {
     });
   }
 
+
   ngOnInit(): void {}
 
   displayedColumns: string[] = [

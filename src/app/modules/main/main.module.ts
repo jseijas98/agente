@@ -33,6 +33,8 @@ import { NgxGraphModule } from '@swimlane/ngx-graph';
 import { NodeFlowChartComponent } from 'src/app/components/node-flow-chart/node-flow-chart.component';
 import { LoadBalancerListComponent } from './loadbalancerM/load-balancer-list/load-balancer-list.component';
 import { LoadBalancerRegistryComponent } from './loadbalancerM/load-balancer-registry/load-balancer-registry.component';
+import { GoBackComponent } from 'src/app/components/go-back/go-back.component';
+import { ServicesRegistryReplicaComponent } from './serviciosM/services-registry-replica/services-registry-replica.component';
 
 
 @NgModule({
@@ -74,7 +76,10 @@ import { LoadBalancerRegistryComponent } from './loadbalancerM/load-balancer-reg
     FlowChartComponent,
     NodeFlowChartComponent,
     LoadBalancerListComponent,
-    LoadBalancerRegistryComponent
+    LoadBalancerRegistryComponent,
+    GoBackComponent,
+    ServicesRegistryReplicaComponent
+
   ],
 })
 export class MainModule {}

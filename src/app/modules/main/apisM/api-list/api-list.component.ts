@@ -28,6 +28,7 @@ import {
 } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { UpdateparamsComponent } from 'src/app/components/modals/updateparams/updateparams.component';
+import { RowAlertService } from 'src/app/services/row-alert/row-alert.service';
 
 @Component({
   selector: 'app-api-list',
@@ -46,13 +47,13 @@ export class ApiListComponent implements OnInit {
     private activateRouter: ActivatedRoute,
     public dialog: MatDialog,
     protected notificationSvc: NotificationsService,
-    private formBuldier: FormBuilder,
-    private snakbar: MatSnackBar
+    private snakbar: MatSnackBar,
+    public rowAlertService: RowAlertService
   ) {}
 
-  value: boolean | undefined;
+  // value: boolean | undefined;
 
-  @Output() newItemEvent = new EventEmitter<boolean>();
+  // @Output() newItemEvent = new EventEmitter<boolean>();
 
   ngOnInit(): void {
     this.activateRouter.params.subscribe((params) => {
@@ -162,7 +163,6 @@ export class ApiListComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe((result) => {
-
       console.log('dialog:', result?._value.data);
 
       this.snakbar.open(

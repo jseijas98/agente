@@ -1,3 +1,4 @@
+<app-go-back class="ml-3"></app-go-back>
 <div class="conatiner relative text-center flex flex-col">
   <app-charts></app-charts>
   <br /><br />
@@ -153,7 +154,7 @@
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
         <tr
           mat-row
-          *matRowDef="let row; columns: displayedColumns"
+          *matRowDef="let row; columns: displayedColumns" [ngStyle]="{'background-color': this.rowAlertService.rowAlert(row.highAlarm,row.lowAlarm)}"
           (click)="open(row)"
         ></tr>
 

@@ -14,6 +14,9 @@ import { PicListComponent } from './picM/pic-list/pic-list.component';
 import { PicRegistryComponent } from './picM/pic-registry/pic-registry.component';
 import { PersistenceListComponent } from './persistenceM/persistence-list/persistence-list.component';
 import { ServicesRegistryReplicaComponent } from './serviciosM/services-registry-replica/services-registry-replica.component';
+import { PersistenceRegistryComponent } from './persistenceM/persistence-registry/persistence-registry.component';
+import { LoadBalancerListComponent } from './loadbalancerM/load-balancer-list/load-balancer-list.component';
+import { LoadBalancerRegistryComponent } from './loadbalancerM/load-balancer-registry/load-balancer-registry.component';
 
 const routes: Routes = [
   {
@@ -73,8 +76,20 @@ const routes: Routes = [
         component: PersistenceListComponent,
       },
       {
+        path: 'persistence-registry/:id',
+        component: PersistenceRegistryComponent,
+      },
+      {
         path: 'services-replicas-registry/:id/:ip',
         component: ServicesRegistryReplicaComponent,
+      },
+      {
+        path: 'loadBalancer-list/:id',
+        component: LoadBalancerListComponent,
+      },
+      {
+        path: 'loadBalancer-registry/:id',
+        component: LoadBalancerRegistryComponent,
       },
     ],
   },

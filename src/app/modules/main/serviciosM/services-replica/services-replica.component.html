@@ -1,3 +1,4 @@
+<app-go-back class="ml-3"></app-go-back>
 <div class="conatiner relative text-center flex flex-col">
   <app-charts></app-charts>
   <br /><br />
@@ -19,9 +20,10 @@
 
     <div class="mat-elevation-z8 w-5/6 m-auto">
       <table mat-table [dataSource]="dataSource" matSort>
+
         <!-- 1 services Id -->
         <ng-container matColumnDef="servicesId">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>api id</th>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>service id</th>
           <td mat-cell *matCellDef="let row">{{ row.servicesId }}</td>
         </ng-container>
 
@@ -91,7 +93,7 @@
               mat-mini-fab
               color="primary"
               [matTooltip]="registro"
-              (click)="rowGetServiceId_serviceIP(row.apiId, row.replicaIp)"
+              (click)="rowGetServiceId_serviceIP(row.servicesId, row.replicaIp)"
             >
               <mat-icon> list </mat-icon>
             </button>

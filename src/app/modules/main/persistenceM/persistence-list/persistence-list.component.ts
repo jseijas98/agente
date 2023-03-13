@@ -10,6 +10,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import StringUtils from 'src/app/common/util/stringUtils';
 import { UpdateparamsComponent } from 'src/app/components/modals/updateparams/updateparams.component';
 import { PersistenceList } from 'src/app/modules/interfaces/model.persistence/model.persistence-list';
+import { RowAlertService } from 'src/app/services/row-alert/row-alert.service';
 import { NotificationsService } from 'src/app/services/service/notifications.service';
 import { environment } from 'src/environments/environment';
 
@@ -31,7 +32,8 @@ export class PersistenceListComponent implements OnInit {
     public dialog: MatDialog,
     protected notificationSvc: NotificationsService,
     private formBuldier: FormBuilder,
-    private snakbar: MatSnackBar
+    private snakbar: MatSnackBar,
+    public rowAlertService:RowAlertService
   ) {}
 
   ngOnInit(): void {
@@ -51,6 +53,9 @@ export class PersistenceListComponent implements OnInit {
     'consecutiveSuccessfulTest',
     'lowT',
     'highT',
+    'lowAlarm',
+    'highAlarm',
+    'registros'
   ];
 
   //configuración del dataSource
@@ -91,8 +96,10 @@ export class PersistenceListComponent implements OnInit {
         description: persistence.description,
         lowT: persistence.highTrigger,
         highT: persistence.lowTrigger,
+        lowAlarm: persistence.lowAlarm,
+        highAlarm: persistence.highAlarm,
       });
-      console.log(data);
+      console.log('data',data);
     });
 
     this.dataSource = new MatTableDataSource<any>(data);
