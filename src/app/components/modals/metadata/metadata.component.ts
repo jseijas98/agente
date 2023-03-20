@@ -8,7 +8,6 @@ import {Clipboard} from '@angular/cdk/clipboard';
   styleUrls: ['./metadata.component.css'],
 })
 export class MetadataComponent implements OnInit {
-  [x: string]: any;
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: any,private clipboard: Clipboard) {}
 

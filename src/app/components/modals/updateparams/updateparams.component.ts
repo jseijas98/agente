@@ -19,6 +19,7 @@ import { BehaviorSubject } from 'rxjs';
 })
 export class UpdateparamsComponent implements OnInit {
   snakbar: any;
+  
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: any,
     private http: HttpClient
