@@ -68,6 +68,7 @@ export class FlowChartService {
     this.health_db = this.colorScheme(data[3].health);
     this.health_integration = this.colorScheme(data[1].health);
     this.health_services = this.colorScheme(data[4].health);
+
   }
 
   public health_loadbalancer: string;
