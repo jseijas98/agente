@@ -10,14 +10,15 @@ import { HttpClientModule } from '@angular/common/http';
 import { MaterialModule } from './modules/material.module';
 import StringUtils from './common/util/stringUtils';
 import { NotificationComponent } from './components/notification/notification.component';
-import { NodeFlowChartComponent } from './components/node-flow-chart/node-flow-chart.component';
 import { NgxGraphModule } from '@swimlane/ngx-graph';
 import { UpdateparamsComponent } from './components/modals/updateparams/updateparams.component';
-import { ReactiveFormsModule } from '@angular/forms';
-import { GoBackComponent } from './components/go-back/go-back.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { AddNewElementFormComponent } from './components/add-new-element-form/add-new-element-form/add-new-element-form.component';
+import { NgxChartsModule } from '@swimlane/ngx-charts';
+import { DataFormatPipe } from './components/pipes/data-fromat-char/data-format.pipe';
 
 @NgModule({
-  declarations: [AppComponent, NotificationComponent, UpdateparamsComponent],
+  declarations: [AppComponent, NotificationComponent, UpdateparamsComponent, AddNewElementFormComponent],
   imports: [
     BrowserModule,
     HttpClientModule,
@@ -28,8 +29,10 @@ import { GoBackComponent } from './components/go-back/go-back.component';
     MainModule,
     MaterialModule,
     NgxGraphModule,
-    ReactiveFormsModule
-    
+    NgxChartsModule,
+    ReactiveFormsModule,
+    FormsModule,
+    ReactiveFormsModule,
   ],
   providers: [StringUtils],
   bootstrap: [AppComponent],

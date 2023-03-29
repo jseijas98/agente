@@ -5,10 +5,14 @@ import {
   OnInit,
   ViewChild,
   AfterViewInit,
+  Output,
+  EventEmitter,
+  Input,
 } from '@angular/core';
 import { Router } from '@angular/router';
 import { Color, ScaleType } from '@swimlane/ngx-charts';
 import { BehaviorSubject } from 'rxjs';
+import { AppNameService } from 'src/app/services/app-name/app-name.service';
 import { FlowChartService } from 'src/app/services/flow-chart/flow-chart.service';
 import { environment } from 'src/environments/environment';
 import { Applications } from '../../interfaces/model.applications';
@@ -19,11 +23,11 @@ import { Applications } from '../../interfaces/model.applications';
   styleUrls: ['./dashboard.component.css'],
 })
 export class DashboardComponent implements OnInit {
-  
   public application$: BehaviorSubject<any> = new BehaviorSubject(null);
 
+  dataCard: any[] = [];
+
   //data de la charts cards
-  dataCard: Applications[] = [];
 
   //esquema de colores de las charts cards
   colorScheme(data: any): Color {
@@ -43,49 +47,17 @@ export class DashboardComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private http: HttpClient
+    private http: HttpClient,
+    private appName: AppNameService
   ) {}
 
-
   ngOnInit(): void {
-    this.aplication();
+    this.appName.getApps().subscribe((apps) => (this.dataCard = apps));
   }
 
-  //url de las aplicaciones
-
-  url = environment.baseUrl;
-
-  //formato del valor numerico
+   //formato del valor numerico
   axisFormat(val: any) {
     return val.value.toString() + '%';
-  }
-
-  //funcion para obtener la de data de las aplicacione desde el api
-  aplication(): any {
-    this.http.get(this.url+'list/application').subscribe({
-      next: this.aplicacionSuccess.bind(this),
-      error: this.aplicacionError.bind(this),
-    });
-  }
-
-  //TODO obntener dato del hhtp para pasarle el % de sauld al main component por un view child
-
-  aplicacionSuccess(respose: any) {
-    let data: Array<Applications> = respose;
-    let format: any[] = [];
-    data.forEach((app) => {
-      format.push({
-        name: app.applicationName,
-        value: app.status,
-        extra: app.applicationId,
-      });
-    });
-    this.dataCard = format;
-    console.log(respose);
-  }
-
-  aplicacionError(error: any) {
-    console.error(error);
   }
 
   //funcion para redirigir a los elemntos de una aplicacion especifico
@@ -101,8 +73,4 @@ export class DashboardComponent implements OnInit {
     this.router.navigateByUrl(`graph-app/${app_id}`);
     console.log(app_id);
   }
-
-
-
-  
 }

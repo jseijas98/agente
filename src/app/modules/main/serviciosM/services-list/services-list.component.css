@@ -18,10 +18,18 @@ table {
   background-color: #b9c5fe;
 }
 
-.mat-row:hover {
+.mat-form-field {
+  font-size: 14px;
+  width: 75%;
+  margin-bottom: 5px;
+  padding: 5px;
+  align-self: center;
+}
+
+/* .mat-row:hover {
   cursor: pointer;
   box-shadow: inset 0 0 0 3px black;
-}
+} */
 
 .mat-column-triggerHigh {
   width: fit-content;
@@ -51,7 +59,7 @@ table {
 }
 .mat-column-status {
   width: fit-content;
-  max-width: 28px;
+  max-width: 30px;
   word-break: break-all;
   padding-left: 20px;
 }
@@ -81,4 +89,12 @@ table {
 th,
 td {
   width: 5%;
+}
+::ng-deep .mat-sort-header-container {
+  display: flex;
+  cursor: pointer;
+  align-items: center;
+  letter-spacing: normal;
+  outline: 0;
+  justify-content: center !important;
 }

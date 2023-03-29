@@ -3,11 +3,13 @@ import {
   AfterViewInit,
   Component,
   EventEmitter,
+  OnChanges,
   inject,
   Input,
   OnInit,
   Output,
   ViewChild,
+  SimpleChanges,
 } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
@@ -18,25 +20,22 @@ import StringUtils from '../../../../common/util/stringUtils';
 import { environment } from 'src/environments/environment';
 import { __values } from 'tslib';
 import { MatDialog } from '@angular/material/dialog';
-import { NotificationsService } from 'src/app/services/service/notifications.service';
-import { ComponentList } from '../../../interfaces/model.componetList/componentList';
-import {
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  Validators,
-} from '@angular/forms';
+import { NotificationsService } from 'src/app/services/notification/notifications.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { UpdateparamsComponent } from 'src/app/components/modals/updateparams/updateparams.component';
 import { RowAlertService } from 'src/app/services/row-alert/row-alert.service';
+import { DeleteService } from 'src/app/services/deleteElement/delete.service';
+import { Subject, takeUntil } from 'rxjs';
+import { AppNameService } from 'src/app/services/app-name/app-name.service';
 
 @Component({
   selector: 'app-api-list',
   templateUrl: './api-list.component.html',
   styleUrls: ['./api-list.component.css'],
 })
-export class ApiListComponent implements OnInit {
-  baseUrl = environment.baseUrl;
+export class ApiListComponent implements AfterViewInit, OnInit {
+  @Input() dataIn: any;
+  @Input() data: Array<any>;
 
   public index: string = 'apis';
 
@@ -48,23 +47,37 @@ export class ApiListComponent implements OnInit {
     public dialog: MatDialog,
     protected notificationSvc: NotificationsService,
     private snakbar: MatSnackBar,
-    public rowAlertService: RowAlertService
+    public rowAlertService: RowAlertService,
+    public service: DeleteService,
+    private appName: AppNameService
   ) {}
 
-  // value: boolean | undefined;
+  unsuscribe$ = new Subject<void>();
+  registro: string = 'registros historicos';
+  replicas: string = 'replicas del api ';
+  appname: string;
 
-  // @Output() newItemEvent = new EventEmitter<boolean>();
+  ngOnInit(): void {}
 
-  ngOnInit(): void {
+  ngOnDestroy() {
+    this.unsuscribe$.next();
+    this.unsuscribe$.complete();
+  }
+
+  ngAfterViewInit() {
     this.activateRouter.params.subscribe((params) => {
-      this.Api(params['id']);
+      this.appName
+        .getDataFromApi(params['id'])
+        .pipe(takeUntil(this.unsuscribe$))
+        .subscribe((data) => (this.appname = data));
     });
+    this.callApisData();
   }
 
   //columnsas que se muestran
   displayedColumns: string[] = [
     'applId',
-    'api_id',
+    'Id',
     'test_interval',
     'nameSpace',
     'triggerLow',
@@ -78,6 +91,8 @@ export class ApiListComponent implements OnInit {
     'replicas',
     'lowAlarm',
     'highAlarm',
+    'editar',
+    'select',
   ];
 
   //configuración del dataSource
@@ -87,26 +102,32 @@ export class ApiListComponent implements OnInit {
   @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
+  callApisData() {
+    this.activateRouter.params.subscribe((params) => {
+      this.Api(params['id']);
+    });
+  }
+
   Api(index: number) {
-    this.activateRouter;
     this.http
-      .get<GetApis>(`${this.baseUrl}list/application/${index}/apis`)
+      .get<GetApis>(`${environment.baseUrl}list/application/${index}/apis`)
+      .pipe(takeUntil(this.unsuscribe$))
       .subscribe({
         next: this.getApisSuccess.bind(this),
         error: this.getApisError.bind(this),
+        complete: () => console.log('completed'),
       });
   }
-
-  registro: string = 'registros historicos';
-  replicas: string = 'replicas del api ';
 
   getApisSuccess(respose: any) {
     let apisList: Array<GetApis> = respose;
     let data: any[] = [];
 
+    console.log('response', data);
+
     apisList.forEach((api) => {
       data.push({
-        api_id: api.apiId,
+        Id: api.apiId,
         status: api.status,
         nameSpace: api.nameSpace,
         test_interval: api.testInterv,
@@ -120,12 +141,11 @@ export class ApiListComponent implements OnInit {
         lowAlarm: api.lowAlarm,
         highAlarm: api.highAlarm,
       });
-      console.log('response', data);
     });
 
     this.dataSource = new MatTableDataSource<any>(data);
-
     this.dataSource.paginator = this.paginator;
+    this.dataSource.sort = this.sort;
   }
 
   getApisError(error: any) {
@@ -152,9 +172,8 @@ export class ApiListComponent implements OnInit {
   open(row: any) {
     const dialogRef = this.dialog.open(UpdateparamsComponent, {
       disableClose: true,
-
       data: {
-        item_id: row.api_id,
+        item_id: row.Id,
         type: this.index,
         appid: row.applId,
         label: row.label_app,
@@ -171,30 +190,22 @@ export class ApiListComponent implements OnInit {
           : 'Error en la actualizacion de parametros',
         'ACEPTAR'
       );
-    });
-
-    this.activateRouter.params.subscribe((params) => {
-      this.Api(params['id']);
-
-      this.dataSource.paginator = this.paginator;
+      this.callApisData();
     });
   }
 
-  // sendWarning(alarm: boolean, label_app: string, triggerLow: string) {
-  //   if (alarm === true) {
-  //     this.notificationSvc.warning(
-  //       'advertencia',
-  //       `el estado de ${label_app} se encuentra por debajo de ${triggerLow}`
-  //     );
-  //   }
-  // }
+  addItem(newItem: any) {
+    newItem !== undefined
+      ? console.log('data', newItem)
+      : console.log('closed dialog without item update!');
+    this.callApisData();
+  }
 
-  // sendError(alarm: boolean, label_app: string, triggerLow: string) {
-  //   if (alarm === true) {
-  //     this.notificationSvc.warning(
-  //       'ADVERTENCIA!!!',
-  //       `el estado de ${label_app} se encuentra por debajo de ${triggerLow}`
-  //     );
-  //   }
-  // }
+  deleteData() {
+    this.service.dataSource = this.dataSource;
+    this.service.DeleteData('api');
+    setTimeout(() => {
+      this.callApisData();
+    }, 500);
+  }
 }

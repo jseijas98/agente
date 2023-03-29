@@ -1,11 +1,12 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute } from '@angular/router';
 import StringUtils from 'src/app/common/util/stringUtils';
 import { PersistenceRegistry } from 'src/app/modules/interfaces/model.persistence/model.persistenceRegistry';
+import { GraphServiceService } from 'src/app/services/graph/graph-service.service';
 import { environment } from 'src/environments/environment';
 
 @Component({
@@ -13,18 +14,23 @@ import { environment } from 'src/environments/environment';
   templateUrl: './persistence-registry.component.html',
   styleUrls: ['./persistence-registry.component.css'],
 })
-export class PersistenceRegistryComponent implements OnInit {
+export class PersistenceRegistryComponent implements OnInit, AfterViewInit {
   constructor(
     private http: HttpClient,
     public utils: StringUtils,
     private activateRouter: ActivatedRoute,
+    private serv: GraphServiceService
+  ) {}
+
+  ngAfterViewInit(): void {
+    this.activateRouter.params.subscribe((params) => {
+      this.persistence_registry(params['id']);
+    });
+  }
+
+  ngOnInit(): void {
     
-  ) { this.activateRouter.params.subscribe((params) => {
-    this.PIC_registry(params['id']);
-  });}
-
-
-  ngOnInit(): void {}
+  }
 
   displayedColumns: string[] = [
     'registry_id',
@@ -41,6 +47,8 @@ export class PersistenceRegistryComponent implements OnInit {
   ];
 
   data: any[] = [];
+  dataGraph: Object[] = [];
+  persistence_name:string;
 
   baseUrl = environment.baseUrl;
 
@@ -49,7 +57,7 @@ export class PersistenceRegistryComponent implements OnInit {
   @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
-  PIC_registry(index: number) {
+  persistence_registry(index: number) {
     this.http
       .get<PersistenceRegistry>(
         `${this.baseUrl}registry/application/${index}/persistence`
@@ -66,7 +74,7 @@ export class PersistenceRegistryComponent implements OnInit {
     PersistenceRegistry.forEach((PersistenceRegistry) => {
       this.data.push({
         registry_id: PersistenceRegistry.registryId,
-        persistence_id: PersistenceRegistry.dbId ,
+        persistence_id: PersistenceRegistry.dbId,
         status: PersistenceRegistry.status,
         applicationId: PersistenceRegistry.applicationId,
         description: PersistenceRegistry.description,
@@ -74,13 +82,19 @@ export class PersistenceRegistryComponent implements OnInit {
         histFailedTest: PersistenceRegistry.histFailedTest,
         lastTestDate: this.utils.convertDate(PersistenceRegistry.lastTestDate),
         response_time: PersistenceRegistry.response_time,
-        consecutiveSuccessfulTest: PersistenceRegistry.consecutiveSuccessfulTest,
+        consecutiveSuccessfulTest:
+          PersistenceRegistry.consecutiveSuccessfulTest,
         histSuccessfulTest: PersistenceRegistry.histSuccessfulTest,
       });
+
+      this.persistence_name = PersistenceRegistry.description
     });
+
+    this.dataGraph = this.serv.dataGraph_load_balancer(respose,this.persistence_name)
     console.log(this.data);
     this.dataSource = new MatTableDataSource<any>(this.data);
     this.dataSource.paginator = this.paginator;
+    this.dataSource.sort = this.sort;
   }
 
   getPersistenceResgistryError(error: any) {

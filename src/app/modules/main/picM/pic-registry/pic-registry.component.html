@@ -1,15 +1,13 @@
-<app-go-back class="ml-3"></app-go-back>
-<div class="conatiner text-center w-11/12 m-auto" >
 
-    <mat-card class="mt-10 text-center" >
-  
-    <mat-card-header class="justify-center">
-  
-      <mat-card-title-group >
-          <mat-card-title>Registro historico</mat-card-title>
-          <mat-card-subtitle>aqui podras ver el historico de todas las apis de la aplicación 1</mat-card-subtitle>
-      </mat-card-title-group>
-  </mat-card-header>
+<app-charts [dataIn]="dataGraph" [legentTitleIn]="integration_name" [xlabel]="'fecha'" [ylabel]="'tiempo de respuesta (ms)'" [title]="integration_name" ></app-charts>
+
+<br />
+
+<mat-expansion-panel class="w-11/12 m-auto">
+  <mat-expansion-panel-header>
+    <mat-panel-title>busqueda avanzada</mat-panel-title>
+  </mat-expansion-panel-header>
+
   
       <mat-form-field>
        <mat-label>Filter</mat-label>
@@ -104,8 +102,5 @@
        <mat-paginator [pageSizeOptions]="[6, 12, 24, 60]" aria-label="Select page of users"></mat-paginator>
      </div>
   
-    </mat-card>
-  
-     </div>
-     
+    </mat-expansion-panel>
   

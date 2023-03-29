@@ -27,7 +27,7 @@ import { PicListComponent } from './picM/pic-list/pic-list.component';
 import { PicRegistryComponent } from './picM/pic-registry/pic-registry.component';
 import { PersistenceListComponent } from './persistenceM/persistence-list/persistence-list.component';
 import { PersistenceRegistryComponent } from './persistenceM/persistence-registry/persistence-registry.component';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FlowChartComponent } from 'src/app/components/flow-chart/flow-chart.component';
 import { NgxGraphModule } from '@swimlane/ngx-graph';
 import { NodeFlowChartComponent } from 'src/app/components/node-flow-chart/node-flow-chart.component';
@@ -35,7 +35,8 @@ import { LoadBalancerListComponent } from './loadbalancerM/load-balancer-list/lo
 import { LoadBalancerRegistryComponent } from './loadbalancerM/load-balancer-registry/load-balancer-registry.component';
 import { GoBackComponent } from 'src/app/components/go-back/go-back.component';
 import { ServicesRegistryReplicaComponent } from './serviciosM/services-registry-replica/services-registry-replica.component';
-
+import { AddNewElementComponent } from 'src/app/components/modals/add-new-element/add-new-element/add-new-element.component';
+import { DataFormatPipe } from 'src/app/components/pipes/data-fromat-char/data-format.pipe';
 
 @NgModule({
   imports: [
@@ -53,7 +54,10 @@ import { ServicesRegistryReplicaComponent } from './serviciosM/services-registry
     ReactiveFormsModule,
     NgxChartsModule,
     NgxGraphModule,
-    
+    MaterialModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MaterialModule,
   ],
 
   declarations: [
@@ -78,8 +82,9 @@ import { ServicesRegistryReplicaComponent } from './serviciosM/services-registry
     LoadBalancerListComponent,
     LoadBalancerRegistryComponent,
     GoBackComponent,
-    ServicesRegistryReplicaComponent
-
+    ServicesRegistryReplicaComponent,
+    AddNewElementComponent,
+    DataFormatPipe
   ],
 })
 export class MainModule {}

@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import { AddNewElementFormComponent } from 'src/app/components/add-new-element-form/add-new-element-form/add-new-element-form.component';
+import { __values } from 'tslib';
 
 @Component({
   selector: 'app-add-new-element',
@@ -14,9 +15,12 @@ export class AddNewElementComponent implements OnInit {
     private activateRouter: ActivatedRoute
   ) {}
 
-  ngOnInit(): void {
+  ngOnInit(): void {}
 
-    this.getActiveRouter()
+  @Output() newItemEvent = new EventEmitter<string>();
+
+  addNewItem(value: string) {
+    this.newItemEvent.emit(value);
   }
 
   openDialog() {
@@ -25,7 +29,8 @@ export class AddNewElementComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe((result) => {
-      console.log(`Dialog result: ${result}`);
+      console.log('dialog:', result?._value?.message);
+      this.addNewItem(result?._value?.message)
     });
   }
 

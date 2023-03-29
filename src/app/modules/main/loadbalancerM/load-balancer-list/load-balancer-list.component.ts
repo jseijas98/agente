@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -10,15 +10,18 @@ import StringUtils from 'src/app/common/util/stringUtils';
 import { UpdateparamsComponent } from 'src/app/components/modals/updateparams/updateparams.component';
 import { LoadBalancerList } from 'src/app/modules/interfaces/model.loadBalancer/loadBalacerList';
 import { RowAlertService } from 'src/app/services/row-alert/row-alert.service';
-import { NotificationsService } from 'src/app/services/service/notifications.service';
+import { NotificationsService } from 'src/app/services/notification/notifications.service';
 import { environment } from 'src/environments/environment';
+import { DeleteService } from 'src/app/services/deleteElement/delete.service';
+import { AppNameService } from 'src/app/services/app-name/app-name.service';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-load-balancer-list',
   templateUrl: './load-balancer-list.component.html',
   styleUrls: ['./load-balancer-list.component.css'],
 })
-export class LoadBalancerListComponent implements OnInit {
+export class LoadBalancerListComponent implements AfterViewInit {
   constructor(
     private http: HttpClient,
     private router: Router,
@@ -27,21 +30,41 @@ export class LoadBalancerListComponent implements OnInit {
     public dialog: MatDialog,
     protected notificationSvc: NotificationsService,
     private snakbar: MatSnackBar,
-    public rowAlertService: RowAlertService
+    public rowAlertService: RowAlertService,
+    public service: DeleteService,
+    private appName: AppNameService
   ) {}
 
-  ngOnInit(): void { this.activateRouter.params.subscribe((params) => {
-    this.loadBalancer(params['id']);
-  });}
-
-  //TODO: app load balancer list
-
+  appname: string;
+  unsuscribe$ = new Subject<void>();
+  registro: string = 'registros historicos';
   index = 'loadBalancer';
+
+  ngOnDestroy() {
+    this.unsuscribe$.next();
+    this.unsuscribe$.complete();
+  }
+
+  ngAfterViewInit(): void {
+    this.activateRouter.params.subscribe((params) => {
+      this.appName
+        .getDataFromApi(params['id'])
+        .pipe(takeUntil(this.unsuscribe$))
+        .subscribe((data) => (this.appname = data));
+    });
+    this.callLoadBalancerData();
+  }
+
+  callLoadBalancerData() {
+    this.activateRouter.params.subscribe((params) => {
+      this.loadBalancer(params['id']);
+    });
+  }
 
   //columnsas que se muestran
   displayedColumns: string[] = [
     'applId',
-    'loadBalancer_id',
+    'Id',
     'description',
     'status',
     'test_interval',
@@ -53,7 +76,9 @@ export class LoadBalancerListComponent implements OnInit {
     'highAlarm',
     'consecutiveFailedTest',
     'consecutiveSuccessfulTest',
-    'registros'
+    'registros',
+    'editar',
+    'select',
   ];
 
   //configuración del dataSource
@@ -68,27 +93,28 @@ export class LoadBalancerListComponent implements OnInit {
     this.http
       .get<LoadBalancerList>(
         `${environment.baseUrl}list/application/${index}/loadBalancer`
-      )
+      ).pipe(takeUntil(this.unsuscribe$))
       .subscribe({
         next: this.getloadBalancerSuccess.bind(this),
         error: this.getloadBalancerError.bind(this),
       });
   }
 
-  registro: string = 'registros historicos';
+  //TODO :  quitar los % en los trigger y agreagar N° de test fallidos para fallar
 
   getloadBalancerSuccess(respose: any) {
     let loadBalancerList: Array<LoadBalancerList> = respose;
     let data: any[] = [];
+console.log(respose);
 
     loadBalancerList.forEach((loadBalancer) => {
       data.push({
-        loadBalancer_id: loadBalancer.vserverId,
+        Id: loadBalancer.vserverId,
         description: loadBalancer.description,
         status: loadBalancer.status,
         test_interval: loadBalancer.testInterv,
         response_time: loadBalancer.response_time,
-        last_test: this.utils.convertDate(loadBalancer.lastTestDate),
+        last_test: this.utils.formatDate(loadBalancer.lastTestDate),
         applId: loadBalancer.applicationId,
         triggerLow: loadBalancer.lowTrigger,
         triggerHigh: loadBalancer.highTrigger,
@@ -97,12 +123,11 @@ export class LoadBalancerListComponent implements OnInit {
         consecutiveSuccessfulTest: loadBalancer.consecutiveSuccessfulTest,
         consecutiveFailedTest: loadBalancer.consecutiveFailedTest,
       });
-      
     });
 
     this.dataSource = new MatTableDataSource<any>(data);
-
     this.dataSource.paginator = this.paginator;
+    this.dataSource.sort = this.sort;
   }
 
   getloadBalancerError(error: any) {
@@ -118,8 +143,9 @@ export class LoadBalancerListComponent implements OnInit {
     }
   }
 
-  loadBalancerRegistry(applId: any) {
-    this.router.navigateByUrl(`loadBalancer-registry/${applId}`);
+  loadBalancerRegistry(loadBalacerID: any) {
+    this.router.navigateByUrl(`loadBalancer-registry/${loadBalacerID}`);
+    console.log(loadBalacerID);
   }
 
   open(row: any) {
@@ -127,7 +153,7 @@ export class LoadBalancerListComponent implements OnInit {
       disableClose: true,
 
       data: {
-        item_id: row.loadBalancer_id,
+        item_id: row.Id,
         type: this.index,
         appid: row.applId,
         label: row.label_app,
@@ -144,12 +170,22 @@ export class LoadBalancerListComponent implements OnInit {
           : 'Error en la actualizacion de parametros',
         'ACEPTAR'
       );
+      this.callLoadBalancerData();
     });
+  }
 
-    this.activateRouter.params.subscribe((params) => {
-      this.loadBalancer(params['id']);
+  addItem(newItem: any) {
+    newItem !== undefined
+      ? console.log('data', newItem)
+      : console.log('closed dialog without item update!');
+    this.callLoadBalancerData();
+  }
 
-      this.dataSource.paginator = this.paginator;
-    });
+  deleteData() {
+    this.service.dataSource = this.dataSource;
+    this.service.DeleteData('loadBalancer');
+    setTimeout(() => {
+      this.callLoadBalancerData();
+    }, 100);
   }
 }

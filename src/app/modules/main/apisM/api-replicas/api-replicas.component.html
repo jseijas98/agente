@@ -1,14 +1,14 @@
-<app-go-back class="ml-3"></app-go-back>
-<div class="conatiner relative text-center flex flex-col">
-  <app-charts></app-charts>
-  <br /><br />
 
-  <mat-expansion-panel class="w-5/6 m-auto self-center">
-    <mat-expansion-panel-header>
-      <mat-panel-title>Replicas del API  </mat-panel-title>
-    </mat-expansion-panel-header>
+<mat-card class="mt-10 text-center m-5">
+  <mat-card-header class="justify-center">
+    <mat-card-title-group>
+      <mat-card-title> replicas del api </mat-card-title>
+      <mat-card-subtitle>aqui podras ver </mat-card-subtitle>
+    </mat-card-title-group>
+  </mat-card-header>
+  <div class="conatiner relative text-center flex flex-col">
 
-    <mat-form-field>
+    <mat-form-field class="self-center">
       <mat-label>Filter</mat-label>
       <input
         matInput
@@ -40,7 +40,7 @@
           <td mat-cell *matCellDef="let row">
             <button
               mat-flat-button
-              class="text-center -m-2 "
+              class="text-center -m-2"
               color="primary"
               [matTooltip]="metadata1"
               (click)="openDialog(row)"
@@ -84,15 +84,18 @@
           <td mat-cell *matCellDef="let row">{{ row.label_hash }}</td>
         </ng-container>
 
-        
-       <!--registros-->
-       <ng-container matColumnDef="registros">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> registros </th>
-        <td mat-cell *matCellDef="let row"> 
-          <button  mat-mini-fab color="primary" [matTooltip]="registro" (click)="rowGetApiId_apiIP(row.apiId,row.replicaIp)">
-            <mat-icon>
-              list
-            </mat-icon></button>
+        <!--registros-->
+        <ng-container matColumnDef="registros">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>registros</th>
+          <td mat-cell *matCellDef="let row">
+            <button
+              mat-mini-fab
+              color="primary"
+              [matTooltip]="registro"
+              (click)="rowGetApiId_apiIP(row.apiId, row.replicaIp)"
+            >
+              <mat-icon> list </mat-icon>
+            </button>
           </td>
         </ng-container>
 
@@ -116,7 +119,6 @@
         aria-label="Select page of users"
       ></mat-paginator>
     </div>
-  </mat-expansion-panel>
-
-  <br /><br />
-</div>
+  </div>
+  <br>
+</mat-card>

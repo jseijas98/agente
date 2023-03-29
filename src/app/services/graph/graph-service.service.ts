@@ -18,7 +18,7 @@ export class GraphServiceService {
     datanew.filter(x=>x.lastTestDate != null).map((element) => {
       series.push({
         value: this.utils.converPorcent(element.health),
-        name: this.utils.dateultils(element.lastTestDate),
+        name: this.utils.parseDate(this.utils.formatDate(element.lastTestDate)),
       });
 
       multi2 = { name: name, series: series };
@@ -41,11 +41,9 @@ export class GraphServiceService {
     datanew.filter(x=>x.lastTestDate != null).map((element) => {
       series.push({
         value: element.response_time,
-        name: this.utils.dateultils(element.lastTestDate),
+        name: this.utils.parseDate(this.utils.formatDate(element.lastTestDate)),
       });
-
       multi2 = { name: name, series: series };
-
       multi = [multi2];
     });
 
@@ -64,11 +62,9 @@ export class GraphServiceService {
     datanew.filter(x=>x.lastTestDate != null).map((element) => {
       series.push({
         value: element.response_time,
-        name: this.utils.dateultils(element.lastTestDate),
+        name: this.utils.parseDate(this.utils.formatDate(element.lastTestDate)),
       });
-
       multi2 = { name: name, series: series };
-
       multi = [multi2];
     });
 

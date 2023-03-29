@@ -9,18 +9,20 @@ import { HttpClient } from '@angular/common/http';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Data } from '@angular/router';
 import { MetadataComponent } from '../../../../components/modals/metadata/metadata.component';
+import { GraphServiceService } from 'src/app/services/graph/graph-service.service';
 
 @Component({
   selector: 'app-registrys-apis-replicas',
   templateUrl: './registrys-apis-replicas.component.html',
   styleUrls: ['./registrys-apis-replicas.component.css'],
 })
-export class RegistrysApisReplicasComponent implements OnInit {
+export class RegistrysApisReplicasComponent {
   constructor(
     public dialog: MatDialog,
     private http: HttpClient,
     public utils: StringUtils,
-    private activateRouter: ActivatedRoute
+    private activateRouter: ActivatedRoute,
+    private serv: GraphServiceService
   ) {
     this.activateRouter.params.subscribe((params) => {
       this.Api_Replicas_Resgistry(params['id'], params['ip']);
@@ -41,6 +43,7 @@ export class RegistrysApisReplicasComponent implements OnInit {
   ];
 
   data: any[] = [];
+  dataGraph: Object[] = [];
 
   baseUrl = environment.baseUrl;
 
@@ -65,6 +68,11 @@ export class RegistrysApisReplicasComponent implements OnInit {
   getReplicasApisRegistrySuccess(respose: any) {
     let apisReplicaesgistrylist: Array<ApiReplicasResgistry> = respose;
 
+
+
+    console.log('response',respose);
+    
+
     apisReplicaesgistrylist.forEach((apiReplicasResgistry) => {
       this.data.push({
         replica_id: apiReplicasResgistry.replica_id,
@@ -77,13 +85,13 @@ export class RegistrysApisReplicasComponent implements OnInit {
         lastTestDate: this.utils.convertDate(apiReplicasResgistry.lastTestDate),
         label_hash: apiReplicasResgistry.label_hash,
       });
-
       this.nombre_de_replica = apiReplicasResgistry.replica_name
       console.log(this.nombre_de_replica);
+      this.nombre_de_replica = apiReplicasResgistry.replica_name
       
-
     });
 
+    this.dataGraph = this.serv.dataGraph(respose,this.nombre_de_replica)
     console.log(this.data);
     this.dataSource = new MatTableDataSource<any>(this.data);
     this.dataSource.paginator = this.paginator;

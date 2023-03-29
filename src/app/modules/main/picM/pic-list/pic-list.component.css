@@ -1,41 +1,93 @@
 .container {
   width: 100%;
-  margin-top: 20px;
+  margin-top: 5px;
   text-align: center;
   position: absolute;
 }
 
-table {
-  min-width: 100%;
-  margin: auto;
-  text-align: center;
-}
-
 .mat-header-cell {
   color: black;
-  font-size: 15px;
+  font-size: 14px;
   text-align: center;
   background-color: #b9c5fe;
 }
 
-.mat-mdc-form-field {
-  font-size: 14px;
-  width: 100%;
-}
-
 .mat-row:hover {
   cursor: pointer;
-  box-shadow: inset 0 0 0 3px black;
+  background-color: #d8d8d8;
+}
+
+.mat-column-highT {
+  width: auto;
+  max-width: 40px;
+  text-align: center;
+}
+
+.mat-column-replicas {
+  width: fit-content;
+  max-width: 25px;
+}
+
+.mat-column-label_app {
+  width: fit-content;
+  max-width: 30px;
+  word-break: break-all;
+}
+
+.mat-column-lowT {
+  width: auto;
+  max-width: 40px;
+  text-align: center;
+}
+
+.mat-column-response_time {
+  width: auto;
+  max-width: 30px;
+}
+
+.mat-column-test_interval {
+  width: auto;
+  max-width: 35px;
+  text-align: center;
+}
+
+.mat-column-registros {
+  width: auto;
+  max-width: 45px;
+  text-align: center;
+}
+
+.mat-column-last_test {
+  width: auto;
+  max-width: 45px;
+  text-align: center;
+}
+
+.mat-expansion-panel {
+  width: 98%;
 }
 
 .mat-form-field {
   font-size: 14px;
-  width: 50%;
+  width: 75%;
   margin-bottom: 5px;
   padding: 5px;
+  align-self: center;
 }
 
-td,
+td {
+  width: 4%;
+}
+
 th {
-  width: 5%;
+  width: 4%;
+}
+
+::ng-deep .mat-sort-header-container {
+  display: flex;
+  cursor: pointer;
+  align-items: center !important;
+  letter-spacing: normal;
+  outline: 0;
+  justify-content: center !important;
 }

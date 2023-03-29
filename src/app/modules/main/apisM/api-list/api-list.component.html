@@ -1,12 +1,15 @@
-<app-go-back class="ml-3"></app-go-back>
-<div class="conatiner relative text-center flex flex-col">
-  <app-charts></app-charts>
-  <br /><br />
-  <mat-expansion-panel class="w-full m-1 self-center">
-    <mat-expansion-panel-header>
-      <mat-panel-title> Búsqueda Avanzada </mat-panel-title>
-    </mat-expansion-panel-header>
-    <mat-form-field>
+<mat-card class="text-center m-4">
+  <mat-card-header class="justify-center">
+    <mat-card-title-group>
+      <mat-card-title> apis de {{ appname }} </mat-card-title>
+      <mat-card-subtitle
+        >aqui podras ver todas las apis de {{ appname }}</mat-card-subtitle
+      >
+    </mat-card-title-group>
+  </mat-card-header>
+
+  <div class="conatiner relative text-center flex flex-col m-auto">
+    <mat-form-field class="text-center">
       <mat-label>Filtro</mat-label>
       <input
         matInput
@@ -16,13 +19,35 @@
       />
     </mat-form-field>
 
-    <div class="mat-elevation-z8 m-auto">
+    <div class="mat-elevation-z8">
       <table
-        class="mat-table w-auto m-auto"
+        class="mat-table m-auto w-auto"
         mat-table
         [dataSource]="dataSource"
         matSort
       >
+        <!-- Checkbox Column -->
+        <ng-container matColumnDef="select">
+          <th mat-header-cell *matHeaderCellDef>
+            <button
+              mat-icon-button
+              (click)="deleteData()"
+              aria-label="Example icon button with a vertical three dot icon"
+            >
+              <mat-icon>delete</mat-icon>
+            </button>
+          </th>
+          <td mat-cell *matCellDef="let row">
+            <mat-checkbox
+              color="warn"
+              (click)="$event.stopPropagation()"
+              (change)="$event ? this.service.selection.toggle(row) : null"
+              [checked]="this.service.selection.isSelected(row)"
+              [aria-label]="this.service.checkboxLabel(row)"
+            >
+            </mat-checkbox>
+          </td>
+        </ng-container>
         <!--aplicacion-->
         <ng-container matColumnDef="applId">
           <th mat-header-cell *matHeaderCellDef mat-sort-header>aplicacion</th>
@@ -30,22 +55,22 @@
         </ng-container>
 
         <!-- api Id -->
-        <ng-container matColumnDef="api_id">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>api id</th>
-          <td mat-cell *matCellDef="let row">{{ row.api_id }}</td>
+        <ng-container matColumnDef="Id">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>id</th>
+          <td mat-cell *matCellDef="let row">{{ row.Id }}</td>
         </ng-container>
 
         <!-- test intervals -->
         <ng-container matColumnDef="test_interval">
           <th mat-header-cell *matHeaderCellDef mat-sort-header>
-            test intervals (ms)
+            test intervals
           </th>
           <td mat-cell *matCellDef="let row">{{ row.test_interval }} ms</td>
         </ng-container>
 
         <!-- name space-->
         <ng-container matColumnDef="nameSpace">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>nameSpace</th>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>namespace</th>
           <td mat-cell *matCellDef="let row">{{ row.nameSpace }}</td>
         </ng-container>
 
@@ -63,7 +88,7 @@
 
         <!-- label:app -->
         <ng-container matColumnDef="label_app">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>app</th>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>api name</th>
           <td mat-cell *matCellDef="let row">{{ row.label_app }}</td>
         </ng-container>
 
@@ -93,13 +118,13 @@
 
         <!--registros-->
         <ng-container matColumnDef="registros">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>registros</th>
+          <th mat-header-cell *matHeaderCellDef>registros</th>
           <td mat-cell *matCellDef="let row">
             <button
               mat-mini-fab
               color="primary"
               [matTooltip]="registro"
-              (click)="ApiRegiistry(row.applId)"
+              (click)="ApiRegiistry(row.Id)"
             >
               <mat-icon> list </mat-icon>
             </button>
@@ -108,13 +133,13 @@
 
         <!-- replicas -->
         <ng-container matColumnDef="replicas">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>replicas</th>
+          <th mat-header-cell *matHeaderCellDef>replicas</th>
           <td mat-cell *matCellDef="let row">
             <button
               mat-mini-fab
               color="primary"
               [matTooltip]="replicas"
-              (click)="getApiReplica(row.applId)"
+              (click)="getApiReplica(row.Id)"
             >
               <mat-icon> cloud </mat-icon>
             </button>
@@ -123,44 +148,41 @@
 
         <!-- low alarm -->
         <ng-container matColumnDef="lowAlarm">
-          <th
-            mat-header-cell
-            [hidden]="true"
-            *matHeaderCellDef
-            mat-sort-header
-          ></th>
+          <th mat-header-cell [hidden]="true" *matHeaderCellDef></th>
           <td mat-cell [hidden]="true" *matCellDef="let row"></td>
         </ng-container>
 
         <!-- high alarm -->
         <ng-container matColumnDef="highAlarm">
-          <th
-            mat-header-cell
-            [hidden]="true"
-            *matHeaderCellDef
-            mat-sort-header
-          ></th>
+          <th mat-header-cell [hidden]="true" *matHeaderCellDef></th>
           <td mat-cell [hidden]="true" *matCellDef="let row"></td>
         </ng-container>
 
-        <!-- <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr
-          mat-row
-          *matRowDef="let row; columns: displayedColumns"
-          [matTooltip]="replicas"
-          (click)="rowGetApiId(row.services_id)"
-        ></tr> -->
+        <!-- editar-->
+        <ng-container matColumnDef="editar">
+          <th mat-header-cell *matHeaderCellDef>editar parametros</th>
+          <td mat-cell *matCellDef="let row">
+            <button mat-icon-button [matTooltip]="replicas" (click)="open(row)">
+              <mat-icon> edit </mat-icon>
+            </button>
+          </td>
+        </ng-container>
 
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
         <tr
           mat-row
-          *matRowDef="let row; columns: displayedColumns" [ngStyle]="{'background-color': this.rowAlertService.rowAlert(row.highAlarm,row.lowAlarm)}"
-          (click)="open(row)"
+          *matRowDef="let row; columns: displayedColumns"
+          [ngStyle]="{
+            'background-color': this.rowAlertService.rowAlert(
+              row.highAlarm,
+              row.lowAlarm
+            )
+          }"
         ></tr>
 
         <!-- Row shown when there is no matching data. -->
         <tr class="mat-row" *matNoDataRow>
-          <td class="mat-cell" colspan="14">
+          <td class="mat-cell" colspan="15">
             No hay datos que coincidan con el filtro"{{ input.value }}"
           </td>
         </tr>
@@ -171,7 +193,10 @@
         aria-label="Select page of users"
       ></mat-paginator>
     </div>
-  </mat-expansion-panel>
-
-  <br /><br />
-</div>
+    <br />
+    <app-add-new-element
+      (newItemEvent)="addItem($event)"
+      class="self-end"
+    ></app-add-new-element>
+  </div>
+</mat-card>

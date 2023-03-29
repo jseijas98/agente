@@ -1,6 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder } from '@angular/forms';
+import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -11,19 +10,18 @@ import StringUtils from 'src/app/common/util/stringUtils';
 import { UpdateparamsComponent } from 'src/app/components/modals/updateparams/updateparams.component';
 import { PersistenceList } from 'src/app/modules/interfaces/model.persistence/model.persistence-list';
 import { RowAlertService } from 'src/app/services/row-alert/row-alert.service';
-import { NotificationsService } from 'src/app/services/service/notifications.service';
+import { NotificationsService } from 'src/app/services/notification/notifications.service';
 import { environment } from 'src/environments/environment';
+import { DeleteService } from 'src/app/services/deleteElement/delete.service';
+import { AppNameService } from 'src/app/services/app-name/app-name.service';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-persistence-list',
   templateUrl: './persistence-list.component.html',
   styleUrls: ['./persistence-list.component.css'],
 })
-export class PersistenceListComponent implements OnInit {
-  baseUrl = environment.baseUrl;
-
-  index: number = 1;
-
+export class PersistenceListComponent implements AfterViewInit {
   constructor(
     private http: HttpClient,
     private router: Router,
@@ -31,18 +29,42 @@ export class PersistenceListComponent implements OnInit {
     private activateRouter: ActivatedRoute,
     public dialog: MatDialog,
     protected notificationSvc: NotificationsService,
-    private formBuldier: FormBuilder,
     private snakbar: MatSnackBar,
-    public rowAlertService:RowAlertService
+    public rowAlertService: RowAlertService,
+    public service: DeleteService,
+    private appName: AppNameService
   ) {}
 
-  ngOnInit(): void {
-    this.persistence(this.index);
+  appname: string;
+  unsuscribe$ = new Subject<void>();
+  registro: string = 'registros historicos';
+  index = 'persistence';
+
+  ngOnDestroy() {
+    this.unsuscribe$.next();
+    this.unsuscribe$.complete();
+  }
+
+  ngAfterViewInit(): void {
+    this.activateRouter.params.subscribe((params) => {
+      this.appName
+        .getDataFromApi(params['id'])
+        .pipe(takeUntil(this.unsuscribe$))
+        .subscribe((data) => (this.appname = data));
+    });
+    this.callPersistenceData();
+    throw new Error('Method not implemented.');
+  }
+
+  callPersistenceData() {
+    this.activateRouter.params.subscribe((params) => {
+      this.persistence(params['id']);
+    });
   }
 
   //columnsas que se muestran
   displayedColumns: string[] = [
-    'persistence_id',
+    'Id',
     'applId',
     'test_interval',
     'description',
@@ -55,7 +77,9 @@ export class PersistenceListComponent implements OnInit {
     'highT',
     'lowAlarm',
     'highAlarm',
-    'registros'
+    'registros',
+    'editar',
+    'select',
   ];
 
   //configuración del dataSource
@@ -68,15 +92,13 @@ export class PersistenceListComponent implements OnInit {
   persistence(index: number) {
     this.http
       .get<PersistenceList>(
-        `${this.baseUrl}list/application/${index}/persistence`
-      )
+        `${environment.baseUrl}list/application/${index}/persistence`
+      ).pipe(takeUntil(this.unsuscribe$))
       .subscribe({
         next: this.getPersistenceSuccess.bind(this),
         error: this.getPersistenceError.bind(this),
       });
   }
-
-  registro: string = 'registros historicos';
 
   getPersistenceSuccess(respose: any) {
     let PersistenceList: Array<PersistenceList> = respose;
@@ -85,11 +107,11 @@ export class PersistenceListComponent implements OnInit {
 
     PersistenceList.forEach((persistence) => {
       data.push({
-        persistence_id: persistence.dbId,
+        Id: persistence.dbId,
         status: persistence.status,
         test_interval: persistence.testInterv,
         response_time: persistence.response_time,
-        last_test: this.utils.convertDate(persistence.lastTestDate),
+        last_test: this.utils.formatDate(persistence.lastTestDate),
         applId: persistence.applicationId,
         consecutiveFailedTest: persistence.consecutiveFailedTest,
         consecutiveSuccessfulTest: persistence.consecutiveSuccessfulTest,
@@ -99,11 +121,12 @@ export class PersistenceListComponent implements OnInit {
         lowAlarm: persistence.lowAlarm,
         highAlarm: persistence.highAlarm,
       });
-      console.log('data',data);
+      console.log('data', data);
     });
 
     this.dataSource = new MatTableDataSource<any>(data);
     this.dataSource.paginator = this.paginator;
+    this.dataSource.sort = this.sort;
   }
 
   getPersistenceError(error: any) {
@@ -123,13 +146,12 @@ export class PersistenceListComponent implements OnInit {
     this.router.navigateByUrl(`persistence-registry/${applId}`);
   }
 
-  
   open(row: any) {
     const dialogRef = this.dialog.open(UpdateparamsComponent, {
       disableClose: true,
 
       data: {
-        item_id: row.persistence_id,
+        item_id: row.Id,
         type: this.index,
         appid: row.applId,
         label: row.label_app,
@@ -138,7 +160,6 @@ export class PersistenceListComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe((result) => {
-
       console.log('dialog:', result?._value.data);
 
       this.snakbar.open(
@@ -147,14 +168,22 @@ export class PersistenceListComponent implements OnInit {
           : 'Error en la actualizacion de parametros',
         'ACEPTAR'
       );
-    });
-
-    this.activateRouter.params.subscribe((params) => {
-      this.persistence(params['id']);
-
-      this.dataSource.paginator = this.paginator;
+      this.callPersistenceData();
     });
   }
 
-  updateTestInterval() {}
+  addItem(newItem: any) {
+    newItem !== undefined
+      ? console.log('data', newItem)
+      : console.log('closed dialog without item update!');
+    this.callPersistenceData();
+  }
+
+  deleteData() {
+    this.service.dataSource = this.dataSource;
+    this.service.DeleteData(this.index);
+    setTimeout(() => {
+      this.callPersistenceData();
+    }, 100);
+  }
 }

@@ -1,56 +1,38 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import StringUtils from 'src/app/common/util/stringUtils';
+import { Step, stepSquare } from 'src/app/services/flow-chart/Step';
 
 @Component({
   selector: 'app-charts',
   templateUrl: './charts.component.html',
-  styleUrls: ['./charts.component.css']
+  styleUrls: ['./charts.component.css'],
 })
 export class ChartsComponent implements OnInit {
+  @Input() dataIn: any;
+  @Input() legentTitleIn: any;
+  @Input() xlabel: any;
+  @Input() ylabel: any;
+  @Input() title: any;
 
-  public multi = [
-    
-    {
-      "name": "apigateway",
-      "series": [
-        {
-          "value": 100,
-          "name": "2016-09-21T23:49:36.750Z"
-        },
-        {
-          "value": 90,
-          "name": "2016-09-21T01:40:57.828Z"
-        },
-        {
-          "value": 88,
-          "name": "2016-09-23T22:06:41.418Z"
-        },
-        {
-          "value": 99,
-          "name": "2016-09-14T23:10:28.834Z"
-        },
-        {
-          "value": 100,
-          "name": "2016-09-14T04:28:15.348Z"
-        }
-      ]
-    }
-  ]
+  curve = stepSquare;
 
-  constructor() { }
+  // options
+  legend: boolean = false;
+  animations: boolean = true;
+  xAxis: boolean = true;
+  yAxis: boolean = true;
+  showYAxisLabel: boolean = false;
+  showXAxisLabel: boolean = false;
+  xAxisLabel: string = 'Year';
+  yAxisLabel: string = 'Population';
+  timeline: boolean = true;
+
+  constructor(public utils: StringUtils) {}
 
   ngOnInit(): void {
   }
 
-  pedro(event:any): void {
-    let pedro = this.multi.find(x=>x.name == event)
-    console.log(pedro)
-  }
-
-  onSelect(multi: any): void {
-    console.log('Item clicked', JSON.parse(JSON.stringify(multi)));
-  }
-
-
+  
 
 }

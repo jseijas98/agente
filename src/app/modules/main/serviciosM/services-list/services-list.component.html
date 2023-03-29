@@ -1,11 +1,14 @@
-<app-go-back class="ml-3"></app-go-back>
-<div class="conatiner relative text-center flex flex-col">
-  <app-charts></app-charts>
-  <br /><br />
-  <mat-expansion-panel class="w-full m-auto self-center">
-    <mat-expansion-panel-header>
-      <mat-panel-title> Búsqueda Avanzada </mat-panel-title>
-    </mat-expansion-panel-header>
+<mat-card class="text-center m-5">
+  <mat-card-header class="justify-center">
+    <mat-card-title-group>
+      <mat-card-title> servicios de {{ appname }}</mat-card-title>
+      <mat-card-subtitle
+        >aqui podras ver los servicios de {{ appname }}</mat-card-subtitle
+      >
+    </mat-card-title-group>
+  </mat-card-header>
+
+  <div class="conatiner relative text-center flex flex-col m-auto">
     <mat-form-field>
       <mat-label>Filtro</mat-label>
       <input
@@ -16,49 +19,69 @@
       />
     </mat-form-field>
 
-    <div class="mat-elevation-z8 m-auto">
+    <div class="mat-elevation-z8">
       <table class="mat-table" mat-table [dataSource]="dataSource" matSort>
+        <!-- Checkbox Column -->
+        <ng-container matColumnDef="select">
+          <th mat-header-cell *matHeaderCellDef>
+            <button
+              mat-icon-button
+              (click)="deleteData()"
+              aria-label="Example icon button with a vertical three dot icon"
+            >
+              <mat-icon>delete</mat-icon>
+            </button>
+          </th>
+          <td mat-cell *matCellDef="let row">
+            <mat-checkbox
+              color="warn"
+              (click)="$event.stopPropagation()"
+              (change)="$event ? this.service.selection.toggle(row) : null"
+              [checked]="this.service.selection.isSelected(row)"
+              [aria-label]="this.service.checkboxLabel(row)"
+            >
+            </mat-checkbox>
+          </td>
+        </ng-container>
         <!--aplicacion-->
         <ng-container matColumnDef="applId">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>aplicacion</th>
+          <th mat-header-cell *matHeaderCellDef>aplicacion</th>
           <td mat-cell *matCellDef="let row">{{ row.applId }}</td>
         </ng-container>
 
         <!-- services Id -->
-        <ng-container matColumnDef="services_id">
+        <ng-container matColumnDef="Id">
           <th mat-header-cell *matHeaderCellDef mat-sort-header>id</th>
-          <td mat-cell *matCellDef="let row">{{ row.services_id }}</td>
+          <td mat-cell *matCellDef="let row">{{ row.Id }}</td>
         </ng-container>
 
-       <!-- test intervals -->
-       <ng-container matColumnDef="test_interval">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>
-          test intervals (ms)
-        </th>
-        <td mat-cell *matCellDef="let row">{{ row.test_interval }}</td>
-      </ng-container>
+        <!-- test intervals -->
+        <ng-container matColumnDef="test_interval">
+          <th mat-header-cell *matHeaderCellDef>test intervals (ms)</th>
+          <td mat-cell *matCellDef="let row">{{ row.test_interval }}</td>
+        </ng-container>
 
         <!-- name space-->
         <ng-container matColumnDef="nameSpace">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>name space</th>
+          <th mat-header-cell *matHeaderCellDef>name space</th>
           <td mat-cell *matCellDef="let row">{{ row.nameSpace }}</td>
         </ng-container>
 
-         <!-- triggerHigh -->
-         <ng-container matColumnDef="triggerHigh">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>triggerHigh</th>
+        <!-- triggerHigh -->
+        <ng-container matColumnDef="triggerHigh">
+          <th mat-header-cell *matHeaderCellDef>triggerHigh</th>
           <td mat-cell *matCellDef="let row">{{ row.triggerHigh }}</td>
         </ng-container>
 
         <!-- triggerLow -->
         <ng-container matColumnDef="triggerLow" class="max-">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>triggerLow</th>
+          <th mat-header-cell *matHeaderCellDef>triggerLow</th>
           <td mat-cell *matCellDef="let row">{{ row.triggerLow }}</td>
         </ng-container>
 
         <!-- label:app -->
         <ng-container matColumnDef="label_app">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>label</th>
+          <th mat-header-cell *matHeaderCellDef>label</th>
           <td mat-cell *matCellDef="let row">{{ row.label_app }}</td>
         </ng-container>
 
@@ -78,7 +101,7 @@
 
         <!-- status-->
         <ng-container matColumnDef="status">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header> Estatus </th>
+          <th mat-header-cell *matHeaderCellDef>Estatus</th>
           <td mat-cell *matCellDef="let row">{{ row.status }}</td>
         </ng-container>
 
@@ -90,58 +113,67 @@
 
         <!--registros-->
         <ng-container matColumnDef="registros">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>registros</th>
+          <th mat-header-cell *matHeaderCellDef>registros</th>
           <td mat-cell *matCellDef="let row">
             <button
               mat-mini-fab
               color="primary"
               [matTooltip]="registro"
-              (click)="ApiRegiistry(row.services_id)"
+              (click)="ApiRegiistry(row.Id)"
             >
               <mat-icon> list </mat-icon>
             </button>
           </td>
         </ng-container>
 
-         <!-- replicas -->
-         <ng-container matColumnDef="replicas">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>replicas</th>
+        <!-- replicas -->
+        <ng-container matColumnDef="replicas">
+          <th mat-header-cell *matHeaderCellDef>replicas</th>
           <td mat-cell *matCellDef="let row">
             <button
               mat-mini-fab
               color="primary"
               [matTooltip]="replicas"
-              (click)="getServicesReplica(row.services_id)" 
+              (click)="getServicesReplica(row.Id)"
             >
               <mat-icon> cloud </mat-icon>
             </button>
           </td>
         </ng-container>
 
-         <!-- low alarm -->
-         <ng-container matColumnDef="lowAlarm">
-          <th
-            mat-header-cell
-            [hidden]="true"
-            *matHeaderCellDef
-            mat-sort-header
-          ></th>
+        <!-- low alarm -->
+        <ng-container matColumnDef="lowAlarm">
+          <th mat-header-cell [hidden]="true" *matHeaderCellDef></th>
           <td mat-cell [hidden]="true" *matCellDef="let row"></td>
         </ng-container>
 
         <!-- high alarm -->
         <ng-container matColumnDef="highAlarm">
-          <th
-            mat-header-cell
-            [hidden]="true"
-            *matHeaderCellDef
-            mat-sort-header
-          ></th>
+          <th mat-header-cell [hidden]="true" *matHeaderCellDef></th>
           <td mat-cell [hidden]="true" *matCellDef="let row"></td>
         </ng-container>
 
+        <!-- editar-->
+        <ng-container matColumnDef="editar">
+          <th mat-header-cell *matHeaderCellDef>editar parametros</th>
+          <td mat-cell *matCellDef="let row">
+            <button mat-icon-button (click)="open(row)">
+              <mat-icon> edit </mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row;  columns: displayedColumns" (click)="open(row)" [ngStyle]="{'background-color': this.rowAlertService.rowAlert(row.highAlarm,row.lowAlarm)}"></tr>
+        <tr
+          mat-row
+          *matRowDef="let row; columns: displayedColumns"
+          [ngStyle]="{
+            'background-color': this.rowAlertService.rowAlert(
+              row.highAlarm,
+              row.lowAlarm
+            )
+          }"
+        ></tr>
 
         <!-- <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
         <tr
@@ -153,18 +185,21 @@
 
         <!-- Row shown when there is no matching data. -->
         <tr class="mat-row" *matNoDataRow>
-          <td class="mat-cell self-center" colspan="13">
+          <td class="mat-cell self-center" colspan="14">
             No hay datos que coincidan con el filtro"{{ input.value }}"
           </td>
         </tr>
       </table>
       <mat-paginator
         class="mat-paginator"
-        [pageSizeOptions]="[4, 8, 20, 80]"
+        [pageSizeOptions]="[5, 10, 15, 20]"
         aria-label="Select page of users"
       ></mat-paginator>
     </div>
-  </mat-expansion-panel>
-
-  <br /><br />
-</div>
+    <br />
+    <app-add-new-element
+      (newItemEvent)="addItem($event)"
+      class="self-end"
+    ></app-add-new-element>
+  </div>
+</mat-card>

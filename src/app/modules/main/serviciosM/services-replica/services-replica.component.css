@@ -38,6 +38,14 @@
         
         } 
 
+        .mat-form-field {
+          font-size: 14px;
+          width: 50%;
+          margin-bottom: 5px;
+          padding: 5px;
+        
+        } 
+
       
       td, th {
         width: 10%;

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { NotificationType, Notification} from 'src/app/services/service/notification';
-import { NotificationsService } from 'src/app/services/service/notifications.service';
+import { NotificationType, Notification} from 'src/app/services/notification/notification';
+import { NotificationsService } from 'src/app/services/notification/notifications.service';
 
 @Component({
   selector: 'app-notification',

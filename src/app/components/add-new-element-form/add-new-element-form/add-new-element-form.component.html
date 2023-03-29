@@ -1,0 +1,436 @@
+<mat-dialog-content class="mat-typography">
+  <h4>Qué elemneto quieres añadir?</h4>
+  <mat-form-field appearance="outline">
+    <mat-label>elemento to add</mat-label>
+    <mat-select [(ngModel)]="selectedValue" name="newElement">
+      <mat-option *ngFor="let newadd of newElement" [value]="newadd.value">
+        {{ newadd.viewValue }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+  <!-- <p>Selected element: {{ selectedValue }}</p> -->
+  <p *ngIf="!this.serv.buttontoggle(selectedValue)">campos obligatorios(*)</p>
+
+  <!-- case 1 formulario para agregar nuevo servicio de pic -->
+  <div class="container" [ngSwitch]="selectedValue">
+    <form
+      *ngSwitchCase="'integration'"
+      [formGroup]="pic"
+      novalidate
+      (ngSubmit)="
+        onSubmit_pic(
+          testInterval.value,
+          url.value,
+          json.value,
+          channel.value,
+          description.value
+        )
+      "
+    >
+      <!-- 1.1 testinterval -->
+      <mat-form-field appearance="outline">
+        <mat-label>intervalo entre test</mat-label>
+        <input
+          #testInterval
+          matInput
+          type="text"
+          formControlName="testInterval"
+        />
+        <mat-error *ngIf="pic.get('testInterval')?.invalid">{{
+          this.serv.getErrorMessage_testInterval(pic.get("testInterval"))
+        }}</mat-error>
+      </mat-form-field>
+      <br />
+      <!-- 1.2 url del servicio pic  -->
+      <mat-form-field appearance="outline">
+        <mat-label>url del servico pic</mat-label>
+        <input #url matInput formControlName="url" />
+        <mat-error *ngIf="pic.invalid">{{
+          this.serv.getErrorMessage_required(pic)
+        }}</mat-error>
+      </mat-form-field>
+      <br />
+      <!-- 1.3 json de entrda -->
+      <mat-form-field appearance="outline">
+        <mat-label>json de entrda</mat-label>
+        <input #json matInput formControlName="json" />
+        <textarea matInput></textarea>
+        <mat-error *ngIf="pic.invalid">{{
+          this.serv.getErrorMessage_required(pic)
+        }}</mat-error>
+      </mat-form-field>
+      <br />
+      <!-- 1.4 Canal del servicio pic -->
+      <mat-form-field appearance="outline">
+        <mat-label>Canal del servicio pic</mat-label>
+        <input #channel matInput formControlName="channel" />
+        <mat-error *ngIf="pic.invalid">{{
+          this.serv.getErrorMessage_required(pic)
+        }}</mat-error>
+      </mat-form-field>
+      <br />
+      <!-- 1.5 descripción del servicio pic (opcional) -->
+      <mat-form-field appearance="outline">
+        <mat-label>descripción del servicio pic (opcional)</mat-label>
+        <input matInput #description formControlName="description" />
+        <mat-error *ngIf="pic.invalid">{{
+          this.serv.getErrorMessage_required(pic)
+        }}</mat-error>
+      </mat-form-field>
+      <mat-dialog-actions align="center">
+        <button
+          mat-button
+          mat-dialog-close
+          [mat-dialog-close]="data$"
+          type="submit"
+          [disabled]="pic.invalid"
+        >
+          agregar
+        </button>
+        <button mat-button mat-dialog-close>cancel</button>
+      </mat-dialog-actions>
+    </form>
+    <!-- case 2 formulario para agregar nueva base de datos -->
+    <div class="container" [ngSwitch]="selectedValue">
+      <form
+        *ngSwitchCase="'persistence'"
+        [formGroup]="dataBase"
+        novalidate
+        (ngSubmit)="
+          onSubmit_DB(
+            name.value,
+            sqlSentence.value,
+            username.value,
+            password.value,
+            testInterval.value,
+            url.value,
+            dataBaseType.value,
+            description.value
+          )
+        "
+      >
+        <!-- 2.1 nombre de la base de datos -->
+        <mat-form-field appearance="outline">
+          <mat-label>nombre de la base de datos</mat-label>
+          <input #name matInput type="text" formControlName="name" />
+          <mat-error *ngIf="dataBase.invalid">{{
+            this.serv.getErrorMessage_required(dataBase)
+          }}</mat-error>
+        </mat-form-field>
+        <br />
+        <!-- 2.2 sentencia sql-->
+        <mat-form-field appearance="outline">
+          <mat-label>sql sentence</mat-label>
+          <input
+            #sqlSentence
+            matInput
+            type="text"
+            formControlName="sqlSentence"
+          />
+          <mat-error *ngIf="dataBase.invalid">{{
+            this.serv.getErrorMessage_required(dataBase)
+          }}</mat-error>
+        </mat-form-field>
+        <br />
+        <!-- 2.3 usuario de la base de datos -->
+        <mat-form-field appearance="outline">
+          <mat-label>usuario de la base de datos</mat-label>
+          <input #username matInput type="text" formControlName="username" />
+          <mat-error *ngIf="dataBase.invalid">{{
+            this.serv.getErrorMessage_required(dataBase)
+          }}</mat-error>
+        </mat-form-field>
+        <br />
+        <!-- 2.4 contraseña de la base de datos -->
+        <mat-form-field appearance="outline">
+          <mat-label>contraseña de la base de datos</mat-label>
+          <input
+            matInput
+            #password
+            formControlName="password"
+            [type]="hide ? 'password' : 'text'"
+          />
+          <mat-error *ngIf="dataBase.invalid">{{
+            this.serv.getErrorMessage_required(dataBase)
+          }}</mat-error>
+          <button
+            mat-icon-button
+            matSuffix
+            (click)="hide = !hide"
+            [attr.aria-label]="'Hide password'"
+            [attr.aria-pressed]="hide"
+          >
+            <mat-icon>{{ hide ? "visibility_off" : "visibility" }}</mat-icon>
+          </button>
+        </mat-form-field>
+        <br />
+        <!-- 2.5 intervalo entre test -->
+        <mat-form-field appearance="outline">
+          <mat-label>intervalo entre test</mat-label>
+          <input
+            #testInterval
+            matInput
+            type="text"
+            formControlName="testInterval"
+          />
+          <mat-error *ngIf="dataBase.get('testInterval')?.invalid">{{
+            this.serv.getErrorMessage_testInterval(dataBase.get("testInterval"))
+          }}</mat-error>
+        </mat-form-field>
+        <br />
+        <!-- 2.6 url de la base de datos -->
+        <mat-form-field appearance="outline">
+          <mat-label>url de la base de datos</mat-label>
+          <input #url matInput formControlName="url" />
+        </mat-form-field>
+        <br />
+        <!-- 2.7 tipo de base de datos  -->
+        <mat-form-field appearance="outline">
+          <mat-label>tipo de base de datos</mat-label>
+          <input #dataBaseType matInput formControlName="dataBaseType" />
+        </mat-form-field>
+        <br />
+        <!-- 2.8 decripcion de la base de dato  -->
+        <mat-form-field appearance="outline">
+          <mat-label>decripcion de la base de dato</mat-label>
+          <input #description matInput formControlName="description" />
+        </mat-form-field>
+        <mat-dialog-actions align="center">
+          <button
+            mat-button
+            mat-dialog-close
+            [mat-dialog-close]="data$"
+            type="submit"
+            [disabled]="dataBase.invalid"
+          >
+            agregar
+          </button>
+          <button mat-button mat-dialog-close>cancel</button>
+        </mat-dialog-actions>
+      </form>
+      <!-- case 3 formulario para agregar un nuevo servicio -->
+      <div class="container" [ngSwitch]="selectedValue">
+        <form
+          *ngSwitchCase="'service'"
+          [formGroup]="service"
+          novalidate
+          (ngSubmit)="
+            onSubmit_service(
+              testInterval.value,
+              name.value,
+              labelApp.value,
+              namespace.value,
+              url.value,
+              description.value
+            )
+          "
+        >
+          <!-- 3.1 intervalo entre test -->
+          <mat-form-field appearance="outline">
+            <mat-label>intervalo entre test</mat-label>
+            <input
+              #testInterval
+              matInput
+              type="text"
+              formControlName="testInterval"
+            />
+            <mat-error *ngIf="service.get('testInterval')?.invalid">{{
+              this.serv.getErrorMessage_testInterval(service.get("testInterval"))
+            }}</mat-error>
+          </mat-form-field>
+          <br />
+          <!-- 3.2 nombre del servicio -->
+          <mat-form-field appearance="outline">
+            <mat-label>nombre del servicio</mat-label>
+            <input #name matInput formControlName="name" />
+            <mat-error *ngIf="service.invalid">{{
+              this.serv.getErrorMessage_required(service)
+            }}</mat-error>
+          </mat-form-field>
+          <br />
+          <!-- 3.3  label App del servicio-->
+          <mat-form-field appearance="outline">
+            <mat-label>label App del servicio</mat-label>
+            <input #labelApp matInput formControlName="labelApp" />
+            <mat-error *ngIf="service.invalid">{{
+              this.serv.getErrorMessage_required(service)
+            }}</mat-error>
+          </mat-form-field>
+          <br />
+          <!-- 3.4 namespace que aloja el servicio -->
+          <mat-form-field appearance="outline">
+            <mat-label>namespace que aloja el servicio</mat-label>
+            <input #namespace matInput formControlName="namespace" />
+            <mat-error *ngIf="service.invalid">{{
+              this.serv.getErrorMessage_required(service)
+            }}</mat-error>
+          </mat-form-field>
+          <br />
+          <!-- 3.5 url del servico -->
+          <mat-form-field appearance="outline">
+            <mat-label>url del servico</mat-label>
+            <input #url matInput formControlName="url" />
+            <mat-error *ngIf="service.invalid">{{
+              this.serv.getErrorMessage_required(service)
+            }}</mat-error>
+          </mat-form-field>
+          <br />
+          <!-- descripción del servicio -->
+          <mat-form-field appearance="outline">
+            <mat-label>descripción del servicio (opcional) </mat-label>
+            <input #description matInput formControlName="description" />
+            <mat-error *ngIf="service.invalid">{{
+              this.serv.getErrorMessage_required(service)
+            }}</mat-error>
+          </mat-form-field>
+          <mat-dialog-actions align="center">
+            <button
+              mat-button
+              mat-dialog-close
+              [mat-dialog-close]="data$"
+              type="submit"
+              [disabled]="service.invalid"
+            >
+              agregar
+            </button>
+            <button mat-button mat-dialog-close>cancel</button>
+          </mat-dialog-actions>
+        </form>
+        <!----------- case 4 formulario para agregar un nuevo api ----------------------------------------------->
+        <form
+          *ngSwitchCase="'apis'"
+          [formGroup]="apis"
+          novalidate
+          (ngSubmit)="
+            onSubmit_apis(
+              labelApp.value,
+              namespace.value,
+              testInterval.value,
+              url.value
+            ) " (ngSubmit)="addNewItem(labelApp.value)"
+        >
+          <!--  4.1 label App del API-->
+          <mat-form-field appearance="outline">
+            <mat-label>label App del API</mat-label>
+            <input #labelApp matInput formControlName="labelApp" />
+            <mat-error *ngIf="apis.invalid">{{
+              this.serv.getErrorMessage_required(apis)
+            }}</mat-error>
+          </mat-form-field>
+          <br />
+          <!-- 4.2 namespace que aloja el API-->
+          <mat-form-field appearance="outline">
+            <mat-label>namespace que aloja el API</mat-label>
+            <input #namespace matInput formControlName="namespace" />
+            <mat-error *ngIf="apis.invalid">{{
+              this.serv.getErrorMessage_required(apis)
+            }}</mat-error>
+          </mat-form-field>
+          <br />
+          <!-- 4.3 intervalo entre test-->
+          <mat-form-field appearance="outline">
+            <mat-label>intervalo entre test</mat-label>
+            <input
+              #testInterval
+              matInput
+              type="text"
+              formControlName="testInterval"
+            />
+            <mat-error *ngIf="apis.get('testInterval')?.invalid">{{
+              this.serv.getErrorMessage_testInterval(apis.get("testInterval"))
+            }}</mat-error>
+          </mat-form-field>
+          <br />
+          <!-- 4.4 url del API -->
+          <mat-form-field appearance="outline">
+            <mat-label>url del API</mat-label>
+            <input #url matInput formControlName="url" />
+            <mat-error *ngIf="apis.invalid">{{
+              this.serv.getErrorMessage_required(apis)
+            }}</mat-error>
+          </mat-form-field>
+          <br />
+          <mat-dialog-actions align="center">
+            <button
+              mat-button
+              mat-dialog-close
+              type="submit"
+              [disabled]="apis.invalid"
+              [mat-dialog-close]="data$"
+            >
+              agregar
+            </button>
+            <button mat-button mat-dialog-close>cancel</button>
+          </mat-dialog-actions>
+        </form>
+        <!-- case 5 formulario para agregar un nuevo balanceador de carga -->
+        <form
+          *ngSwitchCase="'loadbalancer'"
+          [formGroup]="loadBalancer"
+          novalidate
+          (ngSubmit)="
+            onSubmit_laodBalancer(
+              testInterval.value,
+              url.value,
+              json.value,
+              description.value
+            )
+          "
+        >
+          <!-- 5.1 intervalo entre test -->
+          <mat-form-field appearance="outline">
+            <mat-label>intervalo entre test</mat-label>
+            <input
+              #testInterval
+              matInput
+              type="text"
+              formControlName="testInterval"
+            />
+            <mat-error *ngIf="loadBalancer.get('testInterval')?.invalid">{{
+              this.serv.getErrorMessage_testInterval(loadBalancer.get("testInterval"))
+            }}</mat-error>
+          </mat-form-field>
+          <br />
+          <!-- 5.2 url del balanceador de carga -->
+          <mat-form-field appearance="outline">
+            <mat-label>url del balanceador de carga</mat-label>
+            <input #url matInput formControlName="url" />
+            <mat-error *ngIf="loadBalancer.invalid">{{
+              this.serv.getErrorMessage_required(loadBalancer)
+            }}</mat-error>
+          </mat-form-field>
+          <br />
+          <!-- 5.3 json de entrda -->
+          <mat-form-field appearance="outline">
+            <mat-label>json de entrda</mat-label>
+            <input #json matInput formControlName="json" />
+            <textarea matInput></textarea>
+          </mat-form-field>
+          <br />
+          <!-- 5.4 descripción (opcional) -->
+          <mat-form-field appearance="outline">
+            <mat-label>descripción (opcional) </mat-label>
+            <input #description matInput formControlName="description" />
+          </mat-form-field>
+          <mat-dialog-actions align="center">
+            <button
+              mat-button
+              mat-dialog-close
+              [mat-dialog-close]="data$"
+              type="submit"
+              [disabled]="loadBalancer.invalid"
+            >
+              agregar
+            </button>
+            <button mat-button mat-dialog-close>cancel</button>
+          </mat-dialog-actions>
+        </form>
+        <div *ngIf="this.serv.buttontoggle(selectedValue)">
+          <mat-dialog-actions align="center">
+            <button mat-button mat-dialog-close>Cancel</button>
+          </mat-dialog-actions>
+        </div>
+      </div>
+    </div>
+  </div></mat-dialog-content
+>

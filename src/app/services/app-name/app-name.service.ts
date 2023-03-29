@@ -1,42 +1,48 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { of, switchMap, throwError } from 'rxjs';
+import { Applications } from 'src/app/modules/interfaces/model.applications';
 import { environment } from 'src/environments/environment';
-
 @Injectable({
   providedIn: 'root',
 })
 export class AppNameService {
   constructor(private http: HttpClient) {}
 
-  name$: BehaviorSubject<any> = new BehaviorSubject(null);
-
-  aplication(): void {
-    this.http.get(environment.baseUrl + 'list/application').subscribe({
-      next: this.aplicacionSuccess.bind(this),
-      error: this.aplicacionError.bind(this),
-    });
+  getDataFromApi(index: any) {
+    return this.http.get<any>(environment.baseUrl + 'list/application').pipe(
+      switchMap((response: any) => {
+        const id = index;
+        const data: Array<any> = response;
+        const element = data.find((x) => x.applicationId === parseInt(id));
+        if (element) {
+          const appName = element.applicationName;
+          console.log(appName);
+          return of(appName);
+        } else {
+          return throwError(`No se encontró una aplicación con id ${id}`);
+        }
+      })
+    );
   }
 
-index:any
-
-  aplicacionSuccess(response: any): void {
-    let data: Array<any> = response;
-    let apps: string;
-
-    this.name$.next(response);
-
-    data
-      .filter((x) => x.applicationId === this.index)
-      .map((element) => {
-        apps = element.applicationName;
-        console.log(apps);
-        this.name$.next(apps);
-      });
-  }
-
-
-  aplicacionError(error: any) {
-    console.error(error);
+  getApps() {
+    return this.http.get<Applications[]>(environment.baseUrl + 'list/application').pipe(
+      switchMap((response:Applications[]) => {
+        const data: Applications[] = response;
+        const element = data.map((x) => ({
+          name: x.applicationName,
+          value: x.status,
+          extra: x.applicationId,
+        }));
+        if (element) {
+          const appName = element;
+          // console.log(appName);
+          return of(appName);
+        } else {
+          return throwError('error');
+        }
+      })
+    );
   }
 }

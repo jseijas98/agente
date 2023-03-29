@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  baseUrl :'http://180.183.170.56:30343/monitor-agent-service/'
+  baseUrl :'http://180.183.170.56:30446/monitor-agent-service/'
 };
 
 /*

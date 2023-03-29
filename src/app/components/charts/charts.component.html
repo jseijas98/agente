@@ -1,24 +1,68 @@
 <mat-card class="w-4/5 mt-10 mx-auto text-center">
-    <mat-card-header class="text-center justify-center">
-      <mat-card-title-group class="">
-        <mat-card-title>Grafica de Apis</mat-card-title>
-        <mat-card-subtitle
-          >aqui podras ver informacin relacionada a las apis</mat-card-subtitle
-        >
-      </mat-card-title-group>
-    </mat-card-header>
+  <mat-card-header class="text-center justify-center">
+    <mat-card-title-group class="">
+      <mat-card-title>Grafico del {{ title }}</mat-card-title>
+      <mat-card-subtitle
+        >aqui podras ver el estado en el tiempo del
+        {{ title }}</mat-card-subtitle
+      >
+    </mat-card-title-group>
+  </mat-card-header>
 
-    <ngx-charts-area-chart
-      scheme="cool"
-      [view]="[850, 400]"
-      [results]="multi"
-      [legend]="true"
-      [animations]="false"
-      [xAxis]="true"
-      [yAxis]="true"
-      [legendTitle]="'APIS'"
-      [gradient]="true"
-      (select)="pedro($event)"
-    >
-    </ngx-charts-area-chart>
-  </mat-card>
+  <ngx-charts-area-chart
+    scheme="cool"
+    [view]="[900, 400]"
+    [results]="dataIn"
+    [legend]="false"
+    [animations]="true"
+    [xAxis]="true"
+    [yAxis]="true"
+    [legendTitle]="legentTitleIn"
+    [gradient]="true"
+    [timeline]="true"
+    [yAxisLabel]="ylabel"
+    [xAxisLabel]="xlabel"
+    [showXAxisLabel]="false"
+    [showYAxisLabel]="true"
+    [trimXAxisTicks]="true"
+    [maxXAxisTickLength]="20"
+    [xAxisTickFormatting]="this.utils.formatDate"
+    [tooltipDisabled]="false"
+  >
+    <ng-template #tooltipTemplate let-model="model">
+      <div class="tooltip-container">
+        <div class="tooltip-header">{{ model.series }}</div>
+        <div class="tooltip-body">
+          <div class="tooltip-row">
+            <div class="tooltip-label">fecha:</div>
+            <div class="tooltip-value">
+              {{ model.name | date : "dd/MM/yyyy HH:mm:ss" }}
+            </div>
+          </div>
+          <div class="tooltip-row">
+            <div class="tooltip-label">Tiempo de respuesta:</div>
+            <div class="tooltip-value">{{ model.value }}ms</div>
+          </div>
+        </div>
+      </div>
+    </ng-template>
+
+    <ng-template #seriesTooltipTemplate let-model="model">
+      <div class="tooltip-container">
+        <div class="tooltip-header">{{ model[0].series }}</div>
+        <div class="tooltip-body">
+          <div class="tooltip-row">
+            <div class="tooltip-label">fecha:</div>
+            <div class="tooltip-value">
+              {{ model[0].name | date : "dd/MM/yyyy HH:mm:ss" }}
+            </div>
+          </div>
+          <div class="tooltip-row">
+            <div class="tooltip-label">Tiempo de respuesta:</div>
+            <div class="tooltip-value">{{ model[0].value }} ms</div>
+          </div>
+        </div>
+      </div>
+    </ng-template>
+  </ngx-charts-area-chart>
+</mat-card>

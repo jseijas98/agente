@@ -1,14 +1,16 @@
-<app-go-back class="ml-3"></app-go-back>
+
+<mat-card class="mt-10 text-center m-5">
+  <mat-card-header class="justify-center">
+    <mat-card-title-group>
+      <mat-card-title> replicas del servicio </mat-card-title>
+      <mat-card-subtitle>aqui podras ver </mat-card-subtitle>
+    </mat-card-title-group>
+  </mat-card-header>
 <div class="conatiner relative text-center flex flex-col">
-  <app-charts></app-charts>
-  <br /><br />
+ 
 
-  <mat-expansion-panel class="w-5/6 m-auto self-center">
-    <mat-expansion-panel-header>
-      <mat-panel-title>Replicas del servicio</mat-panel-title>
-    </mat-expansion-panel-header>
 
-    <mat-form-field>
+    <mat-form-field class="self-center">
       <mat-label>Filter</mat-label>
       <input
         matInput
@@ -109,7 +111,7 @@
 
         <!-- Row shown when there is no matching data. -->
         <tr class="mat-row" *matNoDataRow>
-          <td class="mat-cell" colspan="8">
+          <td class="mat-cell" colspan="9">
             No data matching the filter "{{ input.value }}"
           </td>
         </tr>
@@ -120,7 +122,5 @@
         aria-label="Select page of users"
       ></mat-paginator>
     </div>
-  </mat-expansion-panel>
-
-  <br /><br />
-</div>
+  </div>
+</mat-card>

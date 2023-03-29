@@ -1,11 +1,12 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute } from '@angular/router';
 import StringUtils from 'src/app/common/util/stringUtils';
 import { LoadBalancerRegistry } from 'src/app/modules/interfaces/model.loadBalancer/loadBalancerRegistry';
+import { GraphServiceService } from 'src/app/services/graph/graph-service.service';
 import { environment } from 'src/environments/environment';
 
 @Component({
@@ -13,15 +14,19 @@ import { environment } from 'src/environments/environment';
   templateUrl: './load-balancer-registry.component.html',
   styleUrls: ['./load-balancer-registry.component.css']
 })
-export class LoadBalancerRegistryComponent implements OnInit {
+export class LoadBalancerRegistryComponent implements OnInit, AfterViewInit {
 
   constructor(
     private http: HttpClient,
     public utils: StringUtils,
-    private activateRouter: ActivatedRoute
+    private activateRouter: ActivatedRoute,
+    private serv: GraphServiceService
   ) 
   
   {
+  
+  }
+  ngAfterViewInit(): void {
     this.activateRouter.params.subscribe((params) => {
       this.loadBalancer_registry(params['id']);
     });
@@ -45,6 +50,8 @@ export class LoadBalancerRegistryComponent implements OnInit {
   ];
 
   data: any[] = [];
+  dataGraph: Object[] = [];
+  name_element: string
 
   baseUrl = environment.baseUrl;
 
@@ -76,15 +83,18 @@ export class LoadBalancerRegistryComponent implements OnInit {
         description: loadBalancer.description,
         consecutiveFailedTest: loadBalancer.failedConsecutiveTest,
         histFailedTest: loadBalancer.historyFailedTest,
-        lastTestDate: this.utils.convertDate(loadBalancer.lastTestDate),
+        lastTestDate: this.utils.formatDate(loadBalancer.lastTestDate),
         response_time: loadBalancer.response_time,
         consecutiveSuccessfulTest: loadBalancer.successfulConsecutiveTest,
         histSuccessfulTest: loadBalancer.historySuccessfulTest,
       });
+      this.name_element = 'load balancer de ' + loadBalancer.description
     });
     console.log(this.data);
+    this.dataGraph = this.serv.dataGraph_load_balancer(respose,this.name_element)
     this.dataSource = new MatTableDataSource<any>(this.data);
     this.dataSource.paginator = this.paginator;
+    this.dataSource.sort = this.sort;
   }
 
   getLoadBalancerResgistryError(error: any) {

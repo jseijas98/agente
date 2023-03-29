@@ -1,14 +1,17 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Subject, takeUntil } from 'rxjs';
 import StringUtils from 'src/app/common/util/stringUtils';
 import { UpdateparamsComponent } from 'src/app/components/modals/updateparams/updateparams.component';
 import { ServicesList } from 'src/app/modules/interfaces/model.services/model.services-list';
+import { AppNameService } from 'src/app/services/app-name/app-name.service';
+import { DeleteService } from 'src/app/services/deleteElement/delete.service';
 import { RowAlertService } from 'src/app/services/row-alert/row-alert.service';
 import { environment } from 'src/environments/environment';
 
@@ -17,7 +20,7 @@ import { environment } from 'src/environments/environment';
   templateUrl: './services-list.component.html',
   styleUrls: ['./services-list.component.css'],
 })
-export class ServicesListComponent implements OnInit {
+export class ServicesListComponent implements AfterViewInit {
   baseUrl = environment.baseUrl;
 
   constructor(
@@ -27,21 +30,37 @@ export class ServicesListComponent implements OnInit {
     private activateRouter: ActivatedRoute,
     public dialog: MatDialog,
     private snakbar: MatSnackBar,
-    public rowAlertService:RowAlertService
+    public rowAlertService: RowAlertService,
+    public service: DeleteService,
+    private appName: AppNameService
   ) {}
 
+  appname: string;
+  unsuscribe$ = new Subject<void>();
   public index: string = 'service';
+  registro: string = 'registros historicos';
+  replicas: string = 'replicas del servicio ';
 
-  ngOnInit(): void {
+  ngAfterViewInit(): void {
     this.activateRouter.params.subscribe((params) => {
-      this.service(params['id']);
+      this.appName
+        .getDataFromApi(params['id'])
+        .pipe(takeUntil(this.unsuscribe$))
+        .subscribe((data) => (this.appname = data));
+    });
+    this.callServiceData();
+  }
+
+  callServiceData() {
+    this.activateRouter.params.subscribe((params) => {
+      this.Service(params['id']);
     });
   }
 
   //columnsas que se muestran
   displayedColumns: string[] = [
     'applId',
-    'services_id',
+    'Id',
     'nameSpace',
     'triggerLow',
     'test_interval',
@@ -55,6 +74,9 @@ export class ServicesListComponent implements OnInit {
     'replicas',
     'lowAlarm',
     'highAlarm',
+    'editar',
+    'select'
+    
   ];
 
   //configuración del dataSource
@@ -64,17 +86,14 @@ export class ServicesListComponent implements OnInit {
   @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
-  service(index: number) {
+  Service(index: number) {
     this.http
-      .get<ServicesList>(`${this.baseUrl}list/application/${index}/service`)
+      .get<ServicesList>(`${this.baseUrl}list/application/${index}/service`).pipe(takeUntil(this.unsuscribe$))
       .subscribe({
         next: this.getServicesSuccess.bind(this),
         error: this.getServicesError.bind(this),
       });
   }
-
-  registro: string = 'registros historicos';
-  replicas: string = 'replicas del servicio ';
 
   getServicesSuccess(response: any) {
     let serviceLIst: Array<ServicesList> = response;
@@ -82,13 +101,13 @@ export class ServicesListComponent implements OnInit {
 
     serviceLIst.forEach((services) => {
       data.push({
-        services_id: services.serviceId,
+        Id: services.serviceId,
         status: services.status,
         nameSpace: services.nameSpace,
         test_interval: services.testInterv,
         label_app: services.labelApp,
         response_time: services.response_time,
-        last_test: this.utils.convertDate(services.lastTestsDate),
+        last_test: this.utils.formatDate(services.lastTestsDate),
         health: services.health,
         applId: services.applicationId,
         triggerLow: services.lowTrigger,
@@ -101,6 +120,7 @@ export class ServicesListComponent implements OnInit {
 
     this.dataSource = new MatTableDataSource<any>(data);
     this.dataSource.paginator = this.paginator;
+    this.dataSource.sort = this.sort;
   }
 
   getServicesError(error: any) {
@@ -135,7 +155,7 @@ export class ServicesListComponent implements OnInit {
     const dialogRef = this.dialog.open(UpdateparamsComponent, {
       disableClose: true,
       data: {
-        item_id: row.services_id,
+        item_id: row.Id,
         type: this.index,
         appid: row.applId,
         label: row.label_app,
@@ -148,16 +168,11 @@ export class ServicesListComponent implements OnInit {
 
       this.snakbar.open(
         result?._value.data
-          ? 'se actualizaron los parametros'
+          ? 'actualización de parametro exitosa!'
           : 'Error en la actualizacion de parametros',
         'ACEPTAR'
       );
-    });
-
-    this.activateRouter.params.subscribe((params) => {
-      this.service(params['id']);
-
-      this.dataSource.paginator = this.paginator;
+      this.callServiceData();
     });
   }
 
@@ -167,5 +182,20 @@ export class ServicesListComponent implements OnInit {
 
   getServicesReplica(api_id: any): void {
     this.router.navigateByUrl(`services-replicas/${api_id}`);
+  }
+
+  addItem(newItem: any) {
+    newItem !== undefined
+      ? console.log('data', newItem)
+      : console.log('closed dialog without item update!');
+    this.callServiceData();
+  }
+
+  deleteData() {
+    this.service.dataSource = this.dataSource;
+    this.service.DeleteData(this.index);
+    setTimeout(() => {
+      this.callServiceData();
+    }, 100);
   }
 }

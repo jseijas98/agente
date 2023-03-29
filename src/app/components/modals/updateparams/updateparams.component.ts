@@ -55,20 +55,23 @@ export class UpdateparamsComponent implements OnInit {
   numberRegEx = /\-?\d*\.?\d{1,2}/;
 
   intervalCtrl = new FormControl('', [
-    Validators.min(1),
+    Validators.min(100),
     Validators.pattern(this.numberRegEx),
+    Validators.minLength(3)
   ]);
 
   Highctrl = new FormControl('', [
     Validators.min(1),
     Validators.max(100),
     Validators.pattern(this.numberRegEx),
+    Validators.minLength(1)
   ]);
 
   Lowctrl = new FormControl('', [
     Validators.min(1),
     Validators.max(100),
     Validators.pattern(this.numberRegEx),
+    Validators.minLength(1)
   ]);
 
   updateTeParams(interval: any, low: any, high: any) {
@@ -79,17 +82,17 @@ export class UpdateparamsComponent implements OnInit {
         ? parseInt(interval)
         : parseInt(interval)
         ? isNaN(parseInt(interval))
-        : 0,
+        : null,
       lowTrigger: parseInt(low)
         ? parseInt(low)
         : parseInt(low)
         ? isNaN(parseInt(low))
-        : 0,
+        : null,
       highTrigger: parseInt(high)
         ? parseInt(high)
         : parseInt(high)
         ? isNaN(parseInt(high))
-        : 0,
+        : null,
     };
     this.changeParameters(dataUpdate);
     console.log('data send', dataUpdate);
@@ -100,5 +103,13 @@ export class UpdateparamsComponent implements OnInit {
   space(data: any): boolean {
     data == undefined ? false : true;
     return data;
+  }
+
+  getErrorMessage_testInterval(form:any){
+    if(form.hasError('min')) {
+
+      return 'el valor debe ser mayor a 100ms';
+    }
+    return form.hasError('pattern')? 'este campo es de tipo de numerico':'';
   }
 }

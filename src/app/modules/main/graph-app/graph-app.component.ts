@@ -4,6 +4,7 @@ import {
   Component,
   ElementRef,
   Input,
+  OnDestroy,
   OnInit,
   ViewChild,
 } from '@angular/core';
@@ -22,7 +23,7 @@ import { ComponentListService } from '../../interfaces/model.componetList/compon
   templateUrl: './graph-app.component.html',
   styleUrls: ['./graph-app.component.css'],
 })
-export class GraphAppComponent implements OnInit, AfterViewInit {
+export class GraphAppComponent implements OnInit, OnDestroy {
   public graph: any = JSON.parse(sessionStorage.getItem('Graph')!);
 
   @ViewChild('zoneFlowChart') zoneFlowChart: ElementRef = new ElementRef('');
@@ -30,30 +31,27 @@ export class GraphAppComponent implements OnInit, AfterViewInit {
   constructor(
     private flowChartService: FlowChartService,
     private activateRouter: ActivatedRoute,
-    private router: Router,
-    private http: HttpClient
+    private router: Router
   ) {}
+
+  activeComponent: GraphAppComponent;
   //--------------------------------------------Oninit()-----------------------------------
   ngOnInit(): void {
-
- 
-    this.nodeHealth()
-
+    this.nodeHealth();
   }
   //---------------------------------------------------------------------------------------
 
-  nodeHealth() {
+  ngOnDestroy(): void {
+ 
+  }
 
-       
+  ngAfterViewInit(): void {}
+
+  nodeHealth() {
     this.activateRouter.params.subscribe((params) => {
       this.flowChartService.setData(params['id']);
       console.log('params', params['id']);
     });
-  }
-
-  ngAfterViewInit(): void {
-    // const el = this.zoneFlowChart.nativeElement;
-    // this.flowChartService.calculateDimensions(el);
   }
 
   redirect(prefix: string) {

@@ -1,14 +1,18 @@
+import { SelectionModel } from '@angular/cdk/collections';
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Subject, takeUntil } from 'rxjs';
 import StringUtils from 'src/app/common/util/stringUtils';
 import { UpdateparamsComponent } from 'src/app/components/modals/updateparams/updateparams.component';
 import { PicList } from 'src/app/modules/interfaces/model.pic/model.pic-list';
+import { AppNameService } from 'src/app/services/app-name/app-name.service';
+import { DeleteService } from 'src/app/services/deleteElement/delete.service';
 import { RowAlertService } from 'src/app/services/row-alert/row-alert.service';
 import { environment } from 'src/environments/environment';
 
@@ -17,7 +21,7 @@ import { environment } from 'src/environments/environment';
   templateUrl: './pic-list.component.html',
   styleUrls: ['./pic-list.component.css'],
 })
-export class PicListComponent implements OnInit {
+export class PicListComponent implements OnInit, AfterViewInit {
   baseUrl = environment.baseUrl;
 
   constructor(
@@ -27,10 +31,38 @@ export class PicListComponent implements OnInit {
     private activateRouter: ActivatedRoute,
     public dialog: MatDialog,
     private snakbar: MatSnackBar,
-    public rowAlertService:RowAlertService
+    public rowAlertService: RowAlertService,
+    public service: DeleteService,
+    private appName: AppNameService
   ) {}
+  
+  unsuscribe$ = new Subject<void>();
+  appname: string;
+  registro: string = 'registros historicos';
+  replicas: string = 'replicas de pic ';
+  index = 'integration';
 
-  ngOnInit(): void {
+  //configuración del dataSource
+  dataSource = new MatTableDataSource<any>();
+
+  ngOnDestroy() {
+    this.unsuscribe$.next();
+    this.unsuscribe$.complete();
+  }
+
+  ngAfterViewInit(): void {
+    this.activateRouter.params.subscribe((params) => {
+      this.appName
+        .getDataFromApi(params['id']).pipe(takeUntil(this.unsuscribe$))
+        .subscribe((data) => (this.appname = data));
+    });
+    this.callPicData();
+  }
+
+
+  ngOnInit(): void {}
+
+  callPicData() {
     this.activateRouter.params.subscribe((params) => {
       this.Pic(params['id']);
     });
@@ -38,7 +70,7 @@ export class PicListComponent implements OnInit {
 
   //columnsas que se muestran
   displayedColumns: string[] = [
-    'pic_id',
+    'Id',
     'applId',
     'channel',
     'test_interval',
@@ -51,10 +83,11 @@ export class PicListComponent implements OnInit {
     'lowT',
     'highT',
     'registros',
+    'lowAlarm',
+    'highAlarm',
+    'editar',
+    'select',
   ];
-
-  //configuración del dataSource
-  dataSource = new MatTableDataSource<any>();
 
   //paginacion del las tablas
   @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
@@ -62,40 +95,41 @@ export class PicListComponent implements OnInit {
 
   Pic(index: number) {
     this.http
-      .get<PicList>(`${this.baseUrl}list/application/${index}/integration`)
+      .get<PicList>(`${this.baseUrl}list/application/${index}/integration`).pipe(takeUntil(this.unsuscribe$))
       .subscribe({
         next: this.getPicSuccess.bind(this),
         error: this.getPicError.bind(this),
       });
   }
 
-  registro: string = 'registros historicos';
-  replicas: string = 'replicas de pic ';
-
   getPicSuccess(respose: any) {
     let picList: Array<PicList> = respose;
     let data: any[] = [];
+    console.log(respose);
+    
 
     picList.forEach((pic) => {
       data.push({
-        pic_id: pic.integrationId,
+        Id: pic.integrationId,
         status: pic.status,
         channel: pic.channel,
         test_interval: pic.testInterv,
         response_time: pic.response_time,
-        last_test: this.utils.convertDate(pic.lastTestDate),
+        last_test: this.utils.formatDate(pic.lastTestDate),
         applId: pic.applicationId,
         consecutiveFailedTest: pic.consecutiveFailedTest,
         consecutiveSuccessfulTest: pic.consecutiveSuccessfulTest,
         description: pic.description,
         lowT: pic.highTrigger,
         highT: pic.lowTrigger,
+        lowAlarm: pic.lowAlarm,
+        highAlarm: pic.highAlarm,
       });
-      console.log(data);
     });
 
     this.dataSource = new MatTableDataSource<any>(data);
     this.dataSource.paginator = this.paginator;
+    this.dataSource.sort = this.sort;
   }
 
   getPicError(error: any) {
@@ -114,14 +148,12 @@ export class PicListComponent implements OnInit {
   PicRegistry(applId: any) {
     this.router.navigateByUrl(`pic-registry/${applId}`);
   }
-  index = 'integration';
 
   open(row: any) {
     const dialogRef = this.dialog.open(UpdateparamsComponent, {
-
       disableClose: true,
       data: {
-        item_id: row.pic_id,
+        item_id: row.Id,
         type: this.index,
         appid: row.applId,
         label: row.description,
@@ -138,12 +170,22 @@ export class PicListComponent implements OnInit {
           : 'Error en la actualizacion de parametros',
         'ACEPTAR'
       );
+      this.callPicData();
     });
+  }
 
-    this.activateRouter.params.subscribe((params) => {
-      this.Pic(params['id']);
+  addItem(newItem: any) {
+    newItem !== undefined
+      ? console.log('data', newItem)
+      : console.log('closed dialog without item update!');
+    this.callPicData();
+  }
 
-      this.dataSource.paginator = this.paginator;
-    });
+  deleteData() {
+    this.service.dataSource = this.dataSource;
+    this.service.DeleteData(this.index);
+    setTimeout(() => {
+      this.callPicData();
+    }, 300);
   }
 }

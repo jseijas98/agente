@@ -8,45 +8,36 @@
   >
     <mat-toolbar class="text-center items-center h-auto">
       <div class="m-auto text-center flex items-center">
-        <img src="../../assets/logo.png" alt="Logo BDV" class="w-16 h-16" />
+        <img src="../../assets/logo.png" alt="Logo BDV" class="logo" />
         <span class="text-3xl">BDV</span>
       </div>
     </mat-toolbar>
-    <mat-divider class="w-11/12 fixed"></mat-divider>
+    <!-- <mat-divider class="w-11/12 fixed"></mat-divider> -->
     <mat-list>
       <mat-list-item routerLink="">
-        <button mat-button class="w-full h-full">
+        <button  mat-stroked-button class="w-full h-full pd-2">
           <mat-icon>list</mat-icon> Dashboard
         </button>
       </mat-list-item>
-      <mat-list-item routerLink="graph-app/1">
-        <button mat-button class="w-full h-full">
-          <mat-icon>group</mat-icon> BDV en linea personas
+
+      
+      <mat-list-item *ngFor="let app of appslist">
+        <button mat-button (click)="graph(app.extra)"class="w-full h-full m-2 pd-2">
+           {{ app.name }} <span [ngStyle]="{ color: this.colors.colorScheme(app.value)}"> {{ app.value }}%</span> 
         </button>
       </mat-list-item>
 
-      <!-- <mat-list-item routerLink="">
-        <button mat-button class="w-full h-full">
-          <mat-icon>business</mat-icon> BDV en linea Empresas
-        </button>
-      </mat-list-item>
 
-      <mat-list-item routerLink="">
-        <button mat-button class="w-full h-full">
-          <mat-icon>stay_primary_portrait</mat-icon> BDV Digital
-        </button>
-      </mat-list-item> -->
-
-      <mat-list-item routerLink="graph-app/2">
-        <button mat-button class="w-full h-full">
-          <mat-icon>store</mat-icon> Punto Ya
-        </button>
-      </mat-list-item>
     </mat-list>
   </mat-sidenav>
   <div class="min-h-screen">
     <mat-toolbar color="primary" class="fixed z-50">
-      <span>Agente Monitor</span>
+
+      <div class="row flex">
+        <app-go-back class="mr-3" *ngIf="router.url !== '/'"></app-go-back>
+        <span class="self-center">Agente Monitor</span>
+      </div>
+
     </mat-toolbar>
     <div id="espacer" class="h-20"></div>
     <router-outlet></router-outlet>

@@ -37,6 +37,17 @@
         
         } 
 
+        .mat-expansion-panel {
+          box-sizing: content-box;
+          display: grid;
+          margin: auto;
+          border-radius: 4px;
+          overflow: hidden;
+          transition: margin 225ms cubic-bezier(0.4, 0, 0.2, 1),
+            box-shadow 280ms cubic-bezier(0.4, 0, 0.2, 1);
+          position: relative;
+        }
+
       
       td, th {
         width: 5%;

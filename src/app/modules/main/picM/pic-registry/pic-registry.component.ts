@@ -1,30 +1,32 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute } from '@angular/router';
 import StringUtils from 'src/app/common/util/stringUtils';
 import { PicRegistry } from 'src/app/modules/interfaces/model.pic/model.pic-registry';
+import { GraphServiceService } from 'src/app/services/graph/graph-service.service';
 import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-pic-registry',
   templateUrl: './pic-registry.component.html',
-  styleUrls: ['./pic-registry.component.css']
+  styleUrls: ['./pic-registry.component.css'],
 })
-export class PicRegistryComponent implements OnInit {
-
+export class PicRegistryComponent implements OnInit, AfterViewInit {
   constructor(
     private http: HttpClient,
     public utils: StringUtils,
-    private activateRouter: ActivatedRoute
-  ) {
+    private activateRouter: ActivatedRoute,
+    private serv: GraphServiceService
+  ) {}
+
+  ngAfterViewInit(): void {
     this.activateRouter.params.subscribe((params) => {
       this.PIC_registry(params['id']);
     });
   }
-
 
   ngOnInit(): void {}
 
@@ -62,8 +64,12 @@ export class PicRegistryComponent implements OnInit {
       });
   }
 
+  integration_name:string
+
   getRegistryPicSuccess(respose: any) {
     let PicRegistry: Array<PicRegistry> = respose;
+    console.log('response',respose);
+    
 
     PicRegistry.forEach((PicRegistry) => {
       this.data.push({
@@ -79,11 +85,17 @@ export class PicRegistryComponent implements OnInit {
         consecutiveSuccessfulTest: PicRegistry.consecutiveSuccessfulTest,
         histSuccessfulTest: PicRegistry.histSuccessfulTest,
       });
+
+      this.integration_name = PicRegistry.description;
     });
     console.log(this.data);
+    
+    this.dataGraph = this.serv.dataGraph_load_balancer(respose, this.integration_name)
     this.dataSource = new MatTableDataSource<any>(this.data);
     this.dataSource.paginator = this.paginator;
+    this.dataSource.sort = this.sort;
   }
+  dataGraph: Object[] = [];
 
   getPicResgistryError(error: any) {
     console.error(error);
