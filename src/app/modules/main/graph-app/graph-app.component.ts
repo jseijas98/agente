@@ -1,57 +1,67 @@
-import { HttpClient } from '@angular/common/http';
 import {
   AfterViewInit,
   Component,
+  ComponentFactoryResolver,
+  ComponentRef,
   ElementRef,
+  EventEmitter,
   Input,
   OnDestroy,
   OnInit,
   ViewChild,
+  ViewContainerRef,
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { timeout } from 'd3-timer';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subject, Subscription, takeUntil } from 'rxjs';
+import { AppNameService } from 'src/app/services/app-name/app-name.service';
 import { FlowChartService } from 'src/app/services/flow-chart/flow-chart.service';
-import { environment } from 'src/environments/environment';
-import { ComponentListApis } from '../../interfaces/model.componetList/componentListApis';
-import { ComponentListIntegration } from '../../interfaces/model.componetList/componentListIntegration';
-import { ComponentListPersistence } from '../../interfaces/model.componetList/componentListPersistence';
-import { ComponentListService } from '../../interfaces/model.componetList/componetListServices';
-
 @Component({
   selector: 'app-graph-app',
   templateUrl: './graph-app.component.html',
   styleUrls: ['./graph-app.component.css'],
 })
 export class GraphAppComponent implements OnInit, OnDestroy {
-  public graph: any = JSON.parse(sessionStorage.getItem('Graph')!);
-
-  @ViewChild('zoneFlowChart') zoneFlowChart: ElementRef = new ElementRef('');
+  public graph: string;
 
   constructor(
     private flowChartService: FlowChartService,
     private activateRouter: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private appName: AppNameService,
   ) {}
 
-  activeComponent: GraphAppComponent;
-  //--------------------------------------------Oninit()-----------------------------------
-  ngOnInit(): void {
-    this.nodeHealth();
-  }
-  //---------------------------------------------------------------------------------------
+  unsuscribe$ = new Subject<void>();
 
   ngOnDestroy(): void {
- 
+    this.unsuscribe$.next();
+    this.unsuscribe$.complete();
   }
+
+  isLoading = true;
+  //--------------------------------------------Oninit()-----------------------------------
+  ngOnInit(): void {
+    this.activateRouter.params
+      .pipe(takeUntil(this.unsuscribe$))
+      .subscribe((params) => {
+        this.isLoading = true;
+        this.appName.getDataFromApi(params['id']).subscribe((data) => {
+          this.nodeHealth(params['id']);
+          this.graph = data;
+          this.isLoading = false;
+        });
+      });
+
+  }
+
+
+
+  //---------------------------------------------------------------------------------------
 
   ngAfterViewInit(): void {}
 
-  nodeHealth() {
-    this.activateRouter.params.subscribe((params) => {
-      this.flowChartService.setData(params['id']);
-      console.log('params', params['id']);
-    });
+  nodeHealth(id: any) {
+    this.flowChartService.setData(id);
+    console.log('params', id);
   }
 
   redirect(prefix: string) {

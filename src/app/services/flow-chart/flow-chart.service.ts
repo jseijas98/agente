@@ -1,32 +1,28 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, Injectable } from '@angular/core';
-import { async, BehaviorSubject, from, of, timeout } from 'rxjs';
-import { ComponentListApis } from 'src/app/modules/interfaces/model.componetList/componentListApis';
-import { ComponentListIntegration } from 'src/app/modules/interfaces/model.componetList/componentListIntegration';
-import { ComponentListPersistence } from 'src/app/modules/interfaces/model.componetList/componentListPersistence';
-import { ComponentListService } from 'src/app/modules/interfaces/model.componetList/componetListServices';
+import {
+  async,
+  BehaviorSubject,
+  from,
+  Observable,
+  of,
+  Subject,
+  timeout,
+} from 'rxjs';
 import { environment } from 'src/environments/environment';
 import {
   Componente,
   ComponentList,
+  DataAplication,
 } from '../../modules/interfaces/model.componetList/componentList';
 @Injectable({
   providedIn: 'root',
 })
 export class FlowChartService {
-  public zoneDimensions$: BehaviorSubject<[number, number]> =
-    new BehaviorSubject([0, 0]);
   public data$: BehaviorSubject<any> = new BehaviorSubject(null);
+  update$: Subject<any> = new Subject();
 
   constructor(private http: HttpClient) {}
-
-  calculateDimensions(el: HTMLElement): void {
-    const { width, height } = el.getBoundingClientRect();
-    console.log(width, height);
-    this.zoneDimensions$.next([width, height]);
-  }
-
-  url = environment.baseUrl;
 
   // -------------------esquema de colores----------------------------
 
@@ -45,31 +41,38 @@ export class FlowChartService {
     return colores;
   }
 
-  //----------------------nuevo llamado-------------------------------------
-
   gethealth(index: any) {
     let post = { applicationId: index };
 
-    this.http.post<any>(`${this.url}/health`, post).subscribe({
+    this.http.post<any>(`${environment.baseUrl}/health`, post).subscribe({
       next: this.getHealthsucces.bind(this),
       error: this.gethealthError.bind(this),
     });
   }
 
-  //TODO: add count of elements is over the 100% health status
-
   getHealthsucces(response: any) {
-    let getHealth: Componente = response;
+    let getHealth: DataAplication = response;
 
-    let data = getHealth.data;
+    let data1 = getHealth.data;
 
-    this.health_api = this.colorScheme(data[0].health);
-    this.health_loadbalancer = this.colorScheme(data[2].health);
-    this.health_db = this.colorScheme(data[3].health);
-    this.health_integration = this.colorScheme(data[1].health);
-    this.health_services = this.colorScheme(data[4].health);
+    this.health_api = this.colorScheme(data1[0].health);
+    this.health_loadbalancer = this.colorScheme(data1[2].health);
+    this.health_db = this.colorScheme(data1[3].health);
+    this.health_integration = this.colorScheme(data1[1].health);
+    this.health_services = this.colorScheme(data1[4].health);
 
+    this.message_api = data1[0].message;
+    this.message_loadbalancer = data1[2].message;
+    this.message_db = data1[3].message;
+    this.message_integration = data1[1].message;
+    this.message_services = data1[4].message;
   }
+
+  public message_loadbalancer: string;
+  public message_api: string;
+  public message_services: string;
+  public message_db: string;
+  public message_integration: string;
 
   public health_loadbalancer: string;
   public health_api: string;
@@ -102,7 +105,7 @@ export class FlowChartService {
             img: '../../../assets/LB_base.png',
             text: 'BALANCEADOR DE CARGA',
             link: 'loadBalancer-list',
-            msg: 'mesaje sin definir',
+            msg: this.message_loadbalancer,
             Color: this.health_loadbalancer,
           },
         },
@@ -113,7 +116,7 @@ export class FlowChartService {
             title: 'APIS',
             img: '../../../assets/api_base.png',
             text: 'APIS',
-            msg: '8/8 apis funcionales',
+            msg: this.message_api,
             link: 'apis-list',
             Color: this.health_api,
           },
@@ -125,7 +128,7 @@ export class FlowChartService {
             title: 'MICROSERVICES',
             img: '../../../assets/service_base.png',
             text: 'SERVICIOS',
-            msg: 'mesaje sin definir',
+            msg: this.message_services,
             link: 'services-list',
             Color: this.health_services,
           },
@@ -137,7 +140,7 @@ export class FlowChartService {
             title: 'BASES DE DATOS',
             img: '../../../assets/db_bae.png',
             text: 'BASES DE DATOS',
-            msg: 'mesaje sin definir',
+            msg: this.message_db,
             link: 'persistence-list',
             Color: this.health_db,
           },
@@ -149,7 +152,7 @@ export class FlowChartService {
             title: 'PIC',
             img: '../../../assets/pic_base.png',
             text: 'PIC ',
-            msg: 'mesaje sin definir pic',
+            msg: this.message_integration,
             link: 'pic-list',
             Color: this.health_integration,
           },

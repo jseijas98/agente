@@ -1,24 +1,25 @@
-<div class="wrapper-node">
-  <div class="node-template">
-    <div class="node-template-body">
-      <div
-        class="hover-text"
-        (click)="redirect(dataIn?.data?.link)"
-        *ngIf="dataIn?.data?.img"
-      >
-        <h1 class="tooltip-text" id="top">{{ dataIn?.data?.msg }} </h1>
-        <img  
+<div class="hover-text">
 
-        [ngStyle]="{'filter': colorScheme(dataIn?.data?.Color)}"
+  <div class="tooltip-text">
+    <p>{{ dataIn.data.msg }}</p>
+    <i></i>
+    </div>
 
-          class="text-center"
-          [src]="dataIn?.data?.img"
-          width="150px"
-          height="150px"
-          alt=""
-        />
-      </div>
-      <div > <font color={{dataIn?.data?.Color}}>{{dataIn?.data?.text}}</font>
+  <div class="wrapper-node animate__animated">
+    <div class="node-template">
+      <div class="node-template-body">
+        <div (click)="redirect(dataIn?.data?.link)" *ngIf="dataIn?.data?.img">
+          <img
+            [ngStyle]="{ filter: colorScheme(dataIn?.data?.Color) }"
+            class="text-center"
+            [src]="dataIn?.data?.img"
+          />
+        </div>
+        <div>
+          <font color="{{ dataIn?.data?.Color }}">{{
+            dataIn?.data?.text
+          }}</font>
+        </div>
       </div>
     </div>
   </div>

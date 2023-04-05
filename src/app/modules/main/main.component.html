@@ -14,16 +14,17 @@
     </mat-toolbar>
     <!-- <mat-divider class="w-11/12 fixed"></mat-divider> -->
     <mat-list>
-      <mat-list-item routerLink="">
-        <button  mat-stroked-button class="w-full h-full pd-2">
+
+      <mat-list-item >
+        <button (click)="dashboard()" mat-stroked-button class="w-full h-full pd-2">
           <mat-icon>list</mat-icon> Dashboard
         </button>
       </mat-list-item>
 
-      
+
       <mat-list-item *ngFor="let app of appslist">
         <button mat-button (click)="graph(app.extra)"class="w-full h-full m-2 pd-2">
-           {{ app.name }} <span [ngStyle]="{ color: this.colors.colorScheme(app.value)}"> {{ app.value }}%</span> 
+           {{ app.name }} <span [ngStyle]="{ color: this.colors.colorScheme(app.value)}"> {{ app.value }}%</span>
         </button>
       </mat-list-item>
 

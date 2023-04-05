@@ -44,7 +44,7 @@ export default class StringUtils {
       arrayDate[3],
       arrayDate[4],
       arrayDate[5],
-      arrayDate[6]/1000000
+      arrayDate[6] / 1000000
     );
 
     console.log('date', date);
@@ -75,4 +75,26 @@ export default class StringUtils {
     const seconds = ('0' + date.getSeconds()).slice(-2);
     return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
   }
+
+  formatearFecha(fechaISO: string): string {
+    // Crear un objeto de fecha a partir del formato ISO
+    const fecha: Date = new Date(fechaISO);
+
+    // Obtener los componentes de fecha necesarios
+    const dia: number = fecha.getUTCDate();
+    const mes: number = fecha.getUTCMonth() + 1; // Los meses comienzan desde cero, por lo que se debe agregar 1
+    const año: number = fecha.getUTCFullYear() % 100; // Obtener solo los últimos dos dígitos del año
+    const hora: number = fecha.getUTCHours();
+    const minutos: number = fecha.getUTCMinutes();
+    const segundos: number = fecha.getUTCSeconds();
+
+    // Formatear la fecha y hora en el formato deseado
+    const fechaFormateada: string = `${dia}/${mes}/${año} ${hora}:${minutos}:${segundos}`;
+
+    return fechaFormateada;
+  }
+
+
+
+
 }

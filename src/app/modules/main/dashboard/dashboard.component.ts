@@ -47,7 +47,6 @@ export class DashboardComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private http: HttpClient,
     private appName: AppNameService
   ) {}
 
@@ -60,13 +59,20 @@ export class DashboardComponent implements OnInit {
     return val.value.toString() + '%';
   }
 
+  app_name: string
+
+
   //funcion para redirigir a los elemntos de una aplicacion especifico
   onSelect(event: any) {
+
+    this.appName.getApps().subscribe((apps) => (this.dataCard = apps));
+
+
     sessionStorage.setItem('Graph', JSON.stringify(event));
     let id = JSON.parse(event['extra']);
     this.redirec(id);
 
-    console.log(event);
+    console.log('evento',event);
   }
 
   redirec(app_id: any) {

@@ -1,7 +1,22 @@
-<h1 class="title text-center mb-4 mt-4">{{ graph.label }}</h1>
 
-<div class="app-body">
-  <div #zoneFlowChart class="flow-chart-wrapper">
-    <app-flow-chart></app-flow-chart>
+
+<!-- <div class="spinner-container">
+  <ngx-spinner [type]="'circle'" [color]="'red'"></ngx-spinner>
+</div> -->
+
+<div *ngIf="isLoading" class="spinner-container">
+  <div class="spinner"></div>
+  <br>
+  <p class="text-center"> Cargando...</p>
+</div>
+
+<div *ngIf="!isLoading">
+  <!-- Aquí va el contenido del componente -->
+  <h1 class="title text-center mb-4 mt-4">{{ graph }}</h1>
+
+  <div #mydiv class="app-body">
+    <div #zoneFlowChart class="flow-chart-wrapper text-center">
+      <app-flow-chart #flow></app-flow-chart>
+    </div>
   </div>
 </div>

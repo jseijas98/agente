@@ -21,7 +21,7 @@ export class ServicesRegistryComponent implements AfterViewInit {
     private activateRouter: ActivatedRoute,
     private serv: GraphServiceService
   ) {
-    
+
   }
   ngAfterViewInit(): void {
   this.activateRouter.params.subscribe((params) => {
@@ -69,6 +69,8 @@ export class ServicesRegistryComponent implements AfterViewInit {
 
   getRegistryApisSuccess(respose: any) {
     let ServicesRegistry: Array<ServicesRegistry> = respose;
+    console.log(respose);
+
 
     ServicesRegistry.forEach((servicesRegistry) => {
       this.data.push({

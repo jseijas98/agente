@@ -16,7 +16,7 @@ export interface GetApis {
     highTrigger :              number;
     lowAlarm:                  boolean;
     highAlarm:                 boolean;
-    lastTestDate:              number[];
+    lastTestDate:              string;
     response_time:             number;
     testInterv:                number;
     consecutiveSuccessfulTest: number;

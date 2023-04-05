@@ -17,47 +17,6 @@
   background-color: #b9c5fe;
 }
 
-/* .mat-row:hover {
-  cursor: pointer;
-  background-color: #D8D8D8;
-} */
-
-/* .mat-column-triggerHigh {
-  width: fit-content;
-  max-width: 30px;
-}
-
-.mat-column-lowAlarm {
-  width: auto;
-  max-width: 100px;
-}
-
-.mat-column-replicas {
-  width: fit-content;
-  max-width: 24px;
-}
-
-.mat-column-label_app {
-  width: fit-content;
-  max-width: 30px;
-  word-break: break-all;
-}
-
-.mat-column-triggerLow {
-  width: fit-content;
-  max-width: 30px;
-}
-
-.mat-column-response_time {
-  width: auto;
-  max-width: 25px;
-}
-
-.mat-column-test_interval {
-  width: auto;
-  max-width: 35px;
-  text-align: center;
-} */
 
 .mat-expansion-panel {
   width: 98%;
@@ -79,3 +38,14 @@ td {
 th {
   width: 5%;
 }
+
+::ng-deep .mat-sort-header-container {
+  display: flex;
+  cursor: pointer;
+  align-items: center;
+  letter-spacing: normal;
+  outline: 0;
+  justify-content: center;
+  margin-left: 17.5% !important;
+}
+

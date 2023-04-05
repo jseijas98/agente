@@ -4,11 +4,10 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  ElementRef,
   OnInit,
   ViewChild,
 } from '@angular/core';
-import { GraphComponent} from '@swimlane/ngx-graph';
-
 
 @Component({
   selector: 'app-flow-chart',
@@ -17,12 +16,17 @@ import { GraphComponent} from '@swimlane/ngx-graph';
   // changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FlowChartComponent implements OnInit {
-  dimensions: [number, number] = [0, 0];
   showRender: boolean = false;
-  dataNode: Array<any> = []; 
-  dataLink: Array<any> = []; 
+  dataNode: Array<any> = [];
+  dataLink: Array<any> = [];
 
-  constructor(private serv: FlowChartService, private cd: ChangeDetectorRef) {}
+  // Update function
+
+  ngOnDestroy() {
+    this.elRef.nativeElement.remove();
+  }
+
+  constructor(public serv: FlowChartService, private cd: ChangeDetectorRef, private elRef: ElementRef,) {}
 
   curve = stepRound;
 
@@ -33,16 +37,14 @@ export class FlowChartComponent implements OnInit {
   ngOnInit(): void {
 
     setTimeout(() => {
-      
       this.serv.data$.subscribe((data) => {
-        if (data) 
-        
-        this.dataNode = [...this.dataNode, ...data.nodes];
+        if (data) this.dataNode = [...this.dataNode, ...data.nodes];
         this.dataLink = [...this.dataLink, ...data.links];
       });
     }, 100);
-    
 
-
+    this.serv.update$.next(true)
+    this.serv.update$.subscribe(algo => console.log(algo)
+    );
   }
 }

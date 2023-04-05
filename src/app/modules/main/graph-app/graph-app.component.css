@@ -1,17 +1,54 @@
+.title {
+  margin-top: 15px;
+  font: 400 30px / 32px Roboto, "Helvetica Neue", sans-serif;
+}
+
+.algo {
+  cursor: pointer;
+}
+.app-body{
+  /* margin-left: 10%; */
+  display: flex;
+  justify-content:
+  center; align-items: center;
+}
+
+/* .spinner-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+} */
+
+.spinner-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 80vh;
+  flex-direction: column;
+}
 
 
-  
-  /* .flow-chart-wrapper {
 
-   
-  } */
 
-  .title{
-    margin-top: 15px;
-    font: 400 30px / 32px Roboto, "Helvetica Neue", sans-serif;
+.spinner {
+  border: 16px solid #f3f3f3; /* Gris claro */
+  border-top: 16px solid #3498db; /* Azul */
+  border-radius: 50%;
+  width: 120px;
+  height: 120px;
+  animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
   }
-  
-  
-  .algo{
-    cursor: pointer;
+  100% {
+    transform: rotate(360deg);
   }
+}
+
+
+

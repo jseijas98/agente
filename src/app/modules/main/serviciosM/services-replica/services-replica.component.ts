@@ -65,6 +65,9 @@ export class ServicesReplicaComponent implements OnInit {
   getReplicasServicesSuccess(respose: any) {
     let ServicesReplicalist: Array<ServicesReplica> = respose;
 
+    console.log(respose);
+
+
     ServicesReplicalist.forEach((servicesReplica) => {
       console.log(servicesReplica.metadata);
 
@@ -76,7 +79,7 @@ export class ServicesReplicaComponent implements OnInit {
         status: servicesReplica.status,
         creation_date: servicesReplica.creation_date,
         replica_name: servicesReplica.replica_name,
-        lastTestDate: this.utils.convertDate(servicesReplica.lastTestDate),
+        lastTestDate: this.utils.formatDate(servicesReplica.lastTestDate),
         label_hash: servicesReplica.label_hash,
       });
     });

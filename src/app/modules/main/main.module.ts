@@ -37,6 +37,7 @@ import { GoBackComponent } from 'src/app/components/go-back/go-back.component';
 import { ServicesRegistryReplicaComponent } from './serviciosM/services-registry-replica/services-registry-replica.component';
 import { AddNewElementComponent } from 'src/app/components/modals/add-new-element/add-new-element/add-new-element.component';
 import { DataFormatPipe } from 'src/app/components/pipes/data-fromat-char/data-format.pipe';
+import { NgHttpLoaderModule } from 'ng-http-loader';
 
 @NgModule({
   imports: [
@@ -58,6 +59,9 @@ import { DataFormatPipe } from 'src/app/components/pipes/data-fromat-char/data-f
     FormsModule,
     ReactiveFormsModule,
     MaterialModule,
+    NgHttpLoaderModule
+
+
   ],
 
   declarations: [

@@ -32,3 +32,15 @@ export interface ComponentList {
     consecutiveSuccessfulTest: number;
     response_time:             number;
 }
+
+
+export interface DataAplication {
+  data:    Datum[];
+  message: any[];
+}
+
+export interface Datum {
+  type:    string;
+  message: string;
+  health:  number;
+}

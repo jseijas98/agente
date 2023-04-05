@@ -123,7 +123,6 @@ export class ApiListComponent implements AfterViewInit, OnInit {
     let apisList: Array<GetApis> = respose;
     let data: any[] = [];
 
-    console.log('response', data);
 
     apisList.forEach((api) => {
       data.push({
@@ -133,7 +132,7 @@ export class ApiListComponent implements AfterViewInit, OnInit {
         test_interval: api.testInterv,
         label_app: api.label_app,
         response_time: api.response_time,
-        last_test: this.utils.convertDate(api.lastTestDate),
+        last_test: this.utils.formatearFecha(api.lastTestDate),
         health: api.health,
         applId: api.applicationId,
         triggerLow: api.lowTrigger,

@@ -1,60 +1,84 @@
 .wrapper-node {
+  text-align: center;
+}
 
-    text-align: center;
-  }
-  
-  
-  ::ng-deep .graph .edge {
-    stroke: black
-  }
-  
-  
-  .node-template {
-    /* background-color: rgba(255, 255, 255, .12); */
-    border-radius: var(--border-radius);
-    min-height: 80px;
-    color: var(--text-color-1);
-    padding: 0;
-    cursor: pointer;
-    width: 100%;
-    margin: 0.5rem;
-    display: flex;
-    /* box-shadow: 0 0 8px 2px #0000006b; */
-    flex-direction: column;
-    justify-content: end;
-  }
-  
-  .node-template .node-template-header {
-    font-weight: 500;
-    padding: .35rem;
-  }
-  
-  .node-template .node-template-body {
-    margin: .25rem;
-    font-weight: 400;
-    /* background-color: var(--color-1); */
-    padding: .5rem;
-    color: var(--color-1);
-    border-radius: var(--border-radius);
-  }
-  
-  .node-template-body img {
-    width: 100%;
-    height: 100px;
-    object-fit: contain;
-    pointer-events: none;
-  }
-  
-  .tooltip-text {
-    visibility: hidden;
-    z-index: 2;
-    font-size: 14px;
-    width: auto;
-    height: 12px;
-    padding: 1px;
-  }
-  
-  
-  .hover-text:hover .tooltip-text {
-    visibility: visible;
-  }
+::ng-deep .graph .edge {
+  stroke: black;
+}
+
+.node-template {
+  /* background-color: rgba(255, 255, 255, .12); */
+  border-radius: var(--border-radius);
+  min-height: 80px;
+  color: var(--text-color-1);
+  padding: 0;
+  cursor: pointer;
+  width: 100%;
+  display: flex;
+  /* box-shadow: 0 0 8px 2px #0000006b; */
+  flex-direction: column;
+  justify-content: center;
+}
+
+.node-template .node-template-header {
+  font-weight: 500;
+  padding: 0.35rem;
+}
+
+.node-template .node-template-body {
+  margin: 0.25rem;
+  font-weight: 400;
+  background-color: var(--color-1);
+  padding: 0.5rem;
+  color: var(--color-1);
+  border-radius: var(--border-radius);
+}
+
+.node-template-body img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+}
+
+.hover-text:hover .tooltip-text {
+  visibility: visible;
+}
+
+.tooltip-text {
+  visibility: hidden;
+  z-index: 9999;
+  font-size: 14px;
+  width: auto;
+  height: 12px;
+  padding: 1px;
+}
+
+
+/* --------------------------------------------------------------------- */
+
+.tooltip-text {
+  padding: 9px 16px;
+  background: #cffafa;
+  position: relative;
+  /* min-width: 150px;
+  max-width: 180px; */
+  width: auto;
+  height: auto;
+  border-radius: 5px;
+  text-align: center;
+  filter: drop-shadow(0 3px 5px #ccc);
+  line-height: 1.5;
+}
+
+.tooltip-text:after {
+  content: "";
+  position: absolute;
+  bottom: -9px;
+  left: 50%;
+  margin-left: -9px;
+  width: 18px;
+  height: 18px;
+  background: #cffafa;
+  transform: rotate(45deg);
+}

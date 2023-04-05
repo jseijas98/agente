@@ -8,27 +8,25 @@ import { ActivatedRoute } from '@angular/router';
 import StringUtils from 'src/app/common/util/stringUtils';
 import { ApiReplicasResgistry } from 'src/app/modules/interfaces/model.apis/model.apiReplicasResgistry';
 import { ServicesReplicasRegistry } from 'src/app/modules/interfaces/model.services/model.registryServicesReplica';
+import { GraphServiceService } from 'src/app/services/graph/graph-service.service';
 import { environment } from 'src/environments/environment';
 import { MetadataComponent } from '../../../../components/modals/metadata/metadata.component';
 
 @Component({
   selector: 'app-services-registry-replica',
   templateUrl: './services-registry-replica.component.html',
-  styleUrls: ['./services-registry-replica.component.css']
+  styleUrls: ['./services-registry-replica.component.css'],
 })
 export class ServicesRegistryReplicaComponent implements OnInit {
-
-  
-
   constructor(
     public dialog: MatDialog,
     private http: HttpClient,
     public utils: StringUtils,
-    private activateRouter: ActivatedRoute
+    private activateRouter: ActivatedRoute,
+    private serv: GraphServiceService
   ) {
     this.activateRouter.params.subscribe((params) => {
-      this.Service_Replicas_Resgistry(params['id'],params['ip']);
-      
+      this.Service_Replicas_Resgistry(params['id'], params['ip']);
     });
   }
 
@@ -49,15 +47,17 @@ export class ServicesRegistryReplicaComponent implements OnInit {
 
   baseUrl = environment.baseUrl;
 
-
   dataSource = new MatTableDataSource<any>(this.data);
 
   @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
+  dataGraph: Object[] = [];
 
-  Service_Replicas_Resgistry(id:any, ip:any) {
+  Service_Replicas_Resgistry(id: any, ip: any) {
     this.http
-      .get<ApiReplicasResgistry>(`${this.baseUrl}registry/service/${id}/replica/${ip}`)
+      .get<ApiReplicasResgistry>(
+        `${this.baseUrl}registry/service/${id}/replica/${ip}`
+      )
       .subscribe({
         next: this.getReplicasServiceRegistrySuccess.bind(this),
         error: this.getReplicasServiceResgistryError.bind(this),
@@ -69,31 +69,36 @@ export class ServicesRegistryReplicaComponent implements OnInit {
   getReplicasServiceRegistrySuccess(respose: any) {
     let ServicesReplicaesgistrylist: Array<ServicesReplicasRegistry> = respose;
 
-    ServicesReplicaesgistrylist.forEach((ServiceReplicasResgistry) => {
-      console.log(ServiceReplicasResgistry.metadata);
+    console.log('response', respose);
 
+    ServicesReplicaesgistrylist.forEach((ServiceReplicasResgistry) => {
       this.data.push({
         replica_id: ServiceReplicasResgistry.replica_id,
         serviceId: ServiceReplicasResgistry.serviceId,
         replicaIp: ServiceReplicasResgistry.replicaIp,
         metadata: ServiceReplicasResgistry.metadata,
         status: ServiceReplicasResgistry.status,
-        creation_date: ServiceReplicasResgistry.creation_date,
+        creation_date: this.utils.formatDate(ServiceReplicasResgistry.creation_date),
         replica_name: ServiceReplicasResgistry.replica_name,
-        lastTestDate: this.utils.convertDate(ServiceReplicasResgistry.lastTestDate),
+        lastTestDate: this.utils.formatearFecha(
+          ServiceReplicasResgistry.lastTestDate
+        ),
         label_hash: ServiceReplicasResgistry.label_hash,
       });
 
-      this.nombre_de_replica = ServiceReplicasResgistry.replica_name
+      console.log(this.data);
+
+      this.nombre_de_replica = ServiceReplicasResgistry.replica_name;
+
       console.log(this.nombre_de_replica);
-      
+      // this.dataGraph = this.serv.dataGraph(respose, this.nombre_de_replica);
     });
-    console.log('data service',this.data);
+    console.log('data service', this.data);
     this.dataSource = new MatTableDataSource<any>(this.data);
     this.dataSource.paginator = this.paginator;
   }
 
-  nombre_de_replica:string
+  nombre_de_replica: string;
 
   getReplicasServiceResgistryError(error: any) {
     console.error(error);
@@ -121,6 +126,4 @@ export class ServicesRegistryReplicaComponent implements OnInit {
       console.log(`Dialog result: ${result}`);
     });
   }
- 
-
 }

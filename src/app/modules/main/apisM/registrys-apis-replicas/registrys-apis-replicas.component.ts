@@ -68,10 +68,7 @@ export class RegistrysApisReplicasComponent {
   getReplicasApisRegistrySuccess(respose: any) {
     let apisReplicaesgistrylist: Array<ApiReplicasResgistry> = respose;
 
-
-
-    console.log('response',respose);
-    
+    console.log('response', respose);
 
     apisReplicaesgistrylist.forEach((apiReplicasResgistry) => {
       this.data.push({
@@ -85,19 +82,18 @@ export class RegistrysApisReplicasComponent {
         lastTestDate: this.utils.convertDate(apiReplicasResgistry.lastTestDate),
         label_hash: apiReplicasResgistry.label_hash,
       });
-      this.nombre_de_replica = apiReplicasResgistry.replica_name
+      this.nombre_de_replica = apiReplicasResgistry.replica_name;
       console.log(this.nombre_de_replica);
-      this.nombre_de_replica = apiReplicasResgistry.replica_name
-      
+      this.nombre_de_replica = apiReplicasResgistry.replica_name;
     });
 
-    this.dataGraph = this.serv.dataGraph(respose,this.nombre_de_replica)
-    console.log(this.data);
+    console.log('data',this.data);
+    this.dataGraph = this.serv.dataGraph(respose, this.nombre_de_replica);
     this.dataSource = new MatTableDataSource<any>(this.data);
     this.dataSource.paginator = this.paginator;
   }
 
-  nombre_de_replica:string
+  nombre_de_replica: string;
 
   getReplicasApisResgistryError(error: any) {
     console.error(error);

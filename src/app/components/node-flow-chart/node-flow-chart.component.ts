@@ -33,7 +33,7 @@ export class NodeFlowChartComponent implements OnInit {
   ngOnInit(): void {}
 
   colorScheme(data: string): string {
-  
+
     let colores: string;
 
     data == '#E73628'

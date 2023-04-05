@@ -24,7 +24,7 @@ export class RegistrysApisComponent implements OnInit, AfterViewInit{
     private router: Router,
     private serv: GraphServiceService
   ) {
-    
+
   }
   ngAfterViewInit(): void {
    this.activateRouter.params.subscribe((params) => {
@@ -33,7 +33,7 @@ export class RegistrysApisComponent implements OnInit, AfterViewInit{
   }
 
   ngOnInit(): void {
-  
+
   }
 
 
@@ -53,7 +53,7 @@ export class RegistrysApisComponent implements OnInit, AfterViewInit{
     'consecutiveSuccessfulTest',
     'histSuccessfulTest',
   ];
-  
+
   data: any[] = [];
   dataSource = new MatTableDataSource<any>(this.data);
   apiName: string;

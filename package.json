@@ -27,6 +27,7 @@
     "dagre": "^0.8.5",
     "event-source-polyfill": "^1.0.31",
     "moment-timezone": "^0.5.41",
+    "ng-http-loader": "^12.0.0",
     "ngx-device-detector": "^4.0.1",
     "rxjs": "~7.5.0",
     "tslib": "^2.3.0",

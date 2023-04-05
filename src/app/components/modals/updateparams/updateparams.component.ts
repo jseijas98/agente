@@ -19,7 +19,7 @@ import { BehaviorSubject } from 'rxjs';
 })
 export class UpdateparamsComponent implements OnInit {
   snakbar: any;
-  
+
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: any,
     private http: HttpClient
@@ -78,27 +78,25 @@ export class UpdateparamsComponent implements OnInit {
     let dataUpdate = {
       type: this.data.type,
       idNumber: this.data.item_id,
-      testInterv: parseInt(interval)
-        ? parseInt(interval)
-        : parseInt(interval)
-        ? isNaN(parseInt(interval))
-        : null,
-      lowTrigger: parseInt(low)
-        ? parseInt(low)
-        : parseInt(low)
-        ? isNaN(parseInt(low))
-        : null,
-      highTrigger: parseInt(high)
-        ? parseInt(high)
-        : parseInt(high)
-        ? isNaN(parseInt(high))
-        : null,
+      testInterv: this._validateData(interval),
+      lowTrigger: this._validateData(low),
+      highTrigger: this._validateData(high),
     };
     this.changeParameters(dataUpdate);
     console.log('data send', dataUpdate);
   }
 
-  
+  _validateData(value: string): any {
+    let data;
+   try {
+     data = value != null && value != "" ? parseInt(value): null;
+   } catch (error) {
+    console.log(error, `Hubo un erro en la validacion de ${value}`);
+   }
+    return data;
+  }
+
+
 
   space(data: any): boolean {
     data == undefined ? false : true;

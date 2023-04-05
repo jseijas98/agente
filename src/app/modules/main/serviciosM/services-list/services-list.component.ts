@@ -76,7 +76,7 @@ export class ServicesListComponent implements AfterViewInit {
     'highAlarm',
     'editar',
     'select'
-    
+
   ];
 
   //configuración del dataSource
