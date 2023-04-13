@@ -11,7 +11,7 @@
         margin: auto;
         text-align: center;
       }
-    
+
       .mat-header-cell{
         color: black;
         font-size: 15px;
@@ -19,7 +19,7 @@
         text-align: center;
         background-color: #B9C5FE;
       }
-      
+
       .mat-mdc-form-field {
         font-size: 14px;
         width: 100%;
@@ -35,20 +35,27 @@
           width: 50%;
           margin-bottom: 5px;
           padding: 5px;
-        
-        } 
+
+        }
 
         .mat-form-field {
           font-size: 14px;
           width: 50%;
           margin-bottom: 5px;
           padding: 5px;
-        
-        } 
 
-      
+        }
+
       td, th {
         width: 10%;
       }
 
-     
+      ::ng-deep .mat-sort-header-container {
+        display: flex;
+        cursor: pointer;
+        align-items: center;
+        letter-spacing: normal;
+        outline: 0;
+        justify-content: center;
+        margin-left: 12% !important;
+      }

@@ -61,6 +61,7 @@ export class ApiReplicasComponent implements OnInit {
   }
   metadata1: string = 'ver la metadata';
   registro: string = 'registro';
+  name:string;
 
   getReplicasApisSuccess(respose: any) {
     let apisReplicalist: Array<ApiReplicas> = respose;
@@ -76,11 +77,13 @@ export class ApiReplicasComponent implements OnInit {
         status: apiReplicas.status,
         creation_date: apiReplicas.creation_date,
         replica_name: apiReplicas.replica_name,
-        lastTestDate: this.utils.convertDate(apiReplicas.lastTestDate),
+        lastTestDate: this.utils.formatearFecha(apiReplicas.lastTestDate),
         label_hash: apiReplicas.label_hash,
       });
 
-    
+      this.name = apiReplicas.replica_name.split('-')[0];
+
+
     });
     console.log(this.data);
     this.dataSource = new MatTableDataSource<any>(this.data);

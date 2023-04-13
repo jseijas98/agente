@@ -88,7 +88,7 @@ export class RegistrysApisComponent implements OnInit, AfterViewInit{
         nameSpace: apiRegistry.nameSpace,
         consecutiveFailedTest: apiRegistry.consecutiveFailedTest,
         histFailedTest: apiRegistry.histFailedTest,
-        lastTestDate: this.utils.convertDate(apiRegistry.lastTestDate),
+        lastTestDate: this.utils.formatearFecha(apiRegistry.lastTestDate),
         response_time: apiRegistry.response_time,
         consecutiveSuccessfulTest: apiRegistry.consecutiveSuccessfulTest,
         histSuccessfulTest: apiRegistry.histSuccessfulTest,

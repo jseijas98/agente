@@ -29,7 +29,7 @@ export class PersistenceRegistryComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
-    
+
   }
 
   displayedColumns: string[] = [
@@ -80,7 +80,7 @@ export class PersistenceRegistryComponent implements OnInit, AfterViewInit {
         description: PersistenceRegistry.description,
         consecutiveFailedTest: PersistenceRegistry.consecutiveFailedTest,
         histFailedTest: PersistenceRegistry.histFailedTest,
-        lastTestDate: this.utils.convertDate(PersistenceRegistry.lastTestDate),
+        lastTestDate: this.utils.formatearFecha(PersistenceRegistry.lastTestDate),
         response_time: PersistenceRegistry.response_time,
         consecutiveSuccessfulTest:
           PersistenceRegistry.consecutiveSuccessfulTest,

@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
 import { AddNewElementFormComponent } from 'src/app/components/add-new-element-form/add-new-element-form/add-new-element-form.component';
 import { __values } from 'tslib';
@@ -12,7 +13,8 @@ import { __values } from 'tslib';
 export class AddNewElementComponent implements OnInit {
   constructor(
     public dialog: MatDialog,
-    private activateRouter: ActivatedRoute
+    private activateRouter: ActivatedRoute,
+    private snakbar: MatSnackBar,
   ) {}
 
   ngOnInit(): void {}
@@ -31,8 +33,18 @@ export class AddNewElementComponent implements OnInit {
     dialogRef.afterClosed().subscribe((result) => {
       console.log('dialog:', result?._value?.message);
       this.addNewItem(result?._value?.message)
+
+      this.snakbar.open(
+        result?._value.data
+          ? result?._value?.message
+          : 'ocurrio un error',
+        'ACEPTAR'
+      );
     });
   }
+
+
+
 
   getActiveRouter(): any {
     let id: any;

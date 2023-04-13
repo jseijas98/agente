@@ -45,6 +45,7 @@ export class ServicesReplicaComponent implements OnInit {
   data: any[] = [];
 
   baseUrl = environment.baseUrl;
+  name:string;
 
   dataSource = new MatTableDataSource<any>(this.data);
 
@@ -82,6 +83,10 @@ export class ServicesReplicaComponent implements OnInit {
         lastTestDate: this.utils.formatDate(servicesReplica.lastTestDate),
         label_hash: servicesReplica.label_hash,
       });
+
+      this.name = servicesReplica.replica_name.split('-')[0];
+
+
     });
     console.log(this.data);
     this.dataSource = new MatTableDataSource<any>(this.data);

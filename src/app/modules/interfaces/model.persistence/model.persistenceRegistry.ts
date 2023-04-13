@@ -7,7 +7,7 @@ export interface PersistenceRegistry {
     applicationId:             number;
     consecutiveFailedTest:     number;
     histFailedTest:            number;
-    lastTestDate:              number[];
+    lastTestDate:              string;
     response_time:             number;
     consecutiveSuccessfulTest: number;
     histSuccessfulTest:        number;

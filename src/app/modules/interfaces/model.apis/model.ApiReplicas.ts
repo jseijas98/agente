@@ -6,7 +6,7 @@ export interface ApiReplicas {
     status:        string;
     creation_date: Date;
     replica_name:  string;
-    lastTestDate:  number[];
+    lastTestDate:  string;
     actualState:   boolean;
     label_hash:    string;
 }

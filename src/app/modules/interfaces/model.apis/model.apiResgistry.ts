@@ -8,7 +8,7 @@ export interface ApiRegistry {
     nameSpace:                 string;
     consecutiveFailedTest:     number;
     histFailedTest:            number;
-    lastTestDate:              number[];
+    lastTestDate:              string;
     response_time:             number;
     consecutiveSuccessfulTest: number;
     histSuccessfulTest:        number;
