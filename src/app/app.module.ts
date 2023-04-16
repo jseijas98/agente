@@ -17,6 +17,7 @@ import { AddNewElementFormComponent } from './components/add-new-element-form/ad
 import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { DataFormatPipe } from './components/pipes/data-fromat-char/data-format.pipe';
 
+
 @NgModule({
   declarations: [AppComponent, NotificationComponent, UpdateparamsComponent, AddNewElementFormComponent],
   imports: [

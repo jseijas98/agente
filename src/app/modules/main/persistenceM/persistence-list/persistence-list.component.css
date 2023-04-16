@@ -35,7 +35,7 @@ table {
   padding: 5px;
   align-self: center;
 }
-  
+
 
 th,
 td {
@@ -49,4 +49,5 @@ td {
   letter-spacing: normal;
   outline: 0;
   justify-content: center !important;
+  margin-left: 10%!important;
 }

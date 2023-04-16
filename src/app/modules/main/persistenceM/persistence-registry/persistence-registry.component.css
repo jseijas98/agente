@@ -45,3 +45,13 @@ td,
 th {
   width: 5%;
 }
+
+::ng-deep .mat-sort-header-container {
+  display: flex;
+  cursor: pointer;
+  align-items: center;
+  letter-spacing: normal;
+  outline: 0;
+  justify-content: center !important;
+  margin-left: 15% !important;
+}

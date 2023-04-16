@@ -33,19 +33,28 @@ export class SseServiceService {
 
     return Observable.create((observer: Observer<any>) => {
       const eventSource = this.eventSource = this.getEventSource(url);
-
       eventSource.onopen = (event) => { if(eventSource.readyState == 1) this.spinner.hide(); };
 
       eventSource.onmessage = event => {
-        this._zone.run(() => {
+            observer.next(event);
+        };
+
+        eventSource.onerror = event => {
           observer.next(event);
-        });
       };
-      eventSource.onerror = error => {
-        this._zone.run(() => {
-          observer.error(error);
-        });
-      };
+      // eventSource.onmessage = event => {
+      //   this._zone.run(() => {
+      //     observer.next(event);
+      //   });
+      // };
+
+      // eventSource.onerror = error => {
+      //   this._zone.run(() => {
+      //     observer.error(error);
+      //   });
+      // };
+
+
     });
   }
 

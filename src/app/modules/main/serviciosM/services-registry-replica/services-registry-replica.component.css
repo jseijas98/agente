@@ -11,14 +11,14 @@
         margin: auto;
         text-align: center;
       }
-    
+
       .mat-header-cell{
         color: black;
         font-size: 13px;
         text-align: center;
         background-color: #B9C5FE;
       }
-      
+
       .mat-mdc-form-field {
         font-size: 14px;
         width: 100%;
@@ -34,8 +34,8 @@
           width: 50%;
           margin-bottom: 5px;
           padding: 5px;
-        
-        } 
+
+        }
 
         .mat-expansion-panel {
           box-sizing: content-box;
@@ -48,9 +48,17 @@
           position: relative;
         }
 
-      
+
       td, th {
         width: 5%;
       }
 
-     
+      ::ng-deep .mat-sort-header-container {
+        display: flex;
+        cursor: pointer;
+        align-items: center;
+        letter-spacing: normal;
+        outline: 0;
+        justify-content: center !important;
+        margin-left: 10%!important;
+      }

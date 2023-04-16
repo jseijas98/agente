@@ -27,6 +27,7 @@ import { RowAlertService } from 'src/app/services/row-alert/row-alert.service';
 import { DeleteService } from 'src/app/services/deleteElement/delete.service';
 import { Subject, takeUntil } from 'rxjs';
 import { AppNameService } from 'src/app/services/app-name/app-name.service';
+import { SseServiceService } from 'src/app/services/sse/sse-service.service';
 
 @Component({
   selector: 'app-api-list',
@@ -49,7 +50,8 @@ export class ApiListComponent implements AfterViewInit, OnInit {
     private snakbar: MatSnackBar,
     public rowAlertService: RowAlertService,
     public service: DeleteService,
-    private appName: AppNameService
+    private appName: AppNameService,
+    private sseServiceService:SseServiceService
   ) {}
 
   unsuscribe$ = new Subject<void>();
@@ -57,7 +59,10 @@ export class ApiListComponent implements AfterViewInit, OnInit {
   replicas: string = 'replicas del api ';
   appname: string;
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+
+    this.sseFuntion();
+  }
 
   ngOnDestroy() {
     this.unsuscribe$.next();
@@ -207,4 +212,16 @@ export class ApiListComponent implements AfterViewInit, OnInit {
       this.callApisData();
     }, 500);
   }
+
+  sseFuntion() {
+    this.sseServiceService.getDataFromServer(environment.baseUrl +'registry/application/1/apis').subscribe(data => console.log('getDataFromServer',data));
+
+    this.sseServiceService.getServerSentEvent(environment.baseUrl +'registry/application/1/apis').subscribe(data => console.log('getServerSentEvent',data));
+
+  }
+
+
+
+
+
 }

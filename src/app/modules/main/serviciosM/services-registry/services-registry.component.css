@@ -87,7 +87,7 @@ th {
 .mat-column-label_app {
   width: fit-content;
   max-width: 25px;
-   word-break: break-all; 
+   word-break: break-all;
   text-align: center;
 }
 
@@ -139,8 +139,15 @@ th {
 
 
 
-
-
+::ng-deep .mat-sort-header-container {
+  display: flex;
+  cursor: pointer;
+  align-items: center;
+  letter-spacing: normal;
+  outline: 0;
+  justify-content: center !important;
+  margin-left: 10%!important;
+}
 
 
 

@@ -69,7 +69,7 @@ export class PicRegistryComponent implements OnInit, AfterViewInit {
   getRegistryPicSuccess(respose: any) {
     let PicRegistry: Array<PicRegistry> = respose;
     console.log('response',respose);
-    
+
 
     PicRegistry.forEach((PicRegistry) => {
       this.data.push({
@@ -80,7 +80,7 @@ export class PicRegistryComponent implements OnInit, AfterViewInit {
         description: PicRegistry.description,
         consecutiveFailedTest: PicRegistry.consecutiveFailedTest,
         histFailedTest: PicRegistry.histFailedTest,
-        lastTestDate: this.utils.convertDate(PicRegistry.lastTestDate),
+        lastTestDate: this.utils.formatearFecha(PicRegistry.lastTestDate),
         response_time: PicRegistry.response_time,
         consecutiveSuccessfulTest: PicRegistry.consecutiveSuccessfulTest,
         histSuccessfulTest: PicRegistry.histSuccessfulTest,
@@ -89,7 +89,7 @@ export class PicRegistryComponent implements OnInit, AfterViewInit {
       this.integration_name = PicRegistry.description;
     });
     console.log(this.data);
-    
+
     this.dataGraph = this.serv.dataGraph_load_balancer(respose, this.integration_name)
     this.dataSource = new MatTableDataSource<any>(this.data);
     this.dataSource.paginator = this.paginator;
