@@ -38,7 +38,6 @@ export class UpdateparamsComponent implements OnInit {
     });
   }
 
-  //TODO: algo con la respuesta
 
   updateResponse(response: any) {
     console.log('update response', response);

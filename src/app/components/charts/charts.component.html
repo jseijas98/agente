@@ -13,7 +13,7 @@
     scheme="cool"
     [view]="[1300, 400]"
     [results]="dataIn"
-    [legend]="true"
+    [legend]="false"
     [animations]="true"
     [xAxis]="true"
     [yAxis]="true"
@@ -28,6 +28,7 @@
     [maxXAxisTickLength]="20"
     [xAxisTickFormatting]="this.utils.formatDate"
     [tooltipDisabled]="false"
+
   >
     <ng-template #tooltipTemplate let-model="model">
       <div class="tooltip-container">
@@ -40,8 +41,8 @@
             </div>
           </div>
           <div class="tooltip-row">
-            <div class="tooltip-label">Tiempo de respuesta:</div>
-            <div class="tooltip-value">{{ model.value }}ms</div>
+            <div class="tooltip-label">{{legend1}}:</div>
+            <div class="tooltip-value">{{ model.value }} {{legend2}}</div>
           </div>
         </div>
       </div>
@@ -58,8 +59,8 @@
             </div>
           </div>
           <div class="tooltip-row">
-            <div class="tooltip-label">Tiempo de respuesta:</div>
-            <div class="tooltip-value">{{ model[0].value }} ms</div>
+            <div class="tooltip-label">{{legend1}}:</div>
+            <div class="tooltip-value">{{ model[0].value }} {{legend2}}</div>
           </div>
         </div>
       </div>

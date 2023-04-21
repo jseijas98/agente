@@ -45,34 +45,33 @@ export class DashboardComponent implements OnInit {
 
   cardColor: string = '#232837';
 
-  constructor(
-    private router: Router,
-    private appName: AppNameService
-  ) {}
+  constructor(private router: Router, private appName: AppNameService) {}
 
   ngOnInit(): void {
     this.appName.getApps().subscribe((apps) => (this.dataCard = apps));
+
+
+    this.appName.getAppsSse().subscribe((apps) => (this.dataCard = apps));
+
+
   }
 
-   //formato del valor numerico
+  //formato del valor numerico
   axisFormat(val: any) {
     return val.value.toString() + '%';
   }
 
-  app_name: string
-
+  app_name: string;
 
   //funcion para redirigir a los elemntos de una aplicacion especifico
   onSelect(event: any) {
-
     this.appName.getApps().subscribe((apps) => (this.dataCard = apps));
-
 
     sessionStorage.setItem('Graph', JSON.stringify(event));
     let id = JSON.parse(event['extra']);
     this.redirec(id);
 
-    console.log('evento',event);
+    console.log('evento', event);
   }
 
   redirec(app_id: any) {
@@ -80,3 +79,5 @@ export class DashboardComponent implements OnInit {
     console.log(app_id);
   }
 }
+
+

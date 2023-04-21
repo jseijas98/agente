@@ -28,6 +28,12 @@ export class PicRegistryComponent implements OnInit, AfterViewInit {
     });
   }
 
+
+   //pointer grph info
+   protected legend1: string = 'tiempo de respuesta';
+   protected legend2: string = 'ms';
+
+
   ngOnInit(): void {}
 
   displayedColumns: string[] = [
@@ -45,18 +51,14 @@ export class PicRegistryComponent implements OnInit, AfterViewInit {
   ];
 
   data: any[] = [];
-
-  baseUrl = environment.baseUrl;
-
   dataSource = new MatTableDataSource<any>(this.data);
-
   @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
   PIC_registry(index: number) {
     this.http
       .get<PicRegistry>(
-        `${this.baseUrl}registry/application/${index}/integration`
+        `${environment.baseUrl}registry/application/${index}/integration`
       )
       .subscribe({
         next: this.getRegistryPicSuccess.bind(this),
@@ -69,8 +71,6 @@ export class PicRegistryComponent implements OnInit, AfterViewInit {
   getRegistryPicSuccess(respose: any) {
     let PicRegistry: Array<PicRegistry> = respose;
     console.log('response',respose);
-
-
     PicRegistry.forEach((PicRegistry) => {
       this.data.push({
         registry_id: PicRegistry.registry_id,
@@ -88,13 +88,14 @@ export class PicRegistryComponent implements OnInit, AfterViewInit {
 
       this.integration_name = PicRegistry.description;
     });
-    console.log(this.data);
+    console.log('data pic',this.data);
 
     this.dataGraph = this.serv.dataGraph_load_balancer(respose, this.integration_name)
     this.dataSource = new MatTableDataSource<any>(this.data);
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
   }
+
   dataGraph: Object[] = [];
 
   getPicResgistryError(error: any) {

@@ -42,6 +42,7 @@ export class FlowChartService {
   }
 
   gethealth(index: any) {
+
     let post = { applicationId: index };
 
     this.http.post<any>(`${environment.baseUrl}/health`, post).subscribe({

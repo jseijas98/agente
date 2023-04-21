@@ -31,6 +31,11 @@ export class RegistrysApisReplicasComponent {
 
   ngOnInit(): void {}
 
+    //pointer grph info
+    legend1: string = 'status';
+    legend2: string = '%';
+
+
   displayedColumns: string[] = [
     'apiId',
     'replicaIp',

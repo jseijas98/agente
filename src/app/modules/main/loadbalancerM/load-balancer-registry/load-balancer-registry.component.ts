@@ -21,10 +21,10 @@ export class LoadBalancerRegistryComponent implements OnInit, AfterViewInit {
     public utils: StringUtils,
     private activateRouter: ActivatedRoute,
     private serv: GraphServiceService
-  ) 
-  
+  )
+
   {
-  
+
   }
   ngAfterViewInit(): void {
     this.activateRouter.params.subscribe((params) => {
@@ -56,6 +56,9 @@ export class LoadBalancerRegistryComponent implements OnInit, AfterViewInit {
   baseUrl = environment.baseUrl;
 
   dataSource = new MatTableDataSource<any>(this.data);
+   //pointer grph info
+   protected legend1: string = 'tiempo de respuesta';
+   protected legend2: string = 'ms';
 
   @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;

@@ -27,6 +27,7 @@ export class AddNewElementComponent implements OnInit {
 
   openDialog() {
     const dialogRef = this.dialog.open(AddNewElementFormComponent, {
+      disableClose: true,
       data: this.getActiveRouter(),
     });
 

@@ -34,8 +34,8 @@ export class GraphServiceService {
   dataGraph_load_balancer(response: any, name: any): Object[] {
     let datanew: Array<any> = response;
 
+    const series: Series[] = [];
     let multi: Object[] = [];
-    let series: Series[] = [];
     let multi2: Multi;
 
     datanew.filter(x=>x.lastTestDate != null).map((element) => {
@@ -46,9 +46,7 @@ export class GraphServiceService {
       multi2 = { name: name, series: series };
       multi = [multi2];
     });
-
-    console.log('service', multi);
-
+    console.log('series services', multi);
     return multi;
   }
 
@@ -72,5 +70,5 @@ export class GraphServiceService {
 
     return multi;
   }
-  
+
 }

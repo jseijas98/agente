@@ -9,8 +9,10 @@
   <div>
     <h3></h3>
     <mat-form-field appearance="fill">
-      <mat-label><b>intervalo entre test (ms)</b></mat-label>
+      <mat-label><b>test time (ms)</b>
+      </mat-label>
       <input
+        placeholder={{data.testinterval}}
         matInput
         #input
         matInput
@@ -22,7 +24,7 @@
       <mat-error *ngIf="intervalCtrl.invalid">{{
         getErrorMessage_testInterval(intervalCtrl)
       }}</mat-error>
-     
+
       <mat-hint align="end"></mat-hint>
 
     </mat-form-field>
@@ -31,6 +33,7 @@
     <mat-form-field appearance="fill">
       <mat-label> <b>trigger bajo</b></mat-label>
       <input
+        placeholder={{data.tlow}}
         matInput
         #input
         matInput
@@ -48,6 +51,7 @@
       <mat-label><b>trigger alto</b></mat-label>
       <input
         matInput
+        placeholder={{data.thigh}}
         #input
         matInput
         #High

@@ -44,11 +44,11 @@ export class ServicesRegistryReplicaComponent implements OnInit {
   ];
 
   data: any[] = [];
-
   baseUrl = environment.baseUrl;
-
   dataSource = new MatTableDataSource<any>(this.data);
-
+   //pointer grph info
+   protected legend1: string = 'tiempo de respuesta';
+   protected legend2: string = 'ms';
   @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
   dataGraph: Object[] = [];
@@ -87,9 +87,7 @@ export class ServicesRegistryReplicaComponent implements OnInit {
       });
 
       console.log(this.data);
-
       this.nombre_de_replica = ServiceReplicasResgistry.replica_name;
-
       console.log(this.nombre_de_replica);
       // this.dataGraph = this.serv.dataGraph(respose, this.nombre_de_replica);
     });

@@ -160,6 +160,9 @@ export class ServicesListComponent implements AfterViewInit {
         appid: row.applId,
         label: row.label_app,
         space: row.nameSpace,
+        tlow: row.triggerLow,
+        thigh: row.triggerHigh,
+        testinterval: row.test_interval
       },
     });
 

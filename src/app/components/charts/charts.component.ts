@@ -9,11 +9,14 @@ import { Step, stepSquare } from 'src/app/services/flow-chart/Step';
   styleUrls: ['./charts.component.css'],
 })
 export class ChartsComponent implements OnInit {
+
   @Input() dataIn: any;
   @Input() legentTitleIn: any;
   @Input() xlabel: any;
   @Input() ylabel: any;
   @Input() title: any;
+  @Input() legend1: any;
+  @Input() legend2: any;
 
   curve = stepSquare;
 
@@ -33,6 +36,6 @@ export class ChartsComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  
+
 
 }

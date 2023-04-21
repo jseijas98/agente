@@ -49,8 +49,10 @@ export class PersistenceRegistryComponent implements OnInit, AfterViewInit {
   data: any[] = [];
   dataGraph: Object[] = [];
   persistence_name:string;
-
   baseUrl = environment.baseUrl;
+   //pointer grph info
+   protected legend1: string = 'tiempo de respuesta';
+   protected legend2: string = 'ms';
 
   dataSource = new MatTableDataSource<any>(this.data);
 

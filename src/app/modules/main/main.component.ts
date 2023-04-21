@@ -29,9 +29,12 @@ export class MainComponent implements OnInit {
     this.appName.getApps().subscribe(
       (response) => {
         this.appslist = response;
+        console.log(response);
+
       },
       (error) => {
-        console.error(error);
+        console.log(error);
+        ;
       }
     );0
   }

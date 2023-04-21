@@ -42,18 +42,18 @@ export class SseServiceService {
         eventSource.onerror = event => {
           observer.next(event);
       };
-      // eventSource.onmessage = event => {
-      //   this._zone.run(() => {
-      //     observer.next(event);
-      //   });
-      // };
 
-      // eventSource.onerror = error => {
-      //   this._zone.run(() => {
-      //     observer.error(error);
-      //   });
-      // };
+      eventSource.onmessage = event => {
+        this._zone.run(() => {
+          observer.next(event);
+        });
+      };
 
+      eventSource.onerror = error => {
+        this._zone.run(() => {
+          observer.error(error);
+        });
+      };
 
     });
   }

@@ -21,22 +21,22 @@ import { FlowChartService } from 'src/app/services/flow-chart/flow-chart.service
   styleUrls: ['./graph-app.component.css'],
 })
 export class GraphAppComponent implements OnInit, OnDestroy {
-  public graph: string;
 
   constructor(
     private flowChartService: FlowChartService,
     private activateRouter: ActivatedRoute,
     private router: Router,
     private appName: AppNameService,
-  ) {}
+    ) {}
 
-  unsuscribe$ = new Subject<void>();
+    unsuscribe$ = new Subject<void>();
 
-  ngOnDestroy(): void {
-    this.unsuscribe$.next();
-    this.unsuscribe$.complete();
-  }
+    ngOnDestroy(): void {
+      this.unsuscribe$.next();
+      this.unsuscribe$.complete();
+    }
 
+    public graph: string;
   isLoading = true;
   //--------------------------------------------Oninit()-----------------------------------
   ngOnInit(): void {

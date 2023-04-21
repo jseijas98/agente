@@ -31,6 +31,10 @@ export class ServicesRegistryComponent implements AfterViewInit {
 
   ngOnInit(): void {}
 
+   //pointer grph info
+   protected legend1: string = 'tiempo de respuesta';
+   protected legend2: string = 'ms';
+
   displayedColumns: string[] = [
     'registry_id',
     'servicesId',
@@ -69,7 +73,7 @@ export class ServicesRegistryComponent implements AfterViewInit {
 
   getRegistryApisSuccess(respose: any) {
     let ServicesRegistry: Array<ServicesRegistry> = respose;
-    console.log(respose);
+    console.log('response',respose);
 
 
     ServicesRegistry.forEach((servicesRegistry) => {

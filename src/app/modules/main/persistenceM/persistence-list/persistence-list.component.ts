@@ -149,13 +149,15 @@ export class PersistenceListComponent implements AfterViewInit {
   open(row: any) {
     const dialogRef = this.dialog.open(UpdateparamsComponent, {
       disableClose: true,
-
       data: {
         item_id: row.Id,
         type: this.index,
         appid: row.applId,
         label: row.label_app,
         space: row.nameSpace,
+        tlow: row.lowT,
+        thigh: row.highT,
+        testinterval: row.test_interval
       },
     });
 

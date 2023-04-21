@@ -16,27 +16,26 @@ import { ApiRegistry } from '../../../interfaces/model.apis/model.apiResgistry';
   templateUrl: './registrys-apis.component.html',
   styleUrls: ['./registrys-apis.component.css'],
 })
-export class RegistrysApisComponent implements OnInit, AfterViewInit{
+export class RegistrysApisComponent implements OnInit, AfterViewInit {
   constructor(
     private http: HttpClient,
     public utils: StringUtils,
     private activateRouter: ActivatedRoute,
     private router: Router,
     private serv: GraphServiceService
-  ) {
-
-  }
+  ) {}
   ngAfterViewInit(): void {
-   this.activateRouter.params.subscribe((params) => {
+    this.activateRouter.params.subscribe((params) => {
       this.Api_registry(params['id']);
     });
   }
 
-  ngOnInit(): void {
+  //pointer grph info
+  protected legend1: string = 'status';
+  protected legend2: string = '%';
 
-  }
 
-
+  ngOnInit(): void {}
 
   displayedColumns: string[] = [
     'registry_id',
@@ -106,7 +105,6 @@ export class RegistrysApisComponent implements OnInit, AfterViewInit{
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
   }
-
 
   getApisResgistryError(error: any) {
     console.error(error);

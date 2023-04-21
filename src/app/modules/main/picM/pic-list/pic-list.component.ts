@@ -35,7 +35,7 @@ export class PicListComponent implements OnInit, AfterViewInit {
     public service: DeleteService,
     private appName: AppNameService
   ) {}
-  
+
   unsuscribe$ = new Subject<void>();
   appname: string;
   registro: string = 'registros historicos';
@@ -106,7 +106,7 @@ export class PicListComponent implements OnInit, AfterViewInit {
     let picList: Array<PicList> = respose;
     let data: any[] = [];
     console.log(respose);
-    
+
 
     picList.forEach((pic) => {
       data.push({
@@ -158,6 +158,9 @@ export class PicListComponent implements OnInit, AfterViewInit {
         appid: row.applId,
         label: row.description,
         space: row.nameSpace,
+        tlow: row.lowT,
+        thigh: row.highT,
+        testinterval: row.test_interval
       },
     });
 
