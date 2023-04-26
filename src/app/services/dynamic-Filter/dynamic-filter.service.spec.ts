@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { EventStreamService } from './event-stream.service';
+import { DynamicFilterService } from './dynamic-filter.service';
 
-describe('EventStreamService', () => {
-  let service: EventStreamService;
+describe('DynamicFilterService', () => {
+  let service: DynamicFilterService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(EventStreamService);
+    service = TestBed.inject(DynamicFilterService);
   });
 
   it('should be created', () => {

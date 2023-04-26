@@ -29,11 +29,12 @@ export class SseServiceService {
   }
 
   public getServerSentEvent(url:string):Observable<any>{
+
     this.spinner.show();
 
     return Observable.create((observer: Observer<any>) => {
       const eventSource = this.eventSource = this.getEventSource(url);
-      eventSource.onopen = (event) => { if(eventSource.readyState == 1) this.spinner.hide(); };
+      eventSource.onopen = (event) => { if(eventSource.readyState == 1) {this.spinner.hide(); }};
 
       eventSource.onmessage = event => {
             observer.next(event);

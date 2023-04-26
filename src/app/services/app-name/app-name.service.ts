@@ -13,9 +13,11 @@ export class AppNameService {
     private sseServiceService: SseServiceService
   ) {}
 
+//se unsa en graphapp.component.ts
+
   getDataFromApi(index:any) {
     return this.http
-      .get<any>(environment.Cisnerosip + '/list/application')
+      .get<any>(environment.baseUrl + 'list/application')
       .pipe(
         switchMap((response: any) => {
           const id = index;
@@ -32,9 +34,11 @@ export class AppNameService {
       );
   }
 
+  //se unsa en dashboards.component.ts
+
   getApps() {
     return this.http
-      .get<any[]>(environment.Cisnerosip + '/list/application')
+      .get<any[]>(environment.baseUrl + 'list/application')
       .pipe(
         switchMap((response: Applications[]) => {
           const data: Applications[] = response;
@@ -54,10 +58,9 @@ export class AppNameService {
       );
   }
 
-
   getAppsSse() {
      return this.sseServiceService
-        .getDataFromServer(environment.Cisnerosip + environment.listAplications).pipe(switchMap((response: Applications[]) => {
+        .getDataFromServer(environment.baseUrl + 'list/application').pipe(switchMap((response: Applications[]) => {
           const data: Applications[] = response;
           const element = data.map((x) => ({
             name: x.applicationName,
@@ -66,7 +69,7 @@ export class AppNameService {
           }));
           if (element) {
             const appName = element;
-            console.log(appName);
+            console.log('apps',appName);
             return of(appName);
           } else {
             return throwError('error');
@@ -75,9 +78,8 @@ export class AppNameService {
       );
   }
 
-
   getDataFromApplication(index:any){
-    return this.sseServiceService.getDataFromServer(environment.Cisnerosip + environment.listAplications).pipe(
+    return this.sseServiceService.getDataFromServer(environment.baseUrl +'list/application').pipe(
       switchMap((response: any) => {
         const id = index;
         const data: Array<any> = response;
@@ -91,9 +93,6 @@ export class AppNameService {
         }
       })
     );
-
-
-
   }
 
 

@@ -19,10 +19,8 @@ export class DeleteService {
       });
   }
 
-
-
   deleteSuccess(response: any) {
-    console.log('response',response);
+    console.log('response', response);
   }
 
   deleteError(error: any) {
@@ -55,14 +53,19 @@ export class DeleteService {
   }
 
   DeleteData(type: string) {
-
     const elementSelected: Array<any> = this.selection.selected;
     console.log(elementSelected[0]);
 
     if (elementSelected.length > 0) {
-      if (confirm('Are you sure to delete items')) {
+      if (
+        confirm(
+          '¿esta seguro que desea eliminar los items seleccionados? ' +
+            '               ' +
+            'ADVERTENCIA: Los registros seran eliminados de forma permanente'
+        )
+      ) {
         elementSelected.forEach((element) => {
-            this.delete(element.Id, type);
+          this.delete(element.Id, type);
         });
       }
     } else {

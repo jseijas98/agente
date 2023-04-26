@@ -15,14 +15,21 @@ import {
   ComponentList,
   DataAplication,
 } from '../../modules/interfaces/model.componetList/componentList';
+import { SseServiceService } from '../sse/sse-service.service';
+import { SpinnerVisibilityService } from 'ng-http-loader';
 @Injectable({
   providedIn: 'root',
 })
 export class FlowChartService {
-  public data$: BehaviorSubject<any> = new BehaviorSubject(null);
-  update$: Subject<any> = new Subject();
 
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    private sseServiceService: SseServiceService,
+    private spinner: SpinnerVisibilityService
+    ) {}
+
+    public data$: BehaviorSubject<any> = new BehaviorSubject(null);
+    public update$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
   // -------------------esquema de colores----------------------------
 
@@ -41,21 +48,67 @@ export class FlowChartService {
     return colores;
   }
 
+  sseGetHealth(index: any) {
+    this.sseServiceService
+      .getDataFromServer(`${environment.baseUrl}health/application/${index}`)
+      .subscribe({
+        next: this.success.bind(this),
+        error: this.error.bind(this),
+        complete: () => console.log('completed'),
+      });
+  }
+
+
+  success(response: any) {
+
+    this.spinner.show();
+
+    let getHealth: DataAplication = response;
+    console.log(response);
+    let data1 = getHealth.data;
+    this.health_api = this.colorScheme(data1[0].health);
+    this.health_loadbalancer = this.colorScheme(data1[2].health);
+    this.health_db = this.colorScheme(data1[3].health);
+    this.health_integration = this.colorScheme(data1[1].health);
+    this.health_services = this.colorScheme(data1[4].health);
+
+    this.message_api = data1[0].message;
+    this.message_loadbalancer = data1[2].message;
+    this.message_db = data1[3].message;
+    this.message_integration = data1[1].message;
+    this.message_services = data1[4].message;
+
+
+    this.update$.next(false);
+
+    setTimeout(() => {
+      this.data();
+      this.update$.next(true);
+      this.spinner.hide();
+    }, 1);
+
+  }
+
+  error(error: any) {
+    console.log(error);
+
+  }
+
   gethealth(index: any) {
-
-    let post = { applicationId: index };
-
-    this.http.post<any>(`${environment.baseUrl}/health`, post).subscribe({
+    const post = { applicationId: index };
+    this.http.post<any>(`${environment.baseUrl}health`, post).subscribe({
       next: this.getHealthsucces.bind(this),
       error: this.gethealthError.bind(this),
     });
   }
 
   getHealthsucces(response: any) {
+
+    console.log(response);
+
     let getHealth: DataAplication = response;
 
     let data1 = getHealth.data;
-
     this.health_api = this.colorScheme(data1[0].health);
     this.health_loadbalancer = this.colorScheme(data1[2].health);
     this.health_db = this.colorScheme(data1[3].health);
@@ -89,7 +142,11 @@ export class FlowChartService {
 
   setData(index: any) {
     this.gethealth(index);
+    setTimeout(() => {
+      this.data();
+    }, 100);
 
+    this.sseGetHealth(index);
     setTimeout(() => {
       this.data();
     }, 100);
@@ -109,6 +166,7 @@ export class FlowChartService {
             msg: this.message_loadbalancer,
             Color: this.health_loadbalancer,
           },
+
         },
         {
           id: 'c2',
