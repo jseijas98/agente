@@ -16,6 +16,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AddNewElementFormComponent } from './components/add-new-element-form/add-new-element-form/add-new-element-form.component';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { DataFormatPipe } from './components/pipes/data-fromat-char/data-format.pipe';
+import { NgHttpLoaderModule } from 'ng-http-loader';
 
 
 @NgModule({
@@ -34,6 +35,7 @@ import { DataFormatPipe } from './components/pipes/data-fromat-char/data-format.
     ReactiveFormsModule,
     FormsModule,
     ReactiveFormsModule,
+    NgHttpLoaderModule
   ],
   providers: [StringUtils],
   bootstrap: [AppComponent],

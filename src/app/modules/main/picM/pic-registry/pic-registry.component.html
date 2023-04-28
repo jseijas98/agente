@@ -1,5 +1,6 @@
 
-<app-charts [dataIn]="dataGraph" [legentTitleIn]="integration_name" [xlabel]="'fecha'" [ylabel]="'tiempo de respuesta (ms)'" [title]="integration_name" [legend1]="legend1" [legend2]="legend2"></app-charts>
+<ng-http-loader></ng-http-loader>
+<app-charts [dataIn]="dataGraph" [legentTitleIn]="integration_name" [xlabel]="'fecha'" [ylabel]="'tiempo de respuesta (ms)'" [title]="integration_name" [legend1]="legend1" [legend2]="legend2" [dataIsEmpty]="tableIsEmpty"></app-charts>
 
 <br />
 
@@ -11,7 +12,7 @@
 
       <mat-form-field>
        <mat-label>Filter</mat-label>
-       <input matInput (keyup)="applyFilter($event)" placeholder="Ex. gateway" #input>
+       <input matInput (keyup)="onFilterInputChanged($event)" placeholder="Ex. gateway" #input>
      </mat-form-field>
 
      <div class="mat-elevation-z8 m-auto" >

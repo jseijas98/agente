@@ -50,5 +50,13 @@
   }
 }
 
+::ng-deep.graph ::ng-deep.panning-rect{
+  cursor: default !important;
+}
+::ng-deep .node text {
+  text-anchor: middle;
+}
+
+
 
 

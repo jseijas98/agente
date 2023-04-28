@@ -1,20 +1,38 @@
 
+<ng-http-loader></ng-http-loader>
 <mat-card class="mt-10 text-center m-5">
   <mat-card-header class="justify-center">
     <mat-card-title-group>
-      <mat-card-title>{{name == undefined ||''? 'sin replicas funcionales': 'réplicas del servico '+name}} </mat-card-title>
-      <mat-card-subtitle>{{name == undefined || ''? '':'aqui podras ver las todas las réplicas del servico ' + name}} </mat-card-subtitle>
+      <div *ngIf="tableIsEmpty">
+        <mat-card-title></mat-card-title>
+        <mat-card-subtitle></mat-card-subtitle>
+      </div>
+
+      <div *ngIf="!tableIsEmpty">
+        <mat-card-title
+          >{{
+            name == undefined || ""
+              ? "sin replicas funcionales"
+              : "réplicas del servico " + name
+          }}
+        </mat-card-title>
+
+        <mat-card-subtitle
+          >{{
+            name == undefined || ""
+              ? ""
+              : "aqui podras ver las todas las réplicas del servico " + name
+          }}
+        </mat-card-subtitle>
+      </div>
     </mat-card-title-group>
   </mat-card-header>
-<div class="conatiner relative text-center flex flex-col">
-
-
-
+  <div class="conatiner relative text-center flex flex-col">
     <mat-form-field class="self-center">
       <mat-label>Filter</mat-label>
       <input
         matInput
-        (keyup)="applyFilter($event)"
+        (keyup)="onFilterInputChanged($event)"
         placeholder="Ex. gateway"
         #input
       />
@@ -23,10 +41,11 @@
     <div class="mat-elevation-z8 w-5/6 m-auto">
       <table mat-table [dataSource]="dataSource" matSort>
 
+
         <!-- 1 services Id -->
-        <ng-container matColumnDef="servicesId">
+        <ng-container matColumnDef="serviceId">
           <th mat-header-cell *matHeaderCellDef mat-sort-header>service id</th>
-          <td mat-cell *matCellDef="let row">{{ row.servicesId }}</td>
+          <td mat-cell *matCellDef="let row">{{ row.serviceId }}</td>
         </ng-container>
 
         <!-- 2 name space-->

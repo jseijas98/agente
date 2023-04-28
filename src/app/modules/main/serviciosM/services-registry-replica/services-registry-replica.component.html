@@ -1,6 +1,7 @@
 
+<ng-http-loader></ng-http-loader>
 
-<app-charts [dataIn]="dataGraph" [legentTitleIn]="nombre_de_replica" [xlabel]="'fecha'" [ylabel]="'staus'" [title]="nombre_de_replica" [legend1]="legend1" [legend2]="legend2"></app-charts>
+<app-charts [dataIn]="dataGraph" [legentTitleIn]="nombre_de_replica" [xlabel]="'fecha'" [ylabel]="'staus'" [title]="nombre_de_replica" [legend1]="legend1" [legend2]="legend2" [dataIsEmpty]="tableIsEmpty"></app-charts>
 <br />
 
 <mat-expansion-panel class="w-11/12 m-auto">
@@ -12,7 +13,7 @@
       <mat-label>Filter</mat-label>
       <input
         matInput
-        (keyup)="applyFilter($event)"
+        (keyup)="onFilterInputChanged($event)"
         placeholder="Ex. gateway"
         #input
       />

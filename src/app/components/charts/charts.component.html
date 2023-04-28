@@ -1,11 +1,20 @@
 <mat-card class="w-4/5 mt-10 mx-auto text-center">
   <mat-card-header class="text-center justify-center">
     <mat-card-title-group class="">
+
+      <div *ngIf="dataIsEmpty">
+        <mat-card-title></mat-card-title>
+        <mat-card-subtitle
+          ></mat-card-subtitle
+        >
+      </div>
+      <div *ngIf="!dataIsEmpty">
       <mat-card-title>Grafico de {{ title }}</mat-card-title>
       <mat-card-subtitle
-        >aqui podras ver el estado en el tiempo de
+        >aqui podras ver el estado en el tiempo del
         {{ title }}</mat-card-subtitle
       >
+    </div>
     </mat-card-title-group>
   </mat-card-header>
 

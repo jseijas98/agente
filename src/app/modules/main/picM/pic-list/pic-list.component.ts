@@ -13,7 +13,9 @@ import { UpdateparamsComponent } from 'src/app/components/modals/updateparams/up
 import { PicList } from 'src/app/modules/interfaces/model.pic/model.pic-list';
 import { AppNameService } from 'src/app/services/app-name/app-name.service';
 import { DeleteService } from 'src/app/services/deleteElement/delete.service';
+import { DynamicFilterService } from 'src/app/services/dynamic-Filter/dynamic-filter.service';
 import { RowAlertService } from 'src/app/services/row-alert/row-alert.service';
+import { SseServiceService } from 'src/app/services/sse/sse-service.service';
 import { environment } from 'src/environments/environment';
 
 @Component({
@@ -22,7 +24,6 @@ import { environment } from 'src/environments/environment';
   styleUrls: ['./pic-list.component.css'],
 })
 export class PicListComponent implements OnInit, AfterViewInit {
-  baseUrl = environment.baseUrl;
 
   constructor(
     private http: HttpClient,
@@ -33,14 +34,19 @@ export class PicListComponent implements OnInit, AfterViewInit {
     private snakbar: MatSnackBar,
     public rowAlertService: RowAlertService,
     public service: DeleteService,
-    private appName: AppNameService
-  ) {}
+    private appName: AppNameService,
+    private sseServiceService: SseServiceService,
+    private dynamicFilterService:DynamicFilterService
 
+    ) {}
+
+  baseUrl = environment.baseUrl;
   unsuscribe$ = new Subject<void>();
   appname: string;
   registro: string = 'registros historicos';
   replicas: string = 'replicas de pic ';
   index = 'integration';
+  tableIsEmpty=true;
 
   //configuración del dataSource
   dataSource = new MatTableDataSource<any>();
@@ -56,11 +62,33 @@ export class PicListComponent implements OnInit, AfterViewInit {
         .getDataFromApi(params['id']).pipe(takeUntil(this.unsuscribe$))
         .subscribe((data) => (this.appname = data));
     });
-    this.callPicData();
+    // this.callPicData();
+    // this.activateRouter.params.subscribe((params) => {
+    //   this.appName.nameApp(params['id']).subscribe((data) => (this.appname = data));
+    // });
+    this.ssePicList();
   }
 
+  filterValue: string = '';
 
-  ngOnInit(): void {}
+  applyFilter() {
+    this.dataSource.filter = this.filterValue;
+    if (this.dataSource.paginator) {
+      this.dataSource.paginator.firstPage();
+    }
+    localStorage.setItem('filterValue', this.filterValue);
+    console.log('valor almacenado',this.filterValue);
+
+  }
+  onFilterInputChanged(event: Event) {
+    const inputValue = (event.target as HTMLInputElement).value;
+    this.filterValue = inputValue ? inputValue.trim().toLowerCase() : '';
+    this.applyFilter();
+  }
+
+  ngOnInit(): void {
+this.dynamicFilterService.dynamicFilter('filterValue')
+  }
 
   callPicData() {
     this.activateRouter.params.subscribe((params) => {
@@ -123,7 +151,7 @@ export class PicListComponent implements OnInit, AfterViewInit {
         lowT: pic.highTrigger,
         highT: pic.lowTrigger,
         lowAlarm: pic.lowAlarm,
-        highAlarm: pic.highAlarm,
+        highAlarm: pic.highAlarm
       });
     });
 
@@ -136,14 +164,14 @@ export class PicListComponent implements OnInit, AfterViewInit {
     console.error(error);
   }
 
-  applyFilter(event: Event) {
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSource.filter = filterValue.trim().toLowerCase();
+  // applyFilter(event: Event) {
+  //   const filterValue = (event.target as HTMLInputElement).value;
+  //   this.dataSource.filter = filterValue.trim().toLowerCase();
 
-    if (this.dataSource.paginator) {
-      this.dataSource.paginator.firstPage();
-    }
-  }
+  //   if (this.dataSource.paginator) {
+  //     this.dataSource.paginator.firstPage();
+  //   }
+  // }
 
   PicRegistry(applId: any) {
     this.router.navigateByUrl(`pic-registry/${applId}`);
@@ -187,8 +215,66 @@ export class PicListComponent implements OnInit, AfterViewInit {
   deleteData() {
     this.service.dataSource = this.dataSource;
     this.service.DeleteData(this.index);
-    setTimeout(() => {
-      this.callPicData();
-    }, 300);
+
+      // this.callPicData();
+      this.ssePicList();
+
   }
+
+  ssePicList(){
+    this.activateRouter.params.subscribe((params) => {
+      this.sseFuntion(params['id']);
+    });
+  }
+
+  sseFuntion(index: any) {
+    const httpApiLIst =`${environment.baseUrl}list/application/${index}/integration`;
+    this.sseServiceService
+      .getDataFromServer(httpApiLIst)
+      .pipe(takeUntil(this.unsuscribe$))
+      .subscribe({
+        next: this.Success.bind(this),
+        error: this.Error.bind(this),
+        complete: () => console.log('completed'),
+      });
+  }
+
+  Success(response: any) {
+    let datos: any[] = [];
+    response.forEach((pic: PicList) =>
+     { datos.push({
+      Id: pic.integrationId,
+      status: pic.status,
+      channel: pic.channel,
+      test_interval: pic.testInterv,
+      response_time: pic.response_time,
+      last_test: this.utils.formatDate(pic.lastTestDate),
+      applId: pic.applicationId,
+      consecutiveFailedTest: pic.consecutiveFailedTest,
+      consecutiveSuccessfulTest: pic.consecutiveSuccessfulTest,
+      description: pic.description,
+      lowT: pic.highTrigger,
+      highT: pic.lowTrigger,
+      lowAlarm: pic.lowAlarm,
+      highAlarm: pic.highAlarm
+      })
+    });
+    if (datos.length > 0) {
+      this.tableIsEmpty = false;
+      this.dataSource = new MatTableDataSource<any>(datos);
+      this.dataSource.paginator = this.paginator;
+      this.dataSource.sort = this.sort;
+      this.applyFilter();
+
+    }else{
+      this.dataSource = new MatTableDataSource<any>([])
+      this.dataSource.data = [{message:'Sin datos para mostrar'}];
+      this.tableIsEmpty = false;
+    }
+  }
+
+  Error(error: any) {
+    console.log('error sse loadbalancer', error);
+  }
+
 }

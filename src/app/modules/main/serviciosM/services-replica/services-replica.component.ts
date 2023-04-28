@@ -9,6 +9,9 @@ import StringUtils from 'src/app/common/util/stringUtils';
 import { ServicesReplica } from 'src/app/modules/interfaces/model.services/model.servicesReplica';
 import { environment } from 'src/environments/environment';
 import { MetadataComponent } from '../../../../components/modals/metadata/metadata.component';
+import { SseServiceService } from 'src/app/services/sse/sse-service.service';
+import { Subject, takeUntil } from 'rxjs';
+import { DynamicFilterService } from 'src/app/services/dynamic-Filter/dynamic-filter.service';
 
 @Component({
   selector: 'app-services-replica',
@@ -21,17 +24,45 @@ export class ServicesReplicaComponent implements OnInit {
     private http: HttpClient,
     public utils: StringUtils,
     private activateRouter: ActivatedRoute,
-    private router: Router
-  ) {
-    this.activateRouter.params.subscribe((params) => {
-      this.Services_replicas(params['id']);
-    });
+    private router: Router,
+    private sseServiceService: SseServiceService,
+    private dynamicFilterService: DynamicFilterService
+  ) {}
+
+  ngOnDestroy() {
+    this.unsuscribe$.next();
+    this.unsuscribe$.complete();
   }
 
-  ngOnInit(): void {}
+  ngAfterViewInit(): void {
+    // this.activateRouter.params.subscribe((params) => {
+    //   this.Services_replicas(params['id']);
+    // });
+    this.sseServiceReplica();
+  }
+
+  filterValue: string = '';
+
+  applyFilter() {
+    this.dataSource.filter = this.filterValue;
+    if (this.dataSource.paginator) {
+      this.dataSource.paginator.firstPage();
+    }
+    localStorage.setItem('filterValue', this.filterValue);
+    console.log('valor almacenado', this.filterValue);
+  }
+  onFilterInputChanged(event: Event) {
+    const inputValue = (event.target as HTMLInputElement).value;
+    this.filterValue = inputValue ? inputValue.trim().toLowerCase() : '';
+    this.applyFilter();
+  }
+
+  ngOnInit(): void {
+    this.dynamicFilterService.dynamicFilter('filterValue');
+  }
 
   displayedColumns: string[] = [
-    'servicesId',
+    'serviceId',
     'replicaIp',
     'metadata',
     'status',
@@ -43,14 +74,12 @@ export class ServicesReplicaComponent implements OnInit {
   ];
 
   data: any[] = [];
-
   baseUrl = environment.baseUrl;
-  name:string;
-
+  name: string;
   dataSource = new MatTableDataSource<any>(this.data);
-
   @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
+  unsuscribe$ = new Subject<void>();
 
   Services_replicas(index: number) {
     this.http
@@ -63,18 +92,17 @@ export class ServicesReplicaComponent implements OnInit {
       });
   }
 
+  //TODO: LISTO con sse
+
   getReplicasServicesSuccess(respose: any) {
     let ServicesReplicalist: Array<ServicesReplica> = respose;
-
     console.log(respose);
-
-
     ServicesReplicalist.forEach((servicesReplica) => {
       console.log(servicesReplica.metadata);
 
       this.data.push({
         replica_id: servicesReplica.replica_id,
-        servicesId: servicesReplica.serviceId,
+        serviceId: servicesReplica.serviceId        ,
         replicaIp: servicesReplica.replicaIp,
         metadata: servicesReplica.metadata,
         status: servicesReplica.status,
@@ -85,8 +113,6 @@ export class ServicesReplicaComponent implements OnInit {
       });
 
       this.name = servicesReplica.replica_name.split('-')[0];
-
-
     });
     console.log(this.data);
     this.dataSource = new MatTableDataSource<any>(this.data);
@@ -97,17 +123,18 @@ export class ServicesReplicaComponent implements OnInit {
     console.error(error);
   }
 
-  applyFilter(event: Event) {
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSource.filter = filterValue.trim().toLowerCase();
+  // applyFilter(event: Event) {
+  //   const filterValue = (event.target as HTMLInputElement).value;
+  //   this.dataSource.filter = filterValue.trim().toLowerCase();
 
-    if (this.dataSource.paginator) {
-      this.dataSource.paginator.firstPage();
-    }
-  }
+  //   if (this.dataSource.paginator) {
+  //     this.dataSource.paginator.firstPage();
+  //   }
+  // }
 
   metadata1: string = 'ver la metadata';
   registro: string = 'registro';
+  tableIsEmpty = true;
 
   // metadata
 
@@ -127,5 +154,62 @@ export class ServicesReplicaComponent implements OnInit {
     this.router.navigateByUrl(
       `services-replicas-registry/${service_id}/${api_ip}`
     );
+  }
+
+  sseServiceReplica() {
+    this.activateRouter.params.subscribe((params) => {
+      this.sseFuntion(params['id']);
+    });
+  }
+
+  sseFuntion(index: any) {
+    const httpApiLIst = `${this.baseUrl}actualState/service/${index}/replica`;
+    this.sseServiceService
+      .getDataFromServer(httpApiLIst)
+      .pipe(takeUntil(this.unsuscribe$))
+      .subscribe({
+        next: this.Success.bind(this),
+        error: this.Error.bind(this),
+        complete: () => console.log('completed'),
+      });
+  }
+
+
+  Success(response: any) {
+    let datos: any[] = [];
+    response.forEach((ServiceReplicasResgistry: ServicesReplica) => {
+      datos.push({
+        replica_id: ServiceReplicasResgistry.replica_id,
+        serviceId: ServiceReplicasResgistry.serviceId,
+        replicaIp: ServiceReplicasResgistry.replicaIp,
+        metadata: ServiceReplicasResgistry.metadata,
+        status: ServiceReplicasResgistry.status,
+        creation_date: this.utils.formatDate(
+          ServiceReplicasResgistry.creation_date
+        ),
+        replica_name: ServiceReplicasResgistry.replica_name,
+        lastTestDate: this.utils.formatearFecha(
+          ServiceReplicasResgistry.lastTestDate
+        ),
+        label_hash: ServiceReplicasResgistry.label_hash,
+      });
+      this.name = ServiceReplicasResgistry.replica_name.split('-')[0];
+    });
+    console.log(datos);
+    if (datos.length > 0) {
+      this.tableIsEmpty = false;
+      this.dataSource = new MatTableDataSource<any>(datos);
+      this.dataSource.paginator = this.paginator;
+      this.dataSource.sort = this.sort;
+      this.applyFilter();
+    } else {
+      this.dataSource = new MatTableDataSource<any>([]);
+      this.dataSource.data = [{ message: 'Sin datos para mostrar' }];
+      this.tableIsEmpty = false;
+    }
+  }
+
+  Error(error: any) {
+    console.log('error sse', error);
   }
 }

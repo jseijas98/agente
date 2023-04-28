@@ -11,11 +11,12 @@ import {
 } from '@angular/core';
 import { Router } from '@angular/router';
 import { Color, ScaleType } from '@swimlane/ngx-charts';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs';
 import { AppNameService } from 'src/app/services/app-name/app-name.service';
 import { FlowChartService } from 'src/app/services/flow-chart/flow-chart.service';
 import { environment } from 'src/environments/environment';
 import { Applications } from '../../interfaces/model.applications';
+import { SseServiceService } from 'src/app/services/sse/sse-service.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -25,7 +26,14 @@ import { Applications } from '../../interfaces/model.applications';
 export class DashboardComponent implements OnInit {
   public application$: BehaviorSubject<any> = new BehaviorSubject(null);
 
-  dataCard: any[] = [];
+  constructor(
+    private router: Router,
+    private appName: AppNameService,
+
+    private sseServiceService: SseServiceService
+  ) {
+
+  }
 
   //data de la charts cards
 
@@ -42,26 +50,39 @@ export class DashboardComponent implements OnInit {
       domain: colores,
     };
   }
-
   cardColor: string = '#232837';
+  app_name: string;
+  dataCard: any[] = [];
 
-  constructor(private router: Router, private appName: AppNameService) {}
+  unsuscribe$ = new Subject<void>();
+
+  ngOnDestroy(): void {this.sseServiceService.closeEventSource();}
+
+  ngAfterViewInit(): void {
+    // this.appName.getApps().subscribe((apps) => (this.dataCard = apps));
+    // this.appName.dashboard().subscribe((apps) => {(this.dataCard = apps)
+    // console.log(apps);
+    // });
+  }
 
   ngOnInit(): void {
-    this.appName.getApps().subscribe((apps) => (this.dataCard = apps));
+    // this.appName.dashboard().subscribe((apps) => (this.dataCard = apps));
+    // this.appName.dashboard().subscribe((apps) => {(this.dataCard = apps)
+    //   console.log(apps);
+    //   });
 
+    this.appName.dashboard().subscribe((apps) => {
+      this.dataCard = apps;
+      console.log(apps);
+    });
 
     this.appName.getAppsSse().subscribe((apps) => (this.dataCard = apps));
-
-
   }
 
   //formato del valor numerico
   axisFormat(val: any) {
     return val.value.toString() + '%';
   }
-
-  app_name: string;
 
   //funcion para redirigir a los elemntos de una aplicacion especifico
   onSelect(event: any) {
@@ -79,5 +100,3 @@ export class DashboardComponent implements OnInit {
     console.log(app_id);
   }
 }
-
-

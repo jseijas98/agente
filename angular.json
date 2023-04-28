@@ -49,11 +49,23 @@
               "extractLicenses": false,
               "sourceMap": true,
               "namedChunks": true
+            },
+            "local": {
+
+              "optimization": {
+              "fonts": false
+          },"budgets": [],
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.local.ts"
+                }]
             }
           },
           "defaultConfiguration": "production"
         },
         "serve": {
+
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
@@ -61,6 +73,9 @@
             },
             "development": {
               "browserTarget": "agente-monitor:build:development"
+            },
+            "local": {
+              "browserTarget": "agente-monitor:build:local"
             }
           },
           "defaultConfiguration": "development"

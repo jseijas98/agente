@@ -12,7 +12,9 @@ import { UpdateparamsComponent } from 'src/app/components/modals/updateparams/up
 import { ServicesList } from 'src/app/modules/interfaces/model.services/model.services-list';
 import { AppNameService } from 'src/app/services/app-name/app-name.service';
 import { DeleteService } from 'src/app/services/deleteElement/delete.service';
+import { DynamicFilterService } from 'src/app/services/dynamic-Filter/dynamic-filter.service';
 import { RowAlertService } from 'src/app/services/row-alert/row-alert.service';
+import { SseServiceService } from 'src/app/services/sse/sse-service.service';
 import { environment } from 'src/environments/environment';
 
 @Component({
@@ -21,8 +23,6 @@ import { environment } from 'src/environments/environment';
   styleUrls: ['./services-list.component.css'],
 })
 export class ServicesListComponent implements AfterViewInit {
-  baseUrl = environment.baseUrl;
-
   constructor(
     private http: HttpClient,
     private router: Router,
@@ -32,23 +32,66 @@ export class ServicesListComponent implements AfterViewInit {
     private snakbar: MatSnackBar,
     public rowAlertService: RowAlertService,
     public service: DeleteService,
-    private appName: AppNameService
+    private appName: AppNameService,
+    private sseServiceService: SseServiceService,
+    private dynamicFilterService: DynamicFilterService
   ) {}
+
+  //TODO: LISTO con sse
 
   appname: string;
   unsuscribe$ = new Subject<void>();
   public index: string = 'service';
   registro: string = 'registros historicos';
   replicas: string = 'replicas del servicio ';
+  baseUrl = environment.baseUrl;
+  tableIsEmpty = true;
+
+  ngOnDestroy() {
+    this.unsuscribe$.next();
+    this.unsuscribe$.complete();
+  }
 
   ngAfterViewInit(): void {
+    // this.activateRouter.params.subscribe((params) => {
+    //   this.appName
+    //     .getDataFromApi(params['id'])
+    //     .pipe(takeUntil(this.unsuscribe$))
+    //     .subscribe((data) => (this.appname = data));
+    // });
+    // this.callServiceData();
+
     this.activateRouter.params.subscribe((params) => {
       this.appName
-        .getDataFromApi(params['id'])
-        .pipe(takeUntil(this.unsuscribe$))
+        .getDataFromApi(params['id']).pipe(takeUntil(this.unsuscribe$))
         .subscribe((data) => (this.appname = data));
     });
-    this.callServiceData();
+
+
+    // this.activateRouter.params.subscribe((params) => {
+    //   this.appName.nameApp(params['id']).subscribe((data) => (this.appname = data));
+    // });
+    this.sseServiceList();
+  }
+
+  filterValue: string = '';
+
+  applyFilter() {
+    this.dataSource.filter = this.filterValue;
+    if (this.dataSource.paginator) {
+      this.dataSource.paginator.firstPage();
+    }
+    localStorage.setItem('filterValue', this.filterValue);
+    console.log('valor almacenado', this.filterValue);
+  }
+  onFilterInputChanged(event: Event) {
+    const inputValue = (event.target as HTMLInputElement).value;
+    this.filterValue = inputValue ? inputValue.trim().toLowerCase() : '';
+    this.applyFilter();
+  }
+
+  ngOnInit(): void {
+    this.dynamicFilterService.dynamicFilter('filterValue');
   }
 
   callServiceData() {
@@ -75,8 +118,7 @@ export class ServicesListComponent implements AfterViewInit {
     'lowAlarm',
     'highAlarm',
     'editar',
-    'select'
-
+    'select',
   ];
 
   //configuración del dataSource
@@ -88,7 +130,10 @@ export class ServicesListComponent implements AfterViewInit {
 
   Service(index: number) {
     this.http
-      .get<ServicesList>(`${this.baseUrl}list/application/${index}/service`).pipe(takeUntil(this.unsuscribe$))
+      .get<ServicesList>(
+        `${environment.baseUrl}list/application/${index}/service`
+      )
+      .pipe(takeUntil(this.unsuscribe$))
       .subscribe({
         next: this.getServicesSuccess.bind(this),
         error: this.getServicesError.bind(this),
@@ -98,7 +143,7 @@ export class ServicesListComponent implements AfterViewInit {
   getServicesSuccess(response: any) {
     let serviceLIst: Array<ServicesList> = response;
     let data: any[] = [];
-
+    console.log('response', response);
     serviceLIst.forEach((services) => {
       data.push({
         Id: services.serviceId,
@@ -127,14 +172,14 @@ export class ServicesListComponent implements AfterViewInit {
     console.error(error);
   }
 
-  applyFilter(event: Event) {
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSource.filter = filterValue.trim().toLowerCase();
+  // applyFilter(event: Event) {
+  //   const filterValue = (event.target as HTMLInputElement).value;
+  //   this.dataSource.filter = filterValue.trim().toLowerCase();
 
-    if (this.dataSource.paginator) {
-      this.dataSource.paginator.firstPage();
-    }
-  }
+  //   if (this.dataSource.paginator) {
+  //     this.dataSource.paginator.firstPage();
+  //   }
+  // }
 
   changeParameters(dataupdate: any) {
     this.http.post<any>(this.baseUrl + 'params', dataupdate).subscribe({
@@ -162,7 +207,7 @@ export class ServicesListComponent implements AfterViewInit {
         space: row.nameSpace,
         tlow: row.triggerLow,
         thigh: row.triggerHigh,
-        testinterval: row.test_interval
+        testinterval: row.test_interval,
       },
     });
 
@@ -197,8 +242,63 @@ export class ServicesListComponent implements AfterViewInit {
   deleteData() {
     this.service.dataSource = this.dataSource;
     this.service.DeleteData(this.index);
-    setTimeout(() => {
-      this.callServiceData();
-    }, 100);
+    // this.callServiceData();
+    this.sseServiceList();
+  }
+
+  sseServiceList() {
+    this.activateRouter.params.subscribe((params) => {
+      this.sseFuntion(params['id']);
+    });
+  }
+
+  sseFuntion(index: any) {
+    const httpApiLIst = `${environment.baseUrl}list/application/${index}/service`;
+    this.sseServiceService
+      .getDataFromServer(httpApiLIst)
+      .pipe(takeUntil(this.unsuscribe$))
+      .subscribe({
+        next: this.Success.bind(this),
+        error: this.Error.bind(this),
+        complete: () => console.log('completed'),
+      });
+  }
+
+  Success(response: any) {
+    let datos: any[] = [];
+    response.forEach((services: ServicesList) => {
+      datos.push({
+        Id: services.serviceId,
+        status: services.status,
+        nameSpace: services.nameSpace,
+        test_interval: services.testInterv,
+        label_app: services.labelApp,
+        response_time: services.response_time,
+        last_test: this.utils.formatDate(services.lastTestsDate),
+        health: services.health,
+        applId: services.applicationId,
+        triggerLow: services.lowTrigger,
+        triggerHigh: services.highTrigger,
+        lowAlarm: services.lowAlarm,
+        highAlarm: services.highAlarm,
+      });
+    });
+    console.log(datos);
+
+    if (datos.length > 0) {
+      this.tableIsEmpty = false;
+      this.dataSource = new MatTableDataSource<any>(datos);
+      this.dataSource.paginator = this.paginator;
+      this.dataSource.sort = this.sort;
+      this.applyFilter();
+    } else {
+      this.dataSource = new MatTableDataSource<any>([]);
+      this.dataSource.data = [{ message: 'Sin datos para mostrar' }];
+      this.tableIsEmpty = false;
+    }
+  }
+
+  Error(error: any) {
+    console.log('error sse', error);
   }
 }

@@ -4,9 +4,12 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute } from '@angular/router';
+import { Subject, takeUntil } from 'rxjs';
 import StringUtils from 'src/app/common/util/stringUtils';
 import { PersistenceRegistry } from 'src/app/modules/interfaces/model.persistence/model.persistenceRegistry';
+import { DynamicFilterService } from 'src/app/services/dynamic-Filter/dynamic-filter.service';
 import { GraphServiceService } from 'src/app/services/graph/graph-service.service';
+import { SseServiceService } from 'src/app/services/sse/sse-service.service';
 import { environment } from 'src/environments/environment';
 
 @Component({
@@ -19,17 +22,42 @@ export class PersistenceRegistryComponent implements OnInit, AfterViewInit {
     private http: HttpClient,
     public utils: StringUtils,
     private activateRouter: ActivatedRoute,
-    private serv: GraphServiceService
+    private serv: GraphServiceService,
+    private sseServiceService: SseServiceService,
+    private dynamicFilterService:DynamicFilterService
   ) {}
 
   ngAfterViewInit(): void {
-    this.activateRouter.params.subscribe((params) => {
-      this.persistence_registry(params['id']);
-    });
+    // this.activateRouter.params.subscribe((params) => {
+    //   this.persistence_registry(params['id']);
+    // });
+     this.ssePersistenceRegistry();
+  }
+
+  filterValue: string = '';
+
+  applyFilter() {
+    this.dataSource.filter = this.filterValue;
+    if (this.dataSource.paginator) {
+      this.dataSource.paginator.firstPage();
+    }
+    localStorage.setItem('filterValue', this.filterValue);
+    console.log('valor almacenado',this.filterValue);
+
+  }
+  onFilterInputChanged(event: Event) {
+    const inputValue = (event.target as HTMLInputElement).value;
+    this.filterValue = inputValue ? inputValue.trim().toLowerCase() : '';
+    this.applyFilter();
   }
 
   ngOnInit(): void {
+this.dynamicFilterService.dynamicFilter('filterValue')
+  }
 
+  ngOnDestroy() {
+    this.unsuscribe$.next();
+    this.unsuscribe$.complete();
   }
 
   displayedColumns: string[] = [
@@ -46,6 +74,7 @@ export class PersistenceRegistryComponent implements OnInit, AfterViewInit {
     'histSuccessfulTest',
   ];
 
+
   data: any[] = [];
   dataGraph: Object[] = [];
   persistence_name:string;
@@ -53,11 +82,11 @@ export class PersistenceRegistryComponent implements OnInit, AfterViewInit {
    //pointer grph info
    protected legend1: string = 'tiempo de respuesta';
    protected legend2: string = 'ms';
-
   dataSource = new MatTableDataSource<any>(this.data);
-
+  unsuscribe$ = new Subject<void>();
   @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
+  tableIsEmpty=true;
 
   persistence_registry(index: number) {
     this.http
@@ -86,7 +115,7 @@ export class PersistenceRegistryComponent implements OnInit, AfterViewInit {
         response_time: PersistenceRegistry.response_time,
         consecutiveSuccessfulTest:
           PersistenceRegistry.consecutiveSuccessfulTest,
-        histSuccessfulTest: PersistenceRegistry.histSuccessfulTest,
+        histSuccessfulTest: PersistenceRegistry.histSuccessfulTest
       });
 
       this.persistence_name = PersistenceRegistry.description
@@ -103,12 +132,72 @@ export class PersistenceRegistryComponent implements OnInit, AfterViewInit {
     console.error(error);
   }
 
-  applyFilter(event: Event) {
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSource.filter = filterValue.trim().toLowerCase();
+  // applyFilter(event: Event) {
+  //   const filterValue = (event.target as HTMLInputElement).value;
+  //   this.dataSource.filter = filterValue.trim().toLowerCase();
 
-    if (this.dataSource.paginator) {
-      this.dataSource.paginator.firstPage();
+  //   if (this.dataSource.paginator) {
+  //     this.dataSource.paginator.firstPage();
+  //   }
+  // }
+
+  ssePersistenceRegistry(){
+    this.activateRouter.params.subscribe((params) => {
+      this.sseFuntion(params['id']);
+    });
+  }
+
+  sseFuntion(index: any) {
+    const httpApiLIst =`${environment.baseUrl}registry/application/${index}/persistence`;
+    this.sseServiceService
+      .getDataFromServer(httpApiLIst)
+      .pipe(takeUntil(this.unsuscribe$))
+      .subscribe({
+        next: this.Success.bind(this),
+        error: this.Error.bind(this),
+        complete: () => console.log('completed'),
+      });
+  }
+
+  Success(response: any) {
+    let datos: any[] = [];
+    response.forEach((PersistenceRegistry: PersistenceRegistry) =>
+     { datos.push({
+      registry_id: PersistenceRegistry.registryId,
+      persistence_id: PersistenceRegistry.dbId,
+      status: PersistenceRegistry.status,
+      applicationId: PersistenceRegistry.applicationId,
+      description: PersistenceRegistry.description,
+      consecutiveFailedTest: PersistenceRegistry.consecutiveFailedTest,
+      histFailedTest: PersistenceRegistry.histFailedTest,
+      lastTestDate: this.utils.formatearFecha(PersistenceRegistry.lastTestDate),
+      response_time: PersistenceRegistry.response_time,
+      consecutiveSuccessfulTest:
+        PersistenceRegistry.consecutiveSuccessfulTest,
+      histSuccessfulTest: PersistenceRegistry.histSuccessfulTest
+      })
+      this.persistence_name = PersistenceRegistry.description
+    });
+    console.log(datos);
+
+    if (datos.length > 0) {
+      this.dataGraph = this.serv.dataGraph_load_balancer(response,this.persistence_name)
+      this.tableIsEmpty = false;
+      this.dataSource = new MatTableDataSource<any>(datos);
+      this.dataSource.paginator = this.paginator;
+      this.dataSource.sort = this.sort;
+      this.applyFilter();
+
+    }else{
+      this.dataSource = new MatTableDataSource<any>([])
+      this.dataSource.data = [{message:'Sin datos para mostrar'}];
+      this.tableIsEmpty = false;
     }
   }
+
+
+  Error(error: any) {
+    console.log('error sse loadbalancer', error);
+  }
+
 }

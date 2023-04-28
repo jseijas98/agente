@@ -5,7 +5,7 @@
 export const environment = {
   production: false,
   baseUrl :'http://180.183.170.56:30446/monitor-agent-service/',
-  Cisnerosip:'http://180.183.85.70:80',
+  Cisnerosip:'http://180.183.85.70:80/',
   listAplications:'/list/application/',
 
   admin:{

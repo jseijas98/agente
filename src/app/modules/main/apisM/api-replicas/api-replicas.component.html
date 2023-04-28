@@ -1,9 +1,20 @@
 
+
+<ng-http-loader></ng-http-loader>
+
 <mat-card class="mt-10 text-center m-5">
   <mat-card-header class="justify-center">
     <mat-card-title-group>
+      <div *ngIf="tableIsEmpty">
+        <mat-card-title></mat-card-title>
+        <mat-card-subtitle
+          ></mat-card-subtitle
+        >
+      </div>
+      <div *ngIf="!tableIsEmpty">
       <mat-card-title>  {{name == undefined ||''? 'sin replicas funcionales': 'réplicas del '+name}} </mat-card-title>
       <mat-card-subtitle> {{name == undefined || ''? '':'aqui podras ver las todas las réplicas del' + name}}  </mat-card-subtitle>
+    </div>
     </mat-card-title-group>
   </mat-card-header>
   <div class="conatiner relative text-center flex flex-col">
@@ -12,7 +23,7 @@
       <mat-label>Filter</mat-label>
       <input
         matInput
-        (keyup)="applyFilter($event)"
+        (keyup)="onFilterInputChanged($event)"
         placeholder="Ex. gateway"
         #input
       />

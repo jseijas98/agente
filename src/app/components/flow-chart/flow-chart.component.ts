@@ -8,6 +8,8 @@ import {
   OnInit,
   ViewChild,
 } from '@angular/core';
+import { GraphComponent } from '@swimlane/ngx-graph';
+
 
 @Component({
   selector: 'app-flow-chart',
@@ -20,31 +22,35 @@ export class FlowChartComponent implements OnInit {
   dataNode: Array<any> = [];
   dataLink: Array<any> = [];
 
+  @ViewChild(FlowChartComponent) chartcontainer:GraphComponent;
+
   // Update function
 
   ngOnDestroy() {
-    this.elRef.nativeElement.remove();
   }
 
   constructor(public serv: FlowChartService, private cd: ChangeDetectorRef, private elRef: ElementRef,) {}
 
   curve = stepRound;
 
+
+  ngOnInit(): void {
+  }
+
+  ngAfterViewInit(): void {
+    this.datanode();
+  }
+
   public layoutSettings = {
     orientation: 'LR', // Left to Right
   };
 
-  ngOnInit(): void {
+  datanode(){
+    this.serv.data$.subscribe((data) => {
+      if (data) this.dataNode = [...this.dataNode, ...data.nodes];
+      this.dataLink = [...this.dataLink, ...data.links];
+    });
 
-    setTimeout(() => {
-      this.serv.data$.subscribe((data) => {
-        if (data) this.dataNode = [...this.dataNode, ...data.nodes];
-        this.dataLink = [...this.dataLink, ...data.links];
-      });
-    }, 100);
-
-    this.serv.update$.next(true)
-    this.serv.update$.subscribe(algo => console.log(algo)
-    );
   }
+
 }

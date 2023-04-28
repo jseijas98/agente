@@ -1,10 +1,21 @@
+
+<ng-http-loader></ng-http-loader>
 <mat-card class="text-center m-4">
   <mat-card-header class="justify-center">
     <mat-card-title-group>
-      <mat-card-title> servicios pic de {{ appname }}</mat-card-title>
+
+      <div *ngIf="tableIsEmpty">
+        <mat-card-title></mat-card-title>
+        <mat-card-subtitle
+          ></mat-card-subtitle
+        >
+      </div>
+      <div *ngIf="!tableIsEmpty">
+        <mat-card-title> servicios pic de {{ appname }}</mat-card-title>
       <mat-card-subtitle
         >aqui podras todos los servicios pic de {{ appname }}</mat-card-subtitle
       >
+      </div>
     </mat-card-title-group>
   </mat-card-header>
 
@@ -13,7 +24,7 @@
       <mat-label>Filtro</mat-label>
       <input
         matInput
-        (keyup)="applyFilter($event)"
+        (keyup)="onFilterInputChanged($event)"
         placeholder="Ex. gateway"
         #input
       />
@@ -196,3 +207,4 @@
     ></app-add-new-element>
   </div>
 </mat-card>
+

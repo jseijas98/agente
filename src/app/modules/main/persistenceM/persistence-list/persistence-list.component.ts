@@ -15,6 +15,8 @@ import { environment } from 'src/environments/environment';
 import { DeleteService } from 'src/app/services/deleteElement/delete.service';
 import { AppNameService } from 'src/app/services/app-name/app-name.service';
 import { Subject, takeUntil } from 'rxjs';
+import { SseServiceService } from 'src/app/services/sse/sse-service.service';
+import { DynamicFilterService } from 'src/app/services/dynamic-Filter/dynamic-filter.service';
 
 @Component({
   selector: 'app-persistence-list',
@@ -32,13 +34,10 @@ export class PersistenceListComponent implements AfterViewInit {
     private snakbar: MatSnackBar,
     public rowAlertService: RowAlertService,
     public service: DeleteService,
-    private appName: AppNameService
+    private appName: AppNameService,
+    private sseServiceService: SseServiceService,
+    private dynamicFilterService:DynamicFilterService
   ) {}
-
-  appname: string;
-  unsuscribe$ = new Subject<void>();
-  registro: string = 'registros historicos';
-  index = 'persistence';
 
   ngOnDestroy() {
     this.unsuscribe$.next();
@@ -46,20 +45,45 @@ export class PersistenceListComponent implements AfterViewInit {
   }
 
   ngAfterViewInit(): void {
+    // this.activateRouter.params.subscribe((params) => {
+    //   this.appName
+    //     .getDataFromApi(params['id'])
+    //     .pipe(takeUntil(this.unsuscribe$))
+    //     .subscribe((data) => (this.appname = data));
+    // });
+    // this.callPersistenceData()
+
     this.activateRouter.params.subscribe((params) => {
-      this.appName
-        .getDataFromApi(params['id'])
-        .pipe(takeUntil(this.unsuscribe$))
-        .subscribe((data) => (this.appname = data));
+      this.appName.nameApp(params['id']).subscribe((data) => (this.appname = data));
     });
-    this.callPersistenceData();
-    throw new Error('Method not implemented.');
+
+    this. ssePersistenceList();
   }
 
   callPersistenceData() {
     this.activateRouter.params.subscribe((params) => {
       this.persistence(params['id']);
     });
+  }
+  filterValue: string = '';
+
+  applyFilter() {
+    this.dataSource.filter = this.filterValue;
+    if (this.dataSource.paginator) {
+      this.dataSource.paginator.firstPage();
+    }
+    localStorage.setItem('filterValue', this.filterValue);
+    console.log('valor almacenado',this.filterValue);
+
+  }
+  onFilterInputChanged(event: Event) {
+    const inputValue = (event.target as HTMLInputElement).value;
+    this.filterValue = inputValue ? inputValue.trim().toLowerCase() : '';
+    this.applyFilter();
+  }
+
+  ngOnInit(): void {
+this.dynamicFilterService.dynamicFilter('filterValue')
   }
 
   //columnsas que se muestran
@@ -84,10 +108,14 @@ export class PersistenceListComponent implements AfterViewInit {
 
   //configuración del dataSource
   dataSource = new MatTableDataSource<any>();
-
   //paginacion del las tablas
   @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
+  appname: string;
+  unsuscribe$ = new Subject<void>();
+  registro: string = 'registros historicos';
+  index = 'persistence';
+  tableIsEmpty=true;
 
   persistence(index: number) {
     this.http
@@ -102,9 +130,7 @@ export class PersistenceListComponent implements AfterViewInit {
 
   getPersistenceSuccess(respose: any) {
     let PersistenceList: Array<PersistenceList> = respose;
-
     let data: any[] = [];
-
     PersistenceList.forEach((persistence) => {
       data.push({
         Id: persistence.dbId,
@@ -123,7 +149,6 @@ export class PersistenceListComponent implements AfterViewInit {
       });
       console.log('data', data);
     });
-
     this.dataSource = new MatTableDataSource<any>(data);
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
@@ -133,14 +158,14 @@ export class PersistenceListComponent implements AfterViewInit {
     console.error(error);
   }
 
-  applyFilter(event: Event) {
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSource.filter = filterValue.trim().toLowerCase();
+  // applyFilter(event: Event) {
+  //   const filterValue = (event.target as HTMLInputElement).value;
+  //   this.dataSource.filter = filterValue.trim().toLowerCase();
 
-    if (this.dataSource.paginator) {
-      this.dataSource.paginator.firstPage();
-    }
-  }
+  //   if (this.dataSource.paginator) {
+  //     this.dataSource.paginator.firstPage();
+  //   }
+  // }
 
   persistenceRegistry(applId: any) {
     this.router.navigateByUrl(`persistence-registry/${applId}`);
@@ -187,5 +212,61 @@ export class PersistenceListComponent implements AfterViewInit {
     setTimeout(() => {
       this.callPersistenceData();
     }, 100);
+  }
+
+  ssePersistenceList(){
+    this.activateRouter.params.subscribe((params) => {
+      this.sseFuntion(params['id']);
+    });
+  }
+
+  sseFuntion(index: any) {
+    const httpApiLIst =`${environment.baseUrl}list/application/${index}/persistence`;
+    this.sseServiceService
+      .getDataFromServer(httpApiLIst)
+      .pipe(takeUntil(this.unsuscribe$))
+      .subscribe({
+        next: this.Success.bind(this),
+        error: this.Error.bind(this),
+        complete: () => console.log('completed'),
+      });
+  }
+
+  Success(response: any) {
+    let datos: any[] = [];
+    response.forEach((persistence: PersistenceList) =>
+     { datos.push({
+      Id: persistence.dbId,
+      status: persistence.status,
+      test_interval: persistence.testInterv,
+      response_time: persistence.response_time,
+      last_test: this.utils.formatDate(persistence.lastTestDate),
+      applId: persistence.applicationId,
+      consecutiveFailedTest: persistence.consecutiveFailedTest,
+      consecutiveSuccessfulTest: persistence.consecutiveSuccessfulTest,
+      description: persistence.description,
+      lowT: persistence.highTrigger,
+      highT: persistence.lowTrigger,
+      lowAlarm: persistence.lowAlarm,
+      highAlarm: persistence.highAlarm
+      })
+    });
+    console.log(datos);
+    if (datos.length > 0) {
+      this.tableIsEmpty = false;
+      this.dataSource = new MatTableDataSource<any>(datos);
+      this.dataSource.paginator = this.paginator;
+      this.dataSource.sort = this.sort;
+      this.applyFilter();
+
+    }else{
+      this.dataSource = new MatTableDataSource<any>([])
+      this.dataSource.data = [{message:'Sin datos para mostrar'}];
+      this.tableIsEmpty = false;
+    }
+  }
+
+  Error(error: any) {
+    console.log('error sse loadbalancer', error);
   }
 }

@@ -1,6 +1,6 @@
 
 <ngx-graph
-  class="chart-container"
+  class="chartcontainer"
   *ngIf="true"
   [view]="[1200, 700]"
   [links]="dataLink"
@@ -13,11 +13,9 @@
   [layoutSettings]="layoutSettings"
   layout=""
   [autoCenter]="false"
-  [update$]="this.serv.update$|async"
+  [update$]="this.serv.update$"
+
 >
-
-<div>algo</div>
-
 
   <!-- #1 Esto es la punta de la flecha!-->
   <ng-template #defsTemplate>

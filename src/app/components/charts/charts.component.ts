@@ -17,6 +17,7 @@ export class ChartsComponent implements OnInit {
   @Input() title: any;
   @Input() legend1: any;
   @Input() legend2: any;
+  @Input() dataIsEmpty: boolean;
 
   curve = stepSquare;
 

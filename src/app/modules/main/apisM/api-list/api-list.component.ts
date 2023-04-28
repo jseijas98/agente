@@ -28,6 +28,7 @@ import { DeleteService } from 'src/app/services/deleteElement/delete.service';
 import { Subject, takeUntil } from 'rxjs';
 import { AppNameService } from 'src/app/services/app-name/app-name.service';
 import { SseServiceService } from 'src/app/services/sse/sse-service.service';
+import { DynamicFilterService } from 'src/app/services/dynamic-Filter/dynamic-filter.service';
 
 @Component({
   selector: 'app-api-list',
@@ -37,8 +38,12 @@ import { SseServiceService } from 'src/app/services/sse/sse-service.service';
 export class ApiListComponent implements AfterViewInit, OnInit {
   @Input() dataIn: any;
   @Input() data: Array<any>;
-
   public index: string = 'apis';
+  unsuscribe$ = new Subject<void>();
+  registro: string = 'registros historicos';
+  replicas: string = 'replicas del api ';
+  appname: string;
+  tableIsEmpty: boolean = true;
 
   constructor(
     private http: HttpClient,
@@ -52,33 +57,60 @@ export class ApiListComponent implements AfterViewInit, OnInit {
     public service: DeleteService,
     private appName: AppNameService,
     private sseServiceService: SseServiceService,
+    private dynamicFilterService:DynamicFilterService
   ) {}
 
-  unsuscribe$ = new Subject<void>();
-  registro: string = 'registros historicos';
-  replicas: string = 'replicas del api ';
-  appname: string;
+  // applyFilter(event: Event) {
+  //   const filterValue = (event.target as HTMLInputElement).value;
+  //   this.dataSource.filter = filterValue.trim().toLowerCase();
+
+  //   if (this.dataSource.paginator) {
+  //     this.dataSource.paginator.firstPage();
+  //   }
+  // }
+
+  filterValue: string = '';
+
+  applyFilter() {
+    this.dataSource.filter = this.filterValue;
+    if (this.dataSource.paginator) {
+      this.dataSource.paginator.firstPage();
+    }
+    localStorage.setItem('filterValue', this.filterValue);
+    console.log('valor almacenado',this.filterValue);
+
+  }
+  onFilterInputChanged(event: Event) {
+    const inputValue = (event.target as HTMLInputElement).value;
+    this.filterValue = inputValue ? inputValue.trim().toLowerCase() : '';
+    this.applyFilter();
+  }
+
   ngOnInit(): void {
+this.dynamicFilterService.dynamicFilter('filterValue')
   }
 
   ngOnDestroy() {
     this.unsuscribe$.next();
     this.unsuscribe$.complete();
+    localStorage.removeItem('filterValue');
   }
 
   ngAfterViewInit() {
-
+    // this.activateRouter.params.subscribe((params) => {
+    //   this.appName
+    //     .getDataFromApplication(params['id'])
+    //     .pipe(takeUntil(this.unsuscribe$))
+    //     .subscribe((data) => (this.appname = data));
+    // });
+    // this.callApisData();
     this.activateRouter.params.subscribe((params) => {
       this.appName
-        .getDataFromApi(params['id'])
-        .pipe(takeUntil(this.unsuscribe$))
+        .getDataFromApi(params['id']).pipe(takeUntil(this.unsuscribe$))
         .subscribe((data) => (this.appname = data));
     });
-    this.callApisData();
-    // this.sseFuntion2();
+    this.sseApisList();
   }
-
-
 
   //columnsas que se muestran
   displayedColumns: string[] = [
@@ -101,9 +133,9 @@ export class ApiListComponent implements AfterViewInit, OnInit {
     'select',
   ];
 
+  //TODO: LISTO con sse
   //configuración del dataSource
   dataSource = new MatTableDataSource<any>();
-
   //paginacion del las tablas
   @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
@@ -128,7 +160,6 @@ export class ApiListComponent implements AfterViewInit, OnInit {
   getApisSuccess(respose: any) {
     let apisList: Array<GetApis> = respose;
     let data: any[] = [];
-
     apisList.forEach((api) => {
       data.push({
         Id: api.apiId,
@@ -145,24 +176,16 @@ export class ApiListComponent implements AfterViewInit, OnInit {
         lowAlarm: api.lowAlarm,
         highAlarm: api.highAlarm,
       });
+      console.log('data',data);
     });
-
     this.dataSource = new MatTableDataSource<any>(data);
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
+    this.applyFilter();
   }
 
   getApisError(error: any) {
     console.error(error);
-  }
-
-  applyFilter(event: Event) {
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSource.filter = filterValue.trim().toLowerCase();
-
-    if (this.dataSource.paginator) {
-      this.dataSource.paginator.firstPage();
-    }
   }
 
   getApiReplica(api_id: any): void {
@@ -184,7 +207,7 @@ export class ApiListComponent implements AfterViewInit, OnInit {
         space: row.nameSpace,
         tlow: row.triggerLow,
         thigh: row.triggerHigh,
-        testinterval: row.test_interval
+        testinterval: row.test_interval,
       },
     });
 
@@ -211,87 +234,105 @@ export class ApiListComponent implements AfterViewInit, OnInit {
   deleteData() {
     this.service.dataSource = this.dataSource;
     this.service.DeleteData('api');
-    setTimeout(() => {
-      this.callApisData();
-    }, 500);
+      this.sseApisList();
   }
 
-  // sseFuntion() {
-  //   const algo = 'http://180.183.85.70:80/registry/application/1/apis';
-
-  //   const algo2 = 'http://180.183.85.70:80/list/application/1/apis';
-
-  //   this.sseServiceService
-  //     .getDataFromServer(algo2)
-  //     .subscribe((data) => console.log('getDataFromServer', data));
-  //   // this.sseServiceService.getServerSentEvent(algo).subscribe(data => console.log('getServerSentEvent',data.data));
-  // }
-
-  sseFuntion2() {
+  sseApisList() {
     this.activateRouter.params.subscribe((params) => {
-
-      let index = params['id'];
-
-      const httpApiLIst = `${environment.Cisnerosip}list/application/${index}/apis`;
-      this.sseServiceService
-        .getDataFromServer(httpApiLIst).pipe(takeUntil(this.unsuscribe$))
-        .subscribe((data) => {
-          let datos: any[] = [];
-          data.forEach((api:GetApis) =>
-            datos.push({
-              Id: api.apiId,
-              status: api.status,
-              nameSpace: api.nameSpace,
-              test_interval: api.testInterv,
-              label_app: api.label_app,
-              response_time: api.response_time,
-              last_test: this.utils.formatearFecha(api.lastTestDate),
-              health: api.health,
-              applId: api.applicationId,
-              triggerLow: api.lowTrigger,
-              triggerHigh: api.highTrigger,
-              lowAlarm: api.lowAlarm,
-              highAlarm: api.highAlarm,
-            })
-          );
-          console.log(datos);
-          this.dataSource = new MatTableDataSource<any>(datos);
-          this.dataSource.paginator = this.paginator;
-          this.dataSource.sort = this.sort;
-        });
+      this.sseFuntion(params['id']);
     });
   }
 
-  // ApiList2() {
-  //   let apisList: Array<GetApis>;
+  sseFuntion(index: any) {
+    const httpApiLIst = `${environment.baseUrl}list/application/${index}/apis`;
+    this.sseServiceService
+      .getDataFromServer(httpApiLIst)
+      .pipe(takeUntil(this.unsuscribe$))
+      .subscribe({
+        next: this.Success.bind(this),
+        error: this.Error.bind(this),
+        complete: () => console.log('completed'),
+      });
+  }
 
-  //   this.sseFuntion2().then(
-  //     (data) => (data = apisList.forEach((api) => {
-  //         let data: any[] = [];
 
-  //         data.push({
-  //           Id: api.apiId,
-  //           status: api.status,
-  //           nameSpace: api.nameSpace,
-  //           test_interval: api.testInterv,
-  //           label_app: api.label_app,
-  //           response_time: api.response_time,
-  //           last_test: this.utils.formatearFecha(api.lastTestDate),
-  //           health: api.health,
-  //           applId: api.applicationId,
-  //           triggerLow: api.lowTrigger,
-  //           triggerHigh: api.highTrigger,
-  //           lowAlarm: api.lowAlarm,
-  //           highAlarm: api.highAlarm,
-  //         });
 
-  //         console.log(data);
+  Success(response: any) {
+    let datos: any[] = [];
+    response.forEach((api: GetApis) => {
+      datos.push({
+        Id: api.apiId,
+        status: api.status,
+        nameSpace: api.nameSpace,
+        test_interval: api.testInterv,
+        label_app: api.label_app,
+        response_time: api.response_time,
+        last_test: this.utils.formatearFecha(api.lastTestDate),
+        health: api.health,
+        applId: api.applicationId,
+        triggerLow: api.lowTrigger,
+        triggerHigh: api.highTrigger,
+        lowAlarm: api.lowAlarm,
+        highAlarm: api.highAlarm,
+      });
+      this.activateRouter.params.subscribe((params) => {
+        this.appName.nameApp(params['id']).subscribe((data) => (this.appname = data));
+      });
 
-  //         this.dataSource = new MatTableDataSource<any>(data);
+    });
+
+    console.log(datos);
+
+    if (datos.length > 0) {
+      this.tableIsEmpty = false;
+      this.dataSource = new MatTableDataSource<any>(datos);
+      this.dataSource.paginator = this.paginator;
+      this.dataSource.sort = this.sort;
+      this.applyFilter();
+
+    }else{
+      this.dataSource = new MatTableDataSource<any>([])
+      this.dataSource.data = [{message:'Sin datos para mostrar'}];
+      this.tableIsEmpty = false;
+    }
+
+  }
+
+  Error(error: any) {
+    console.log('error sse apis', error);
+  }
+
+  // sseFuntion2() {
+  //   this.activateRouter.params.subscribe((params) => {
+  //     let index = params['id'];
+  //     const httpApiLIst = `${environment.Cisnerosip}list/application/${index}/apis`;
+  //     this.sseServiceService
+  //       .getDataFromServer(httpApiLIst)
+  //       .pipe(takeUntil(this.unsuscribe$))
+  //       .subscribe((data) => {
+  //         let datos: any[] = [];
+  //         data.forEach((api: GetApis) =>
+  //           datos.push({
+  //             Id: api.apiId,
+  //             status: api.status,
+  //             nameSpace: api.nameSpace,
+  //             test_interval: api.testInterv,
+  //             label_app: api.label_app,
+  //             response_time: api.response_time,
+  //             last_test: this.utils.formatearFecha(api.lastTestDate),
+  //             health: api.health,
+  //             applId: api.applicationId,
+  //             triggerLow: api.lowTrigger,
+  //             triggerHigh: api.highTrigger,
+  //             lowAlarm: api.lowAlarm,
+  //             highAlarm: api.highAlarm,
+  //           })
+  //         );
+  //         console.log(datos);
+  //         this.dataSource = new MatTableDataSource<any>(datos);
   //         this.dataSource.paginator = this.paginator;
   //         this.dataSource.sort = this.sort;
-  //       }))
-  //   ).catch(error => {console.log(error)
+  //       });
   //   });
   // }
 }

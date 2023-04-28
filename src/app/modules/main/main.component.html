@@ -23,8 +23,8 @@
 
 
       <mat-list-item *ngFor="let app of appslist">
-        <button mat-button (click)="graph(app.extra)"class="w-full h-full m-2 pd-2">
-           {{ app.name }} <span [ngStyle]="{ color: this.colors.colorScheme(app.value)}"> {{ app.value }}%</span>
+        <button mat-button (click)="graph(app.applicationId)"class="w-full h-full m-2 pd-2">
+           {{ app.applicationName }} <span [ngStyle]="{ color: this.colors.colorScheme(app.status)}"> {{ app.status }}%</span>
         </button>
       </mat-list-item>
 
