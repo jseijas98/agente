@@ -1,14 +1,20 @@
 <ng-http-loader></ng-http-loader>
 
-
-<app-charts [dataIn]="dataGraph" [legentTitleIn]="nombre_de_replica" [xlabel]="'fecha'" [ylabel]="'staus'" [title]="nombre_de_replica" [legend1]="legend1" [legend2]="legend2" [dataIsEmpty]="tableIsEmpty"></app-charts>
-<br />
-
-<mat-expansion-panel class="w-11/12 m-auto">
-  <mat-expansion-panel-header>
-    <mat-panel-title>busqueda avanzada</mat-panel-title>
-  </mat-expansion-panel-header>
-
+<mat-card class="mt-10 text-center m-5">
+<mat-card-header class="justify-center">
+  <mat-card-title-group>
+    <div *ngIf="tableIsEmpty">
+      <mat-card-title></mat-card-title>
+      <mat-card-subtitle
+        ></mat-card-subtitle
+      >
+    </div>
+    <div *ngIf="!tableIsEmpty">
+    <mat-card-title>{{ nombre_de_replica|uppercase}} </mat-card-title>
+    <mat-card-subtitle> aquí podras ver los registros de la replica {{nombre_de_replica}}</mat-card-subtitle>
+  </div>
+  </mat-card-title-group>
+</mat-card-header>
 
     <mat-form-field>
       <mat-label>Filter</mat-label>
@@ -103,5 +109,6 @@
       ></mat-paginator>
     </div>
 
-</mat-expansion-panel>
+
 <br>
+</mat-card>

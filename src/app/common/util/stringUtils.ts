@@ -1,5 +1,5 @@
 export default class StringUtils {
-  public convertDate(arrayDate: Array<number>): string {
+  public  convertDate(arrayDate: Array<number>): string {
     let dateNull: string = 'monitoring intialized';
 
     if (arrayDate == null) {

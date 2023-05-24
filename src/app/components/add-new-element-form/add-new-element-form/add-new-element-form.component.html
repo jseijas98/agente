@@ -1,5 +1,5 @@
 <mat-dialog-content class="mat-typography">
-  <h4>Qué elemneto quieres añadir?</h4>
+  <h4>¿Qué elemneto quieres añadir?</h4>
   <mat-form-field appearance="outline">
     <mat-label>elemento to add</mat-label>
     <mat-select [(ngModel)]="selectedValue" name="newElement">
@@ -46,7 +46,7 @@
         <mat-label>url del servico pic</mat-label>
         <input #url matInput formControlName="url" />
         <mat-error *ngIf="pic.invalid">{{
-          this.serv.getErrorMessage_required(pic)
+          this.serv.max_content255(pic.get("url"))
         }}</mat-error>
       </mat-form-field>
       <br />
@@ -56,7 +56,7 @@
         <input #json matInput formControlName="json" />
         <textarea matInput></textarea>
         <mat-error *ngIf="pic.invalid">{{
-          this.serv.getErrorMessage_required(pic)
+          this.serv.json_max(pic.get("json"))
         }}</mat-error>
       </mat-form-field>
       <br />
@@ -65,16 +65,16 @@
         <mat-label>Canal del servicio pic</mat-label>
         <input #channel matInput formControlName="channel" />
         <mat-error *ngIf="pic.invalid">{{
-          this.serv.getErrorMessage_required(pic)
+          this.serv.max_content45(pic.get("channel"))
         }}</mat-error>
       </mat-form-field>
       <br />
       <!-- 1.5 descripción del servicio pic (opcional) -->
       <mat-form-field appearance="outline">
-        <mat-label>descripción del servicio pic (opcional)</mat-label>
+        <mat-label>descripción del servicio pic</mat-label>
         <input matInput #description formControlName="description" />
         <mat-error *ngIf="pic.invalid">{{
-          this.serv.getErrorMessage_required(pic)
+          this.serv.max_content45(pic.get("description"))
         }}</mat-error>
       </mat-form-field>
       <mat-dialog-actions align="center">
@@ -114,7 +114,7 @@
           <mat-label>nombre de la base de datos</mat-label>
           <input #name matInput type="text" formControlName="name" />
           <mat-error *ngIf="dataBase.invalid">{{
-            this.serv.getErrorMessage_required(dataBase)
+            this.serv.max_content45(dataBase.get("name"))
           }}</mat-error>
         </mat-form-field>
         <br />
@@ -128,7 +128,7 @@
             formControlName="sqlSentence"
           />
           <mat-error *ngIf="dataBase.invalid">{{
-            this.serv.getErrorMessage_required(dataBase)
+            this.serv.max_content45(dataBase.get("sqlSentence"))
           }}</mat-error>
         </mat-form-field>
         <br />
@@ -137,7 +137,7 @@
           <mat-label>usuario de la base de datos</mat-label>
           <input #username matInput type="text" formControlName="username" />
           <mat-error *ngIf="dataBase.invalid">{{
-            this.serv.getErrorMessage_required(dataBase)
+            this.serv.max_content45(dataBase.get("username"))
           }}</mat-error>
         </mat-form-field>
         <br />
@@ -151,7 +151,7 @@
             [type]="hide ? 'password' : 'text'"
           />
           <mat-error *ngIf="dataBase.invalid">{{
-            this.serv.getErrorMessage_required(dataBase)
+            this.serv.max_content45(dataBase.get("password"))
           }}</mat-error>
           <button
             mat-icon-button
@@ -182,18 +182,27 @@
         <mat-form-field appearance="outline">
           <mat-label>url de la base de datos</mat-label>
           <input #url matInput formControlName="url" />
+          <mat-error *ngIf="dataBase.invalid">{{
+            this.serv.max_content255(dataBase.get("url"))
+          }}</mat-error>
         </mat-form-field>
         <br />
         <!-- 2.7 tipo de base de datos  -->
         <mat-form-field appearance="outline">
           <mat-label>tipo de base de datos</mat-label>
           <input #dataBaseType matInput formControlName="dataBaseType" />
+          <mat-error *ngIf="dataBase.invalid">{{
+            this.serv.max_content45(dataBase.get("dataBaseType"))
+          }}</mat-error>
         </mat-form-field>
         <br />
         <!-- 2.8 decripcion de la base de dato  -->
         <mat-form-field appearance="outline">
           <mat-label>decripcion de la base de dato</mat-label>
           <input #description matInput formControlName="description" />
+          <mat-error *ngIf="dataBase.invalid">{{
+            this.serv.max_content45(dataBase.get("description"))
+          }}</mat-error>
         </mat-form-field>
         <mat-dialog-actions align="center">
           <button
@@ -244,7 +253,7 @@
             <mat-label>nombre del servicio</mat-label>
             <input #name matInput formControlName="name" />
             <mat-error *ngIf="service.invalid">{{
-              this.serv.getErrorMessage_required(service)
+              this.serv.max_content45(service.get("name"))
             }}</mat-error>
           </mat-form-field>
           <br />
@@ -253,7 +262,7 @@
             <mat-label>label App del servicio</mat-label>
             <input #labelApp matInput formControlName="labelApp" />
             <mat-error *ngIf="service.invalid">{{
-              this.serv.getErrorMessage_required(service)
+              this.serv.max_content45(service.get("labelApp"))
             }}</mat-error>
           </mat-form-field>
           <br />
@@ -262,7 +271,7 @@
             <mat-label>namespace que aloja el servicio</mat-label>
             <input #namespace matInput formControlName="namespace" />
             <mat-error *ngIf="service.invalid">{{
-              this.serv.getErrorMessage_required(service)
+              this.serv.max_content45(service.get("namespace"))
             }}</mat-error>
           </mat-form-field>
           <br />
@@ -271,7 +280,7 @@
             <mat-label>url del servico</mat-label>
             <input #url matInput formControlName="url" />
             <mat-error *ngIf="service.invalid">{{
-              this.serv.getErrorMessage_required(service)
+              this.serv.max_content255(service.get("url"))
             }}</mat-error>
           </mat-form-field>
           <br />
@@ -280,7 +289,7 @@
             <mat-label>descripción del servicio (opcional) </mat-label>
             <input #description matInput formControlName="description" />
             <mat-error *ngIf="service.invalid">{{
-              this.serv.getErrorMessage_required(service)
+              this.serv.max_content45(service.get("description"))
             }}</mat-error>
           </mat-form-field>
           <mat-dialog-actions align="center">
@@ -314,7 +323,7 @@
             <mat-label>label App del API</mat-label>
             <input #labelApp matInput formControlName="labelApp" />
             <mat-error *ngIf="apis.invalid">{{
-              this.serv.getErrorMessage_required(apis)
+              this.serv.max_content45(apis)
             }}</mat-error>
           </mat-form-field>
           <br />
@@ -323,7 +332,7 @@
             <mat-label>namespace que aloja el API</mat-label>
             <input #namespace matInput formControlName="namespace" />
             <mat-error *ngIf="apis.invalid">{{
-              this.serv.getErrorMessage_required(apis)
+              this.serv.max_content45(apis)
             }}</mat-error>
           </mat-form-field>
           <br />
@@ -346,7 +355,7 @@
             <mat-label>url del API</mat-label>
             <input #url matInput formControlName="url" />
             <mat-error *ngIf="apis.invalid">{{
-              this.serv.getErrorMessage_required(apis)
+              this.serv.max_content45(apis)
             }}</mat-error>
           </mat-form-field>
           <br />
@@ -396,7 +405,7 @@
             <mat-label>url del balanceador de carga</mat-label>
             <input #url matInput formControlName="url" />
             <mat-error *ngIf="loadBalancer.invalid">{{
-              this.serv.getErrorMessage_required(loadBalancer)
+              this.serv.max_content255(loadBalancer.get("url"))
             }}</mat-error>
           </mat-form-field>
           <br />
@@ -405,12 +414,18 @@
             <mat-label>json de entrda</mat-label>
             <input #json matInput formControlName="json" />
             <textarea matInput></textarea>
+            <mat-error *ngIf="loadBalancer.invalid">{{
+              this.serv.getErrorMessage_required(loadBalancer)
+            }}</mat-error>
           </mat-form-field>
           <br />
           <!-- 5.4 descripción (opcional) -->
           <mat-form-field appearance="outline">
             <mat-label>descripción (opcional) </mat-label>
             <input #description matInput formControlName="description" />
+            <mat-error *ngIf="loadBalancer.invalid">{{
+              this.serv.max_content45(loadBalancer.get("description"))
+            }}</mat-error>
           </mat-form-field>
           <mat-dialog-actions align="center">
             <button

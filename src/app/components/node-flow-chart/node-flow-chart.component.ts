@@ -22,6 +22,8 @@ export class NodeFlowChartComponent implements OnInit {
   gray =
     'invert(45%) sepia(38%) saturate(10%) hue-rotate(142deg) brightness(104%) contrast(93%)';
 
+  verde_amarillo='invert(77%) sepia(63%) saturate(588%) hue-rotate(23deg) brightness(93%) contrast(90%)';
+
   redtext = '#E73628';
 
   constructor(
@@ -33,20 +35,33 @@ export class NodeFlowChartComponent implements OnInit {
   ngOnInit(): void {}
 
   colorScheme(data: string): string {
-
-    let colores: string;
-
-    data == '#E73628'
-      ? (colores = this.red) //rojo
-      : data == '#EFB950'
-      ? (colores = this.yellow) //amarillo
-      : data == '#EFB950'
-      ? (colores = this.yellow) //amarillo
-      : data == '#47CC0C'
-      ? (colores = this.green) //verde
-      : (colores = this.gray); //gris
-
-    return colores;
+    const red = 'invert(46%) sepia(82%) saturate(6915%) hue-rotate(349deg) brightness(95%) contrast(90%)';
+    const yellow = 'invert(90%) sepia(87%) saturate(5956%) hue-rotate(314deg) brightness(94%) contrast(99%)';
+    const green = 'invert(70%) sepia(88%) saturate(389%) hue-rotate(53deg) brightness(91%) contrast(89%)';
+    const gray = 'invert(45%) sepia(38%) saturate(10%) hue-rotate(142deg) brightness(104%) contrast(93%)';
+    const verde_amarillo = 'invert(77%) sepia(63%) saturate(588%) hue-rotate(23deg) brightness(93%) contrast(90%)';
+  
+    let color: string;
+  
+    switch (data) {
+      case '#E73628':
+        color = red; // rojo
+        break;
+      case '#EFB950':
+        color = yellow; // amarillo
+        break;
+      case '#47CC0C':
+        color = green; // verde
+        break;
+      case '#A0D41C':
+        color = verde_amarillo; // verde amarillo
+        break;
+      default:
+        color = gray; // gris
+        break;
+    }
+  
+    return color;
   }
 
   redirect(prefix: any) {

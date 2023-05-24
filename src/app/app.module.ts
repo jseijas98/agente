@@ -15,8 +15,8 @@ import { UpdateparamsComponent } from './components/modals/updateparams/updatepa
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AddNewElementFormComponent } from './components/add-new-element-form/add-new-element-form/add-new-element-form.component';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
-import { DataFormatPipe } from './components/pipes/data-fromat-char/data-format.pipe';
 import { NgHttpLoaderModule } from 'ng-http-loader';
+import { NoRegistriesComponent } from './errors/no-registries/no-registries.component';
 
 
 @NgModule({

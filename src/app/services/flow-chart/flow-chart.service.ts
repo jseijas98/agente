@@ -38,20 +38,24 @@ export class FlowChartService {
   // -------------------esquema de colores----------------------------
 
   colorScheme(data: number): string {
-    let colores: string;
-    data < 50
-      ? (colores = '#E73628') //rojo
-      : data < 65
-      ? (colores = '#EFB950') //amarillo
-      : data < 80
-      ? (colores = '#EFB950') //amarillo
-      : data == 100
-      ? (colores = '#47CC0C') //verde
-      : (colores = '#818181'); //gris
-
-    return colores;
+    let color: string;
+  
+    if (data < 50) {
+      color = '#E73628'; // rojo
+    } else if (data < 65) {
+      color = '#EFB950'; // amarillo
+    } else if (data < 90) {
+      color = '#EFB950'; // amarillo
+    } else if (data >= 90) {
+      color = '#A0D41C'; // verde-amarillo
+    } else if (data === 100) {
+      color = '#47CC0C'; // verde
+    }  else {
+      color = '#818181'; // gris
+    }
+  
+    return color;
   }
-
 
   unsuscribe$ = new Subject<void>();
   ruta$: BehaviorSubject<any> = new BehaviorSubject(null);

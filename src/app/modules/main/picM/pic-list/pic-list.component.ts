@@ -74,7 +74,7 @@ export class PicListComponent implements OnInit, AfterViewInit {
   applyFilter() {
     this.dataSource.filter = this.filterValue;
     if (this.dataSource.paginator) {
-      this.dataSource.paginator.firstPage();
+      this.dataSource.paginator.pageIndex=this.currentPageIndex
     }
     localStorage.setItem('filterValue', this.filterValue);
     console.log('valor almacenado',this.filterValue);
@@ -240,6 +240,9 @@ this.dynamicFilterService.dynamicFilter('filterValue')
   }
 
   Success(response: any) {
+    console.log('response',response);
+    
+    
     let datos: any[] = [];
     response.forEach((pic: PicList) =>
      { datos.push({
@@ -264,6 +267,7 @@ this.dynamicFilterService.dynamicFilter('filterValue')
       this.dataSource = new MatTableDataSource<any>(datos);
       this.dataSource.paginator = this.paginator;
       this.dataSource.sort = this.sort;
+      this.currentPageIndex = this.paginator.pageIndex;
       this.applyFilter();
 
     }else{
@@ -272,6 +276,8 @@ this.dynamicFilterService.dynamicFilter('filterValue')
       this.tableIsEmpty = false;
     }
   }
+  currentPageIndex: number;
+
 
   Error(error: any) {
     console.log('error sse loadbalancer', error);

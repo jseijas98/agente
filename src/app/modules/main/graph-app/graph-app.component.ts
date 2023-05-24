@@ -98,7 +98,7 @@ export class GraphAppComponent implements OnInit, OnDestroy {
       .getDataFromServer(`${environment.baseUrl}health/application/${index}`)
       .pipe(takeUntil(this.unsuscribe$))
       .subscribe((data) => {
-        console.log(data);
+      
 
         let getHealth: DataAplication = data;
         let data1 = getHealth.data;

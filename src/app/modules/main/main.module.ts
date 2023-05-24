@@ -38,6 +38,7 @@ import { ServicesRegistryReplicaComponent } from './serviciosM/services-registry
 import { AddNewElementComponent } from 'src/app/components/modals/add-new-element/add-new-element/add-new-element.component';
 import { DataFormatPipe } from 'src/app/components/pipes/data-fromat-char/data-format.pipe';
 import { NgHttpLoaderModule } from 'ng-http-loader';
+import { NoRegistriesComponent } from 'src/app/errors/no-registries/no-registries.component';
 
 @NgModule({
   imports: [
@@ -88,7 +89,8 @@ import { NgHttpLoaderModule } from 'ng-http-loader';
     GoBackComponent,
     ServicesRegistryReplicaComponent,
     AddNewElementComponent,
-    DataFormatPipe
+    DataFormatPipe,
+    NoRegistriesComponent
   ],
 })
 export class MainModule {}

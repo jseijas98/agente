@@ -50,6 +50,7 @@ export class SseServiceService {
 
     return Observable.create((observer: Observer<any>) => {
       const eventSource = (this.eventSource = this.getEventSource(url));
+      
       eventSource.onopen = (event) => {
         if (eventSource.readyState == 1) {
           this.spinner.hide();

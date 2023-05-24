@@ -243,6 +243,7 @@ export class LoadBalancerListComponent implements AfterViewInit {
       this.dataSource = new MatTableDataSource<any>(datos);
       this.dataSource.paginator = this.paginator;
       this.dataSource.sort = this.sort;
+      this.currentPageIndex = this.paginator.pageIndex;
       this.applyFilter();
     } else {
       this.dataSource = new MatTableDataSource<any>([]);
@@ -250,6 +251,7 @@ export class LoadBalancerListComponent implements AfterViewInit {
       this.tableIsEmpty = false;
     }
   }
+  currentPageIndex: number;
 
   Error(error: any) {
     console.log('error sse loadbalancer', error);
@@ -260,7 +262,7 @@ export class LoadBalancerListComponent implements AfterViewInit {
   applyFilter() {
     this.dataSource.filter = this.filterValue;
     if (this.dataSource.paginator) {
-      this.dataSource.paginator.firstPage();
+      this.dataSource.paginator.pageIndex=this.currentPageIndex
     }
     localStorage.setItem('filterValue', this.filterValue);
     console.log('valor almacenado', this.filterValue);

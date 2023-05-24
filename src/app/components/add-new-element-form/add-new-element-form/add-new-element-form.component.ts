@@ -19,7 +19,7 @@ import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-add-new-element-form',
-  templateUrl: './add-new-element-form.component.html',
+  templateUrl:'./add-new-element-form.component.html',
   styleUrls: ['./add-new-element-form.component.css'],
 })
 export class AddNewElementFormComponent implements OnInit {
@@ -56,20 +56,19 @@ export class AddNewElementFormComponent implements OnInit {
   pic: FormGroup = new FormGroup({
     testInterval: new FormControl('', [
       Validators.required,
-      Validators.minLength(2),
-      Validators.pattern(this.Utils.numberRegEx),
-      Validators.min(100),
       Validators.max(60000),
+      Validators.min(100),
+      Validators.pattern(this.Utils.numberRegEx),
     ]),
-    url: new FormControl('', [Validators.required, Validators.minLength(2)]),
-    json: new FormControl('', [Validators.required, Validators.minLength(2)]),
+    url: new FormControl('', [Validators.required, Validators.maxLength(255)]),
+    json: new FormControl('', [Validators.required]),
     channel: new FormControl('', [
       Validators.required,
-      Validators.minLength(2),
+      Validators.maxLength(45),
     ]),
     description: new FormControl('', [
       Validators.nullValidator,
-      Validators.minLength(2),
+      Validators.maxLength(45)
     ]),
   });
 
@@ -94,34 +93,35 @@ export class AddNewElementFormComponent implements OnInit {
     console.log('submit', pic);
   }
 
-  //***********************************persistense or data bases***********************
+  //***********************************persistence or data bases***********************
   dataBase: FormGroup = new FormGroup({
-    name: new FormControl('', [Validators.required, Validators.minLength(2)]),
+    name: new FormControl('', [Validators.required, Validators.maxLength(45)]),
     sqlSentence: new FormControl('', [
       Validators.required,
-      Validators.minLength(2),
+      Validators.maxLength(45),
     ]),
     username: new FormControl('', [
       Validators.required,
-      Validators.minLength(2),
+      Validators.maxLength(45),
     ]),
     password: new FormControl('', [
       Validators.required,
-      Validators.minLength(2),
+      Validators.maxLength(45),
     ]),
     testInterval: new FormControl('', [
       Validators.required,
-      Validators.minLength(2),
       Validators.pattern(this.Utils.numberRegEx),
+      Validators.min(100),
+      Validators.max(60000),
     ]),
-    url: new FormControl('', [Validators.required, Validators.minLength(2)]),
+    url: new FormControl('', [Validators.required,  Validators.maxLength(255),]),
     dataBaseType: new FormControl('', [
       Validators.required,
-      Validators.minLength(2),
+      Validators.maxLength(45),
     ]),
     description: new FormControl('', [
       Validators.nullValidator,
-      Validators.minLength(2),
+      Validators.maxLength(45),
     ]),
   });
 
@@ -156,20 +156,20 @@ export class AddNewElementFormComponent implements OnInit {
       Validators.required,
       Validators.minLength(2),
       Validators.pattern(this.Utils.numberRegEx),
+      Validators.min(100),
+      Validators.max(60000),
     ]),
-    name: new FormControl('', [Validators.required, Validators.minLength(2)]),
+    name: new FormControl('', [Validators.required,Validators.maxLength(45)]),
     labelApp: new FormControl('', [
-      Validators.required,
-      Validators.minLength(2),
+      Validators.required,Validators.maxLength(45)
     ]),
     namespace: new FormControl('', [
       Validators.required,
-      Validators.minLength(2),
+      Validators.minLength(2),Validators.maxLength(45)
     ]),
-    url: new FormControl('', [Validators.required, Validators.minLength(2)]),
+    url: new FormControl('', [Validators.required, Validators.maxLength(255)]),
     description: new FormControl('', [
-      Validators.nullValidator,
-      Validators.minLength(2),
+      Validators.nullValidator,Validators.maxLength(45)
     ]),
   });
 
@@ -198,11 +198,11 @@ export class AddNewElementFormComponent implements OnInit {
   apis: FormGroup = new FormGroup({
     labelApp: new FormControl('', [
       Validators.required,
-      Validators.minLength(2),
+      Validators.minLength(2),Validators.maxLength(45)
     ]),
     namespace: new FormControl('', [
       Validators.required,
-      Validators.minLength(2),
+      Validators.minLength(2),Validators.maxLength(45)
     ]),
     testInterval: new FormControl('', [
       Validators.required,
@@ -211,7 +211,7 @@ export class AddNewElementFormComponent implements OnInit {
       Validators.min(100),
       Validators.max(60000),
     ]),
-    url: new FormControl('', [Validators.required, Validators.minLength(2)]),
+    url: new FormControl('', [Validators.required, Validators.minLength(2),Validators.maxLength(45)]),
   });
   onSubmit_apis(labelApp: any, namespace: any, testInterval: any, url: any) {
     const type = 'api';
@@ -230,14 +230,15 @@ export class AddNewElementFormComponent implements OnInit {
   loadBalancer: FormGroup = new FormGroup({
     testInterval: new FormControl('', [
       Validators.required,
-      Validators.minLength(2),
+      Validators.min(100),
+      Validators.max(60000),
       Validators.pattern(this.Utils.numberRegEx),
     ]),
-    url: new FormControl('', [Validators.required, Validators.minLength(2)]),
+    url: new FormControl('', [Validators.required, Validators.minLength(2), Validators.maxLength(255)]),
     json: new FormControl('', [Validators.required, Validators.minLength(2)]),
     description: new FormControl('', [
       Validators.required,
-      Validators.minLength(2),
+      Validators.minLength(2),Validators.maxLength(45)
     ]),
   });
   onSubmit_laodBalancer(

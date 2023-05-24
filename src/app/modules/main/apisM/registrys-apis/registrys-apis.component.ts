@@ -44,7 +44,7 @@ export class RegistrysApisComponent
   applyFilter() {
     this.dataSource.filter = this.filterValue;
     if (this.dataSource.paginator) {
-      this.dataSource.paginator.firstPage();
+      this.dataSource.paginator.pageIndex=this.currentPageIndex
     }
     localStorage.setItem('filterValue', this.filterValue);
     console.log('valor almacenado', this.filterValue);
@@ -69,8 +69,8 @@ export class RegistrysApisComponent
   }
 
   //TODO: LISTO con sse
-  protected legend1: string = 'status';
-  protected legend2: string = '%';
+  protected legend1: string = 'tiempo de respuesta';
+  protected legend2: string = 'ms';
   data: any[] = [];
   dataSource = new MatTableDataSource<any>(this.data);
   apiName: string;
@@ -130,7 +130,7 @@ export class RegistrysApisComponent
       this.apiName = apiRegistry.label_app;
       console.log(apiRegistry.lastTestDate);
     });
-    this.dataGraph = this.serv.dataGraph(respose, this.apiName);
+    this.dataGraph = this.serv.dataGraph_load_balancer(respose, this.apiName);
     this.dataSource = new MatTableDataSource<any>(this.data);
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
@@ -184,19 +184,21 @@ export class RegistrysApisComponent
         nameSpace: apiRegistry.nameSpace,
         consecutiveFailedTest: apiRegistry.consecutiveFailedTest,
         histFailedTest: apiRegistry.histFailedTest,
-        lastTestDate: this.utils.formatearFecha(apiRegistry.lastTestDate),
+        lastTestDate: this.utils.formatDate(apiRegistry.lastTestDate),
         response_time: apiRegistry.response_time,
         consecutiveSuccessfulTest: apiRegistry.consecutiveSuccessfulTest,
         histSuccessfulTest: apiRegistry.histSuccessfulTest,
       });
       this.apiID = apiRegistry.applicationId;
       this.apiName = apiRegistry.label_app;
+      this.dataGraph = this.serv.dataGraph_load_balancer(response, this.apiName);
     });
     if (datos.length > 0) {
       this.tableIsEmpty = false;
       this.dataSource = new MatTableDataSource<any>(datos);
       this.dataSource.paginator = this.paginator;
       this.dataSource.sort = this.sort;
+      this.currentPageIndex = this.paginator.pageIndex;
       this.applyFilter();
 
     }else{
@@ -206,6 +208,7 @@ export class RegistrysApisComponent
     }
 
   }
+  currentPageIndex: number;
 
   Error(error: any) {
     console.log('error sse apis', error);

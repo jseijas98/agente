@@ -46,7 +46,7 @@ export class ServicesReplicaComponent implements OnInit {
   applyFilter() {
     this.dataSource.filter = this.filterValue;
     if (this.dataSource.paginator) {
-      this.dataSource.paginator.firstPage();
+      this.dataSource.paginator.pageIndex=this.currentPageIndex
     }
     localStorage.setItem('filterValue', this.filterValue);
     console.log('valor almacenado', this.filterValue);
@@ -201,6 +201,7 @@ export class ServicesReplicaComponent implements OnInit {
       this.dataSource = new MatTableDataSource<any>(datos);
       this.dataSource.paginator = this.paginator;
       this.dataSource.sort = this.sort;
+      this.currentPageIndex = this.paginator.pageIndex;
       this.applyFilter();
     } else {
       this.dataSource = new MatTableDataSource<any>([]);
@@ -208,6 +209,7 @@ export class ServicesReplicaComponent implements OnInit {
       this.tableIsEmpty = false;
     }
   }
+  currentPageIndex: number;
 
   Error(error: any) {
     console.log('error sse', error);

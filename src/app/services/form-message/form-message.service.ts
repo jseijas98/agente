@@ -18,9 +18,34 @@ export class FormMessageService {
       ? 'etse campo debe ser menor a 60000ms'
       : '';
   }
+
+  
+  json_max(form: any) {
+    if (form.hasError('required')) {
+      return 'este campos es requerido';
+    }
+    return form.hasError('maxLength') ? '' : 'este campo debe ser menor a 500 caracteres';
+  }
+
+    max_content45(form: any){
+      if (form.hasError('required')) {
+        return 'este campos es requerido';
+      }
+      return form.hasError('maxLength') ? '' : 'este campo es de maximo 45 caractares';
+    }
+
+    max_content255(form: any){
+      if (form.hasError('required')) {
+        return 'este campos es requerido';
+      }
+      return form.hasError('maxLength') ? '' : 'este campo es de maximo 255 caractares';
+    }
+
+  
+
   
   getErrorMessage_required(form: FormGroup) {
-    return form.invalid ? 'este campo es requerido' : '';
+    return form.hasError('required')? '' : 'este campo es requerido';
   }
   
   buttontoggle(algo: any) {

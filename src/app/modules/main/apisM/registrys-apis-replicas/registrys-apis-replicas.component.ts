@@ -31,6 +31,8 @@ export class RegistrysApisReplicasComponent implements OnInit , AfterViewInit, O
 
   ) {}
 
+
+
   ngOnInit(): void {this.dynamicFilterService.dynamicFilter('filterValue')
 }
 
@@ -39,7 +41,7 @@ export class RegistrysApisReplicasComponent implements OnInit , AfterViewInit, O
   applyFilter() {
     this.dataSource.filter = this.filterValue;
     if (this.dataSource.paginator) {
-      this.dataSource.paginator.firstPage();
+      this.dataSource.paginator.pageIndex=this.currentPageIndex
     }
     localStorage.setItem('filterValue', this.filterValue);
     console.log('valor almacenado',this.filterValue);
@@ -114,12 +116,11 @@ export class RegistrysApisReplicasComponent implements OnInit , AfterViewInit, O
         status: apiReplicasResgistry.status,
         creation_date: this.utils.formatDate(apiReplicasResgistry.creation_date) ,
         replica_name: apiReplicasResgistry.replica_name,
-        lastTestDate: this.utils.convertDate(apiReplicasResgistry.lastTestDate),
+        lastTestDate: this.utils.formatearFecha(apiReplicasResgistry.lastTestDate),
         label_hash: apiReplicasResgistry.label_hash,
       });
       this.nombre_de_replica = apiReplicasResgistry.replica_name;
       console.log(this.nombre_de_replica);
-      this.nombre_de_replica = apiReplicasResgistry.replica_name;
     });
 
     console.log('data', this.data);
@@ -182,7 +183,7 @@ export class RegistrysApisReplicasComponent implements OnInit , AfterViewInit, O
         status: apiReplicasResgistry.status,
         creation_date: apiReplicasResgistry.creation_date,
         replica_name: apiReplicasResgistry.replica_name,
-        lastTestDate: this.utils.convertDate(apiReplicasResgistry.lastTestDate),
+        lastTestDate: this.utils.formatearFecha(apiReplicasResgistry.lastTestDate),
         label_hash: apiReplicasResgistry.label_hash,
       });
       this.nombre_de_replica = apiReplicasResgistry.replica_name;
@@ -195,6 +196,7 @@ export class RegistrysApisReplicasComponent implements OnInit , AfterViewInit, O
       this.dataSource = new MatTableDataSource<any>(datos);
       this.dataSource.paginator = this.paginator;
       this.dataSource.sort = this.sort;
+      this.currentPageIndex = this.paginator.pageIndex;
       this.applyFilter();
 
     }else{
@@ -203,6 +205,7 @@ export class RegistrysApisReplicasComponent implements OnInit , AfterViewInit, O
       this.tableIsEmpty = false;
     }
   }
+  currentPageIndex: number;
 
   Error(error: any) {
     console.log('error sse apis', error);

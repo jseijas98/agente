@@ -74,7 +74,7 @@ export class ApiListComponent implements AfterViewInit, OnInit {
   applyFilter() {
     this.dataSource.filter = this.filterValue;
     if (this.dataSource.paginator) {
-      this.dataSource.paginator.firstPage();
+      this.dataSource.paginator.pageIndex=this.currentPageIndex
     }
     localStorage.setItem('filterValue', this.filterValue);
     console.log('valor almacenado',this.filterValue);
@@ -168,7 +168,7 @@ this.dynamicFilterService.dynamicFilter('filterValue')
         test_interval: api.testInterv,
         label_app: api.label_app,
         response_time: api.response_time,
-        last_test: this.utils.formatearFecha(api.lastTestDate),
+        last_test: this.utils.formatDate(api.lastTestDate),
         health: api.health,
         applId: api.applicationId,
         triggerLow: api.lowTrigger,
@@ -258,6 +258,8 @@ this.dynamicFilterService.dynamicFilter('filterValue')
 
 
   Success(response: any) {
+    console.log(response);
+    
     let datos: any[] = [];
     response.forEach((api: GetApis) => {
       datos.push({
@@ -267,7 +269,7 @@ this.dynamicFilterService.dynamicFilter('filterValue')
         test_interval: api.testInterv,
         label_app: api.label_app,
         response_time: api.response_time,
-        last_test: this.utils.formatearFecha(api.lastTestDate),
+        last_test: this.utils.formatDate(api.lastTestDate),
         health: api.health,
         applId: api.applicationId,
         triggerLow: api.lowTrigger,
@@ -288,6 +290,7 @@ this.dynamicFilterService.dynamicFilter('filterValue')
       this.dataSource = new MatTableDataSource<any>(datos);
       this.dataSource.paginator = this.paginator;
       this.dataSource.sort = this.sort;
+      this.currentPageIndex = this.paginator.pageIndex;
       this.applyFilter();
 
     }else{
@@ -297,7 +300,7 @@ this.dynamicFilterService.dynamicFilter('filterValue')
     }
 
   }
-
+  currentPageIndex: number;
   Error(error: any) {
     console.log('error sse apis', error);
   }

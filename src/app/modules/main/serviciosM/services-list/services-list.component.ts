@@ -79,7 +79,7 @@ export class ServicesListComponent implements AfterViewInit {
   applyFilter() {
     this.dataSource.filter = this.filterValue;
     if (this.dataSource.paginator) {
-      this.dataSource.paginator.firstPage();
+      this.dataSource.paginator.pageIndex=this.currentPageIndex
     }
     localStorage.setItem('filterValue', this.filterValue);
     console.log('valor almacenado', this.filterValue);
@@ -125,7 +125,7 @@ export class ServicesListComponent implements AfterViewInit {
   dataSource = new MatTableDataSource<any>();
 
   //paginacion del las tablas
-  @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
+  @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
   Service(index: number) {
@@ -290,13 +290,17 @@ export class ServicesListComponent implements AfterViewInit {
       this.dataSource = new MatTableDataSource<any>(datos);
       this.dataSource.paginator = this.paginator;
       this.dataSource.sort = this.sort;
+      this.currentPageIndex = this.paginator.pageIndex;
       this.applyFilter();
+   
+
     } else {
       this.dataSource = new MatTableDataSource<any>([]);
       this.dataSource.data = [{ message: 'Sin datos para mostrar' }];
       this.tableIsEmpty = false;
     }
   }
+  currentPageIndex: number;
 
   Error(error: any) {
     console.log('error sse', error);

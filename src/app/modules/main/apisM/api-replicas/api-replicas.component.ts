@@ -56,7 +56,7 @@ export class ApiReplicasComponent implements OnInit, AfterViewInit, OnDestroy {
   applyFilter() {
     this.dataSource.filter = this.filterValue;
     if (this.dataSource.paginator) {
-      this.dataSource.paginator.firstPage();
+      this.dataSource.paginator.pageIndex=this.currentPageIndex
     }
     localStorage.setItem('filterValue', this.filterValue);
     console.log('valor almacenado',this.filterValue);
@@ -120,7 +120,7 @@ export class ApiReplicasComponent implements OnInit, AfterViewInit, OnDestroy {
         status: apiReplicas.status,
         creation_date:  this.utils.formatDate(apiReplicas.creation_date),
         replica_name: apiReplicas.replica_name,
-        lastTestDate: this.utils.formatearFecha(apiReplicas.lastTestDate),
+        lastTestDate: this.utils.convertDate(apiReplicas.lastTestDate),
         label_hash: apiReplicas.label_hash,
       });
       this.name = apiReplicas.replica_name.split('-')[0];
@@ -161,7 +161,7 @@ export class ApiReplicasComponent implements OnInit, AfterViewInit, OnDestroy {
         status: apiReplicas.status,
         creation_date: this.utils.formatDate(apiReplicas.creation_date) ,
         replica_name: apiReplicas.replica_name,
-        lastTestDate: this.utils.formatearFecha(apiReplicas.lastTestDate),
+        lastTestDate: this.utils.formatDate(apiReplicas.lastTestDate),
         label_hash: apiReplicas.label_hash,
       });
       this.name = apiReplicas.replica_name.split('-')[0];
@@ -172,6 +172,7 @@ export class ApiReplicasComponent implements OnInit, AfterViewInit, OnDestroy {
       this.dataSource = new MatTableDataSource<any>(datos);
       this.dataSource.paginator = this.paginator;
       this.dataSource.sort = this.sort;
+      this.currentPageIndex = this.paginator.pageIndex;
       this.applyFilter();
 
     }else{
@@ -180,7 +181,7 @@ export class ApiReplicasComponent implements OnInit, AfterViewInit, OnDestroy {
       this.tableIsEmpty = false;
     }
   }
-
+  currentPageIndex: number;
   Error(error: any) {
     console.log('error sse apis', error);
   }

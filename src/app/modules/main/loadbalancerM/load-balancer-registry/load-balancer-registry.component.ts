@@ -163,10 +163,15 @@ export class LoadBalancerRegistryComponent implements OnInit, AfterViewInit {
     });
     console.log(datos);
     if (datos.length > 0) {
+      this.dataGraph = this.serv.dataGraph_load_balancer(
+        response,
+        this.name_element
+      );
       this.tableIsEmpty = false;
       this.dataSource = new MatTableDataSource<any>(datos);
       this.dataSource.paginator = this.paginator;
       this.dataSource.sort = this.sort;
+      this.currentPageIndex = this.paginator.pageIndex;
       this.applyFilter();
 
     }else{
@@ -176,11 +181,14 @@ export class LoadBalancerRegistryComponent implements OnInit, AfterViewInit {
     }
   }
   filterValue: string = '';
+  currentPageIndex: number;
+
 
   applyFilter() {
     this.dataSource.filter = this.filterValue;
     if (this.dataSource.paginator) {
-      this.dataSource.paginator.firstPage();
+      this.dataSource.paginator.pageIndex=this.currentPageIndex
+
     }
     localStorage.setItem('filterValue', this.filterValue);
     console.log('valor almacenado',this.filterValue);

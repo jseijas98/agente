@@ -1,6 +1,6 @@
 export const environment = {
   production: false,
-  baseUrl:'http://180.183.85.70:80/',
+  baseUrl:'http://172.18.7.70:80/',
   Cisnerosip:'http://180.183.85.70:80',
   admin:{
     appList:'admin/apps',
@@ -15,3 +15,5 @@ properties:{
   maxReconectValues:50
 }
 };
+
+ 

@@ -75,25 +75,50 @@ appNameSee(appName:any){
   this.appsNames$.next(appName)
 }
 
-dashboard(){
-    //se unsa en dashboards.component.ts
+// dashboard(){
+//     //se unsa en dashboards.component.ts
 
- return this.apps$.pipe(
+//  return this.apps$.pipe(
+//     switchMap((response: Applications[]) => {
+//       const data: Applications[] = response;
+//       console.log('dashboard',response);
+      
+//       const element = data.map((x) => ({
+//         name: x.applicationName,
+//         value: x.status,
+//         extra: x.applicationId,
+//       }));
+
+//       if (element) {
+
+//         const appName = element;
+//          console.log(appName);
+//         return of(appName);
+//       } else {
+//         return throwError('error');
+//       }
+//     })
+//   );
+// }
+
+dashboard() {
+  return this.apps$.pipe(
     switchMap((response: Applications[]) => {
       const data: Applications[] = response;
-      console.log('dashboard',response);
-      const element = data.map((x) => ({
-        name: x.applicationName,
-        value: x.status,
-        extra: x.applicationId,
-      }));
-      if (element) {
+      console.log('app-NAMES', response);
+
+      if (data) {
+        const element = data.map((x) => ({
+          name: x.applicationName,
+          value: x.status,
+          extra: x.applicationId,
+        }));
 
         const appName = element;
-         console.log(appName);
+        console.log(appName);
         return of(appName);
       } else {
-        return throwError('error');
+        return of([]);
       }
     })
   );

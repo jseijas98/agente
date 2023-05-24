@@ -1,5 +1,8 @@
 <ng-http-loader></ng-http-loader>
+<app-no-registries [error]="tableIsEmpty"></app-no-registries>
 
+
+<div *ngIf="!tableIsEmpty">
 <app-charts
   [dataIn]="dataGraph"
   [legentTitleIn]="name_element"
@@ -135,3 +138,4 @@
     ></mat-paginator>
   </div>
 </mat-expansion-panel>
+</div>

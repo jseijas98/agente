@@ -33,7 +33,7 @@ export class ServicesRegistryComponent implements AfterViewInit {
   applyFilter() {
     this.dataSource.filter = this.filterValue;
     if (this.dataSource.paginator) {
-      this.dataSource.paginator.firstPage();
+      this.dataSource.paginator.pageIndex=this.currentPageIndex
     }
     localStorage.setItem('filterValue', this.filterValue);
     console.log('valor almacenado',this.filterValue);
@@ -75,7 +75,7 @@ this.dynamicFilterService.dynamicFilter('filterValue')
   public dataSource = new MatTableDataSource<any>(this.data);
   @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
-  tableIsEmpty=true;
+  tableIsEmpty=false;
 
   displayedColumns: string[] = [
     'registry_id',
@@ -108,6 +108,7 @@ this.dynamicFilterService.dynamicFilter('filterValue')
     let ServicesRegistry: Array<ServicesRegistry> = respose;
     console.log('response', respose);
 
+    if(respose){
     ServicesRegistry.forEach((servicesRegistry) => {
       this.data.push({
         registry_id: servicesRegistry.registry_id,
@@ -134,6 +135,9 @@ this.dynamicFilterService.dynamicFilter('filterValue')
     this.dataSource = new MatTableDataSource<any>(this.data);
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
+    }
+    return console.log('no hay nada compa');
+    
   }
 
   getApisResgistryError(error: any) {
@@ -159,7 +163,10 @@ this.dynamicFilterService.dynamicFilter('filterValue')
   }
 
   Success(response: any) {
-    let datos: any[] = [];
+    let datos: any[] = [];    
+    console.log(response);
+    
+    if(response.statusCodeValue1 == 200){
     response.forEach((servicesRegistry: ServicesRegistry) => {
       datos.push({
         registry_id: servicesRegistry.registry_id,
@@ -178,23 +185,31 @@ this.dynamicFilterService.dynamicFilter('filterValue')
       });
       this.name_element = servicesRegistry.label_app;
     });
-    console.log(datos);
+    console.log('datos',datos);
 
     if (datos.length > 0) {
+      console.log('cayo en data');
+      
       this.tableIsEmpty = false;
       this.dataSource = new MatTableDataSource<any>(datos);
       this.dataSource.paginator = this.paginator;
       this.dataSource.sort = this.sort;
+      this.currentPageIndex = this.paginator.pageIndex;
       this.applyFilter();
 
     }else{
+      console.log('cayo en data vacia');
       this.dataSource = new MatTableDataSource<any>([])
       this.dataSource.data = [{message:'Sin datos para mostrar'}];
-      this.tableIsEmpty = false;
+      this.tableIsEmpty = true;
     }
   }
+  return this.tableIsEmpty=true;
+  }
+  currentPageIndex: number;
 
   Error(error: any) {
+    this.tableIsEmpty = true;
     console.log('error sse', error);
   }
 

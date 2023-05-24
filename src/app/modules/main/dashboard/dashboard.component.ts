@@ -37,12 +37,38 @@ export class DashboardComponent implements OnInit {
 
   //data de la charts cards
 
-  //esquema de colores de las charts cards
-  colorScheme(data: any): Color {
-    let colores = data.map((x: any) =>
-      x.value < 50 ? '#f44336' : x.value < 80 ? '#ffd740' : '#69f0ae'
-    );
+  // //esquema de colores de las charts cards
+  // colorScheme(data: any): Color {
+  //   let colores = data.map((x: any) =>
+  //     x.value < 50 ? '#f44336' : x.value < 80 ? '#ffd740' : '#69f0ae'
+  //   );
+  //   return {
+  //     name: 'string',
+  //     selectable: true,
+  //     group: ScaleType.Ordinal,
+  //     domain: colores,
+  //   };
+  // }
 
+  
+  colorScheme(data: any): Color {
+    const colores: string[] = data.map((x: any) => {
+      let value=x.value;
+      if (value < 50) {
+        return '#E73628'; // rojo
+      } else if (value < 65) {
+        return '#EFB950'; // amarillo
+      } else if (value < 90) {
+        return '#EFB950'; // amarillo
+      } else if (value >= 90) {
+        return '#A0D41C'; // verde-amarillo
+      } else if (value === 100) {
+        return '#77BD0F'; // verde
+      } else {
+        return '#818181'; // gris
+      }
+    });
+  
     return {
       name: 'string',
       selectable: true,
@@ -50,6 +76,11 @@ export class DashboardComponent implements OnInit {
       domain: colores,
     };
   }
+
+
+
+
+
   cardColor: string = '#232837';
   app_name: string;
   dataCard: any[] = [];

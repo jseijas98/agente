@@ -46,7 +46,7 @@ export class ServicesRegistryReplicaComponent implements OnInit {
   applyFilter() {
     this.dataSource.filter = this.filterValue;
     if (this.dataSource.paginator) {
-      this.dataSource.paginator.firstPage();
+      this.dataSource.paginator.pageIndex=this.currentPageIndex
     }
     localStorage.setItem('filterValue', this.filterValue);
     console.log('valor almacenado',this.filterValue);
@@ -88,6 +88,7 @@ this.dynamicFilterService.dynamicFilter('filterValue')
   dataGraph: Object[] = [];
   unsuscribe$ = new Subject<void>();
   tableIsEmpty=true;
+ 
 
   Service_Replicas_Resgistry(id: any, ip: any) {
     this.http
@@ -157,10 +158,13 @@ this.dynamicFilterService.dynamicFilter('filterValue')
   sseServiceRegirtyReplica() {
     this.activateRouter.params.subscribe((params) => {
       this.sseFuntion(params['id'], params['ip']);
+      console.log(params);
+      
     });
   }
 
   sseFuntion(id: any, ip: any) {
+    console.log(id,ip);
     const httpApiLIst = `${this.baseUrl}registry/service/${id}/replica/${ip}`;
     this.sseServiceService
       .getDataFromServer(httpApiLIst)
@@ -190,13 +194,16 @@ this.dynamicFilterService.dynamicFilter('filterValue')
         ),
         label_hash: ServiceReplicasResgistry.label_hash,
       });
+      this.nombre_de_replica = ServiceReplicasResgistry.replica_name;
     });
     console.log(datos);
     if (datos.length > 0) {
+      
       this.tableIsEmpty = false;
       this.dataSource = new MatTableDataSource<any>(datos);
       this.dataSource.paginator = this.paginator;
       this.dataSource.sort = this.sort;
+      this.currentPageIndex = this.paginator.pageIndex;
       this.applyFilter();
 
     }else{
@@ -205,6 +212,8 @@ this.dynamicFilterService.dynamicFilter('filterValue')
       this.tableIsEmpty = false;
     }
   }
+
+  currentPageIndex: number;
 
   Error(error: any) {
     console.log('error sse', error);
