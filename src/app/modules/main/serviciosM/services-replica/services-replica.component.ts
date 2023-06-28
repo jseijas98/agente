@@ -32,6 +32,8 @@ export class ServicesReplicaComponent implements OnInit {
   ngOnDestroy() {
     this.unsuscribe$.next();
     this.unsuscribe$.complete();
+    console.log('se cerro el sse');
+    this.sseServiceService.closeEventSource();
   }
 
   ngAfterViewInit(): void {

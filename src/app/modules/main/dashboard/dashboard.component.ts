@@ -35,21 +35,6 @@ export class DashboardComponent implements OnInit {
 
   }
 
-  //data de la charts cards
-
-  // //esquema de colores de las charts cards
-  // colorScheme(data: any): Color {
-  //   let colores = data.map((x: any) =>
-  //     x.value < 50 ? '#f44336' : x.value < 80 ? '#ffd740' : '#69f0ae'
-  //   );
-  //   return {
-  //     name: 'string',
-  //     selectable: true,
-  //     group: ScaleType.Ordinal,
-  //     domain: colores,
-  //   };
-  // }
-
   
   colorScheme(data: any): Color {
     const colores: string[] = data.map((x: any) => {
@@ -79,15 +64,16 @@ export class DashboardComponent implements OnInit {
 
 
 
-
-
   cardColor: string = '#232837';
   app_name: string;
   dataCard: any[] = [];
 
   unsuscribe$ = new Subject<void>();
 
-  ngOnDestroy(): void {this.sseServiceService.closeEventSource();}
+  ngOnDestroy(): void {
+    console.log('se cerro el sse');
+    this.sseServiceService.closeEventSource();
+  }
 
   ngAfterViewInit(): void {
     // this.appName.getApps().subscribe((apps) => (this.dataCard = apps));

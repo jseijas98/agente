@@ -7,6 +7,7 @@ import { FlowChartService } from 'src/app/services/flow-chart/flow-chart.service
 import { SseServiceService } from 'src/app/services/sse/sse-service.service';
 import { environment } from 'src/environments/environment';
 import { SpinnerVisibilityService } from 'ng-http-loader';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-main',
@@ -23,18 +24,18 @@ export class MainComponent implements OnInit, AfterViewInit {
 
   ) {}
 
-  ngAfterViewInit(): void {
-    // this.appName.getAppsSse().subscribe(
-    //   (response) => {
-    //     this.appslist = response;
-    //     console.log('app names', response);
-    //   },
-    //   (error) => {
-    //     console.log(error);
-    //   }
-    // );
+  unsuscribe$ = new Subject<void>();
 
+
+  ngAfterViewInit(): void {
      this.sseInit();
+
+  }
+  ngOnDestroy() {
+    this.unsuscribe$.next();
+    this.unsuscribe$.complete();
+    console.log('se cerro el sse');
+    this.sseServiceService.closeEventSource();
   }
 
   sseInit() {

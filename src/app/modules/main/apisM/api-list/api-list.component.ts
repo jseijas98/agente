@@ -256,7 +256,6 @@ this.dynamicFilterService.dynamicFilter('filterValue')
   }
 
 
-
   Success(response: any) {
     console.log(response);
     
@@ -305,37 +304,5 @@ this.dynamicFilterService.dynamicFilter('filterValue')
     console.log('error sse apis', error);
   }
 
-  // sseFuntion2() {
-  //   this.activateRouter.params.subscribe((params) => {
-  //     let index = params['id'];
-  //     const httpApiLIst = `${environment.Cisnerosip}list/application/${index}/apis`;
-  //     this.sseServiceService
-  //       .getDataFromServer(httpApiLIst)
-  //       .pipe(takeUntil(this.unsuscribe$))
-  //       .subscribe((data) => {
-  //         let datos: any[] = [];
-  //         data.forEach((api: GetApis) =>
-  //           datos.push({
-  //             Id: api.apiId,
-  //             status: api.status,
-  //             nameSpace: api.nameSpace,
-  //             test_interval: api.testInterv,
-  //             label_app: api.label_app,
-  //             response_time: api.response_time,
-  //             last_test: this.utils.formatearFecha(api.lastTestDate),
-  //             health: api.health,
-  //             applId: api.applicationId,
-  //             triggerLow: api.lowTrigger,
-  //             triggerHigh: api.highTrigger,
-  //             lowAlarm: api.lowAlarm,
-  //             highAlarm: api.highAlarm,
-  //           })
-  //         );
-  //         console.log(datos);
-  //         this.dataSource = new MatTableDataSource<any>(datos);
-  //         this.dataSource.paginator = this.paginator;
-  //         this.dataSource.sort = this.sort;
-  //       });
-  //   });
-  // }
+
 }

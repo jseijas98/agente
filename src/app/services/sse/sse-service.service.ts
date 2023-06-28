@@ -69,6 +69,7 @@ export class SseServiceService {
       };
     });
   }
+  
 
   private getEventSource(url: string): EventSource {
     if (this.eventSource) {

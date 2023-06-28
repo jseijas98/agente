@@ -46,6 +46,8 @@ export class ApiReplicasComponent implements OnInit, AfterViewInit, OnDestroy {
   ngOnDestroy(): void {
     this.unsuscribe$.next();
     this.unsuscribe$.complete();
+    console.log('se cerro el sse');
+    this.sseServiceService.closeEventSource();
   }
 
   ngOnInit(): void {this.dynamicFilterService.dynamicFilter('filterValue')

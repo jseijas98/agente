@@ -58,6 +58,8 @@ this.dynamicFilterService.dynamicFilter('filterValue')
   ngOnDestroy() {
     this.unsuscribe$.next();
     this.unsuscribe$.complete();
+    console.log('se cerro el sse');
+    this.sseServiceService.closeEventSource();
   }
 
   displayedColumns: string[] = [

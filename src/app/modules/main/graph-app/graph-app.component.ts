@@ -56,7 +56,10 @@ export class GraphAppComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.closeConect();
     this.unsusbribe();
+    console.log('se cerro el sse');
+    this.sseServiceService.closeEventSource();
   }
+
 
   unsusbribe() {
     console.log('se desuscribio');
@@ -99,19 +102,20 @@ export class GraphAppComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.unsuscribe$))
       .subscribe((data) => {
       
-
+        console.log(data);
+        
         let getHealth: DataAplication = data;
         let data1 = getHealth.data;
         this.health_api = this.colorScheme(data1[0].health);
-        this.health_loadbalancer = this.colorScheme(data1[2].health);
-        this.health_db = this.colorScheme(data1[3].health);
-        this.health_integration = this.colorScheme(data1[1].health);
-        this.health_services = this.colorScheme(data1[4].health);
+        this.health_integration = this.colorScheme(data1[2].health);
+        this.health_loadbalancer = this.colorScheme(data1[3].health);
+        this.health_db = this.colorScheme(data1[4].health);
+        this.health_services = this.colorScheme(data1[1].health);
         this.message_api = data1[0].message;
-        this.message_loadbalancer = data1[2].message;
-        this.message_db = data1[3].message;
-        this.message_integration = data1[1].message;
-        this.message_services = data1[4].message;
+        this.message_integration = data1[2].message;
+        this.message_loadbalancer = data1[3].message;
+        this.message_db = data1[4].message;
+        this.message_services = data1[1].message;
         this.update$.next(false);
         this.isLoading = true;
 
@@ -239,18 +243,21 @@ export class GraphAppComponent implements OnInit, OnDestroy {
   );
 
   colorScheme(data: number): string {
-    let colores: string;
-    data < 50
-      ? (colores = '#E73628') //rojo
-      : data < 65
-      ? (colores = '#EFB950') //amarillo
-      : data < 80
-      ? (colores = '#EFB950') //amarillo
-      : data == 100
-      ? (colores = '#47CC0C') //verde
-      : (colores = '#818181'); //gris
-
-    return colores;
+    let color: string;
+  
+    if (data < 50) {
+      color = '#E73628'; // rojo
+    } else if (data < 65 || data < 80) {
+      color = '#EFB950'; // amarillo
+    } else if (data === 100) {
+      color = '#47CC0C'; // verde
+    } else if (data < 99) {
+      color = '#A0D41C'; // verde amarillento
+    } else {
+      color = '#818181'; // gris
+    }
+  
+    return color;
   }
 
   public layoutSettings = {

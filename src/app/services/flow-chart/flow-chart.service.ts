@@ -46,16 +46,17 @@ export class FlowChartService {
       color = '#EFB950'; // amarillo
     } else if (data < 90) {
       color = '#EFB950'; // amarillo
-    } else if (data >= 90) {
+    } else if (data >= 90 && data < 99) {
       color = '#A0D41C'; // verde-amarillo
-    } else if (data === 100) {
-      color = '#47CC0C'; // verde
-    }  else {
+    } else if (data = 100) {
+      color = '#008f39'; // verde
+    } else {
       color = '#818181'; // gris
     }
   
     return color;
   }
+
 
   unsuscribe$ = new Subject<void>();
   ruta$: BehaviorSubject<any> = new BehaviorSubject(null);
