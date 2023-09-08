@@ -66,8 +66,8 @@ export class RegistrysApisComponent
   ngOnDestroy(): void {
     this.unsuscribe$.next();
     this.unsuscribe$.complete();
-    console.log('se cerro el sse');
     this.sseServiceService.closeEventSource();
+    console.log('se cerro el sse');
   }
 
   //TODO: LISTO con sse

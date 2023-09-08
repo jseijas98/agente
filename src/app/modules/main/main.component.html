@@ -1,46 +1,63 @@
-<mat-sidenav-container class="example-container" autosize>
-  <mat-sidenav
-    #drawer
-    class="example-sidenav"
-    fixedInViewport
-    mode="side"
-    opened
-  >
-    <mat-toolbar class="text-center items-center h-auto">
-      <div class="m-auto text-center flex items-center">
-        <img src="../../assets/logo.png" alt="Logo BDV" class="logo" />
-        <span class="text-3xl">BDV</span>
-      </div>
-    </mat-toolbar>
-    <!-- <mat-divider class="w-11/12 fixed"></mat-divider> -->
-    <mat-list>
 
-      <mat-list-item >
-        <button (click)="dashboard()" mat-stroked-button class="w-full h-full pd-2">
-          <mat-icon>list</mat-icon> Dashboard
-        </button>
-      </mat-list-item>
+  
+
+  <mat-sidenav-container autosiz class="fixed" >
 
 
-      <mat-list-item *ngFor="let app of appslist">
-        <button mat-button (click)="graph(app.applicationId)"class="w-full h-full m-2 pd-2">
-           {{ app.applicationName }} <span [ngStyle]="{ color: this.colors.colorScheme(app.status)}"> {{ app.status }}%</span>
-        </button>
-      </mat-list-item>
 
+    <mat-sidenav mode="side" opened [disableClose]="true" fixedInViewport  >
 
-    </mat-list>
-  </mat-sidenav>
-  <div class="min-h-screen">
-    <mat-toolbar color="primary" class="fixed z-50">
+    
 
-      <div class="row flex">
-        <app-go-back class="mr-3" *ngIf="router.url !== '/'"></app-go-back>
-        <span class="self-center">Agente Monitor</span>
-      </div>
+      <mat-toolbar class="text-center items-center">
+        <div class="mx-5 flex items-center">
+          <img src="../../assets/logonuevo.png" alt="Logo BDV" class="w-48 h-9"/> 
+        </div>
+      </mat-toolbar>
 
-    </mat-toolbar>
-    <div id="espacer" class="h-20"></div>
-    <router-outlet></router-outlet>
-  </div>
-</mat-sidenav-container>
+      <mat-list>
+        <mat-list-item>
+          <button (click)="dashboard()" mat-button class="w-full h-full pd-2">
+            <mat-icon>widgets</mat-icon> Dashboard
+          </button>
+        </mat-list-item>
+        <mat-list-item *ngFor="let app of appslist">
+          <button
+            mat-button
+            (click)="graph(app.applicationId)"
+            class="w-full h-full m-2 pd-2"
+          >
+            <mat-icon>query_stats</mat-icon>
+            <span>
+              {{ app.applicationName }}
+            </span>
+            <span [ngStyle]="{ color: this.colors.colorScheme(app.status) }">
+              {{ app.status }}%</span
+            >
+          </button>
+        </mat-list-item>
+      </mat-list>
+
+    
+
+    </mat-sidenav>
+    <div class="min-h-screen">
+
+      <mat-toolbar color="primary" class="fixed z-50">
+        <div class="row flex">
+          <span class="self-center text-2xl">Agente de monitoreo</span>
+        </div>
+    
+        <span class="spacer"></span>
+    
+        <div class="row flex mr-64">
+          <app-go-back class="" *ngIf="router.url !== '/'"></app-go-back>
+          <app-notification class="mr-5"></app-notification>
+        </div>
+
+      </mat-toolbar>
+
+      <div id="espacer" class="h-16"></div>
+      <router-outlet></router-outlet>
+    </div>
+  </mat-sidenav-container>

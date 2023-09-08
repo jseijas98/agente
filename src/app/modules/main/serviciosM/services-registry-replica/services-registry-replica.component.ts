@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
@@ -14,6 +14,7 @@ import { MetadataComponent } from '../../../../components/modals/metadata/metada
 import { SseServiceService } from 'src/app/services/sse/sse-service.service';
 import { Subject, takeUntil } from 'rxjs';
 import { DynamicFilterService } from 'src/app/services/dynamic-Filter/dynamic-filter.service';
+import { BreadcrumbService } from 'src/app/components/breadcrumb/breadcrumb.service';
 
 @Component({
   selector: 'app-services-registry-replica',
@@ -31,6 +32,10 @@ export class ServicesRegistryReplicaComponent implements OnInit {
 
   ) {}
 
+  breadcrumbService = inject(BreadcrumbService)
+  public breadcrumbs: { label: string; url: string }[] = [];
+
+
   ngOnDestroy() {
     this.unsuscribe$.next();
     this.unsuscribe$.complete();
@@ -40,8 +45,10 @@ export class ServicesRegistryReplicaComponent implements OnInit {
   ngAfterViewInit(): void {
     // this.activateRouter.params.subscribe((params) => {
     //   this.Service_Replicas_Resgistry(params['id'], params['ip']);
-    // });
+    // }); 
     this.sseServiceRegirtyReplica();
+
+
   }
   filterValue: string = '';
 
@@ -103,6 +110,7 @@ this.dynamicFilterService.dynamicFilter('filterValue')
       });
   }
 
+
   getReplicasServiceRegistrySuccess(respose: any) {
     let ServicesReplicaesgistrylist: Array<ServicesReplicasRegistry> = respose;
 
@@ -159,9 +167,9 @@ this.dynamicFilterService.dynamicFilter('filterValue')
   }
   sseServiceRegirtyReplica() {
     this.activateRouter.params.subscribe((params) => {
+      this.breadcrumbService.agregarRuta('registry/service/'+params['id']+'/replica/'+params['ip'],'registros')
       this.sseFuntion(params['id'], params['ip']);
       console.log(params);
-      
     });
   }
 

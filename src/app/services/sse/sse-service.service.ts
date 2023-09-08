@@ -10,6 +10,9 @@ import {
   of,
   delay,
   Observer,
+  mergeMap,
+  catchError,
+  retry,
 } from 'rxjs';
 import { environment } from 'src/environments/environment.qa';
 
@@ -18,6 +21,7 @@ import { environment } from 'src/environments/environment.qa';
 })
 export class SseServiceService {
   eventSource!: EventSource;
+  eventNoClose!: EventSource;
 
   constructor(
     private _zone: NgZone,
@@ -25,25 +29,24 @@ export class SseServiceService {
   ) {}
 
 
-  public getDataFromServer(url: string): Observable<any> {
-    return this.getServerSentEvent(url).pipe(
-      map((message: MessageEvent) =>
-        message != null ? JSON.parse(message.data) : null
-      ),
-      map((data: any) => data),
-      retryWhen((errors) =>
-        errors.pipe(
-          concatMap((e, i) =>
-            iif(
-              () => i == environment.properties.maxReconectValues,
-              throwError(e),
-              of(e).pipe(delay(5000))
-            )
-          )
-        )
-      )
-    );
+  private getEventSource(url: string): EventSource {
+    if (this.eventSource) {
+      console.log('se cerro la conexion a:', this.eventSource.url);
+      this.eventSource.close();
+    }
+    this.eventSource = new EventSource(url);
+    console.log('se abrio la conexion a:', this.eventSource.url);
+    
+    return this.eventSource;
   }
+
+  private getEventSourceNoClose(url: string): EventSource {
+    this.eventNoClose = new EventSource(url);
+    console.log('se abrio la conexion a:', this.eventNoClose.url);
+    
+    return this.eventNoClose;
+  }
+
 
   public getServerSentEvent(url: string): Observable<any> {
     this.spinner.show();
@@ -71,22 +74,10 @@ export class SseServiceService {
   }
   
 
-  private getEventSource(url: string): EventSource {
-    if (this.eventSource) {
-      this.eventSource.close();
-    }
-    this.eventSource = new EventSource(url);
-    return this.eventSource;
-  }
-
-  public closeEventSource() {
-    this.eventSource.close();
-  }
-
-  public getServerSentEvent2(url: string): Observable<any> {
+  public getServerSentEventNoClose(url: string): Observable<any> {
     this.spinner.show();
     return Observable.create((observer: Observer<any>) => {
-      const eventSource = (this.eventSource = this.getEventSource2(url));
+      const eventSource = (this.eventNoClose = this.getEventSourceNoClose(url));
       eventSource.onopen = (event) => {
 
         if (eventSource.readyState == 1) {
@@ -108,30 +99,39 @@ export class SseServiceService {
     });
   }
 
-  private getEventSource2(url: string): EventSource {
-    this.eventSource = new EventSource(url);
-    return this.eventSource;
-  }
-
-  public getDataFromServer2(url: string): Observable<any> {
-    return this.getServerSentEvent2(url).pipe(
-      map((message: MessageEvent) =>
-        message != null ? JSON.parse(message.data) : null
-      ),
+  public getDataFromServerNoClose(url: string): Observable<any> {
+    return this.getServerSentEventNoClose(url).pipe(
+      map((message: MessageEvent) =>message != null ? JSON.parse(message.data) : null),
       map((data: any) => data),
-      retryWhen((errors) =>
-        errors.pipe(
-          concatMap((e, i) =>
-            iif(
-              () => i == environment.properties.maxReconectValues,
-              throwError(e),
-              of(e).pipe(delay(5000))
-            )
-          )
-        )
-      )
+      retry(environment.properties.maxReconectValues),
+      catchError((error) => {
+        console.error('Ocurrió un error:', error);
+        this.closeEventSource();
+        throw new Error(
+          'Se produjo un error inesperado. Por favor, inténtalo de nuevo más tarde.'
+        );
+      })
     );
   }
 
+  public getDataFromServer(url: string): Observable<any> {
+    return this.getServerSentEvent(url).pipe(
+      map((message: MessageEvent) => JSON.parse(message.data)),
+      map((data: any) => data),
+      retry(environment.properties.maxReconect),
+      catchError((error) => {
+        console.error('Ocurrió un error:', error);
+        throw new Error(
+          'Se produjo un error inesperado. Por favor, inténtalo de nuevo más tarde.'
+        );
+      })
+    );
+  }
+
+  public closeEventSource() {
+    this.spinner.hide();
+    console.log('cerrando el sse a:', this.eventSource.url);
+    this.eventSource.close();
+  }
 
 }

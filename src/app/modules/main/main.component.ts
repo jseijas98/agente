@@ -22,32 +22,32 @@ export class MainComponent implements OnInit, AfterViewInit {
     private sseServiceService: SseServiceService,
     private spinner: SpinnerVisibilityService
 
-  ) {}
+  ) { }
 
-  unsuscribe$ = new Subject<void>();
-
-
-  ngAfterViewInit(): void {
-     this.sseInit();
-
+  ngAfterViewInit(): void { 
   }
+
   ngOnDestroy() {
-    this.unsuscribe$.next();
-    this.unsuscribe$.complete();
-    console.log('se cerro el sse');
-    this.sseServiceService.closeEventSource();
   }
 
+  ngOnInit(): void {
+    this.sseInit();
+  }
+
+  
   sseInit() {
     this.sseServiceService
-      .getDataFromServer2(environment.baseUrl + 'list/application')
+      .getDataFromServerNoClose(environment.baseUrl + 'list/application')
       .subscribe(
         (response: Applications[]) => {
-          const data: Applications[] = response;
-          console.log('main',response);
-          this.appslist = response;
-          this.appName.appSee(data);
-          this.appName.appNameSee(data);
+
+          if (response){
+            const data: Applications[] = response;
+            this.appslist = response;
+            this.appName.appSee(data);
+            // this.appName.appNameSee(data);
+          }
+      
         },
         (error) => {
           console.log(error);
@@ -55,8 +55,6 @@ export class MainComponent implements OnInit, AfterViewInit {
       );
   }
 
-  ngOnInit(): void {
-  }
 
   appslist: any[] = [];
   dataCard: Applications[] = [];
@@ -70,7 +68,7 @@ export class MainComponent implements OnInit, AfterViewInit {
   }
 
   dashboard() {
-    this.router.navigateByUrl(``);
+    this.router.navigateByUrl('');
   }
 
   name: string | undefined;

@@ -15,6 +15,7 @@ export const environment = {
     bdvpersonasMaxUsersActives:100000,
     bdvempresasMaxUsersActives:1000,
     maxValuesForLineGraph:50,
-    maxReconectValues:10
+    maxReconectValues:1,
+    maxReconect:100000000
   }
 }

@@ -31,9 +31,7 @@ export class DashboardComponent implements OnInit {
     private appName: AppNameService,
 
     private sseServiceService: SseServiceService
-  ) {
-
-  }
+  ) { }
 
   
   colorScheme(data: any): Color {
@@ -71,30 +69,19 @@ export class DashboardComponent implements OnInit {
   unsuscribe$ = new Subject<void>();
 
   ngOnDestroy(): void {
-    console.log('se cerro el sse');
-    this.sseServiceService.closeEventSource();
+    // this.sseServiceService.closeEventSource();
   }
 
   ngAfterViewInit(): void {
-    // this.appName.getApps().subscribe((apps) => (this.dataCard = apps));
-    // this.appName.dashboard().subscribe((apps) => {(this.dataCard = apps)
-    // console.log(apps);
-    // });
   }
 
   ngOnInit(): void {
-    // this.appName.dashboard().subscribe((apps) => (this.dataCard = apps));
-    // this.appName.dashboard().subscribe((apps) => {(this.dataCard = apps)
-    //   console.log(apps);
-    //   });
-
-    this.appName.dashboard().subscribe((apps) => {
-      this.dataCard = apps;
-      console.log(apps);
+    this.appName.dashboard().subscribe((apps:any[]) => {
+      this.dataCard = apps? this.dataCard= apps : [];
     });
-
-    this.appName.getAppsSse().subscribe((apps) => (this.dataCard = apps));
+    
   }
+
 
   //formato del valor numerico
   axisFormat(val: any) {

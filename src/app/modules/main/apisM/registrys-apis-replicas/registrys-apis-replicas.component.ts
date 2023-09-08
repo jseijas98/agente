@@ -63,8 +63,8 @@ export class RegistrysApisReplicasComponent implements OnInit , AfterViewInit, O
   ngOnDestroy(): void {
     this.unsuscribe$.next();
     this.unsuscribe$.complete();
-    console.log('se cerro el sse');
     this.sseServiceService.closeEventSource();
+    console.log('se cerro el sse');
   }
 
   displayedColumns: string[] = [

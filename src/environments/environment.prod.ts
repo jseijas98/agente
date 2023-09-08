@@ -11,6 +11,6 @@ properties:{
   bdvpersonasMaxUsersActives:100000,
   bdvempresasMaxUsersActives:1000,
   maxValuesForLineGraph:50,
-  maxReconectValues:50
+  maxReconectValues:5
 }
 };

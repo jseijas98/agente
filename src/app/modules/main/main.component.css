@@ -8,3 +8,20 @@
     width: 65px;
     height: 65px;
 }
+
+  .spacer {
+    flex: 1 1 auto;
+  }
+
+  .divider {
+    height: 1px;
+    width: 100%;
+    background-color: #ccc; /* Color del divisor */
+    margin: 10px 0; /* Espacio superior e inferior */
+  }
+
+  .logoName{
+    font-size: 32px;
+    line-height: 2px;
+  }
+

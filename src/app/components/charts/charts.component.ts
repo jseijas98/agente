@@ -1,7 +1,7 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, HostListener, Input, OnInit } from '@angular/core';
 import StringUtils from 'src/app/common/util/stringUtils';
 import { Step, stepSquare } from 'src/app/services/flow-chart/Step';
+
 
 @Component({
   selector: 'app-charts',
@@ -21,6 +21,9 @@ export class ChartsComponent implements OnInit {
 
   curve = stepSquare;
 
+
+  schemeType: string = 'linear';
+
   // options
   legend: boolean = false;
   animations: boolean = true;
@@ -37,6 +40,27 @@ export class ChartsComponent implements OnInit {
   ngOnInit(): void {
   }
 
+
+   // Dimensiones iniciales de la gráfica
+   chartWidth: number = 1250; // ancho inicial 
+   chartHeight: number = 400; // altura inicial 
+
+    // Detecta cambios en el tamaño de la ventana del navegador
+  @HostListener('window:resize', ['$event'])
+  onResize(event: any) {
+    // Actualiza las dimensiones de la gráfica en función del tamaño del contenedor
+    this.updateChartDimensions();
+  }
+
+  // Función para actualizar las dimensiones de la gráfica
+  updateChartDimensions() {
+    
+    const container = document.querySelector('.chart-container'); 
+    if (container) {
+      this.chartWidth = container.clientWidth; 
+      this.chartHeight = container.clientHeight; 
+    }
+  }
 
 
 }

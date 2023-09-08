@@ -1,11 +1,12 @@
 import { HttpClient } from '@angular/common/http';
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
-import { MatPaginator } from '@angular/material/paginator';
+import { AfterViewInit, Component, OnInit, ViewChild, inject } from '@angular/core';
 import { MatSort } from '@angular/material/sort';
+import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 import StringUtils from 'src/app/common/util/stringUtils';
+import { BreadcrumbService } from 'src/app/components/breadcrumb/breadcrumb.service';
 import { ServicesRegistry } from 'src/app/modules/interfaces/model.services/model.services-registry';
 import { DynamicFilterService } from 'src/app/services/dynamic-Filter/dynamic-filter.service';
 import { GraphServiceService } from 'src/app/services/graph/graph-service.service';
@@ -17,37 +18,28 @@ import { environment } from 'src/environments/environment';
   templateUrl: './services-registry.component.html',
   styleUrls: ['./services-registry.component.css'],
 })
-export class ServicesRegistryComponent implements AfterViewInit {
+export class ServicesRegistryComponent implements OnInit, AfterViewInit {
   constructor(
-    private http: HttpClient,
     public utils: StringUtils,
     private activateRouter: ActivatedRoute,
     private serv: GraphServiceService,
     private sseServiceService: SseServiceService,
-    private dynamicFilterService:DynamicFilterService
-  ) {}
+    private dynamicFilterService: DynamicFilterService
+  ){}
 
+  router = inject(Router);
 
+  breadcrumbService = inject(BreadcrumbService);
+  public breadcrumbs: { label: string; url: string }[] = [];
   filterValue: string = '';
-
-  applyFilter() {
-    this.dataSource.filter = this.filterValue;
-    if (this.dataSource.paginator) {
-      this.dataSource.paginator.pageIndex=this.currentPageIndex
-    }
-    localStorage.setItem('filterValue', this.filterValue);
-    console.log('valor almacenado',this.filterValue);
-
-  }
-  onFilterInputChanged(event: Event) {
-    const inputValue = (event.target as HTMLInputElement).value;
-    this.filterValue = inputValue ? inputValue.trim().toLowerCase() : '';
-    this.applyFilter();
-  }
-
-  ngOnInit(): void {
-this.dynamicFilterService.dynamicFilter('filterValue')
-  }
+  protected legend1: string = 'tiempo de respuesta';
+  protected legend2: string = 'ms';
+  unsuscribe$ = new Subject<void>();
+  data: any[] = [];
+  dataGraph: Object[] = [];
+  currentPageIndex: number;
+  name_element: string;
+  tableIsEmpty = true;
 
 
   ngOnDestroy() {
@@ -57,27 +49,37 @@ this.dynamicFilterService.dynamicFilter('filterValue')
     this.sseServiceService.closeEventSource();
   }
 
-  ngAfterViewInit(): void {
-    // this.activateRouter.params.subscribe((params) => {
-    //   this.Service_registry(params['id']);
-    // });
-    this.sseServiceRegirty();
+  applyFilter() {
+    this.dataSource.filter = this.filterValue;
+    if (this.dataSource.paginator) {
+      this.dataSource.paginator.pageIndex = this.currentPageIndex
+    }
+    localStorage.setItem('filterValue', this.filterValue);
+    console.log('valor almacenado', this.filterValue);
   }
 
-  //TODO: LISTO con sse
-  //pointer grph info
-  protected legend1: string = 'tiempo de respuesta';
-  protected legend2: string = 'ms';
-  //
-  unsuscribe$ = new Subject<void>();
-  //
-  data: any[] = [];
-  dataGraph: Object[] = [];
-  name_element: string;
-  public dataSource = new MatTableDataSource<any>(this.data);
-  @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
-  @ViewChild(MatSort) sort!: MatSort;
-  tableIsEmpty=false;
+  onFilterInputChanged(event: Event) {
+    const inputValue = (event.target as HTMLInputElement).value;
+    this.filterValue = inputValue ? inputValue.trim().toLowerCase() : '';
+    this.applyFilter();
+  }
+
+  ngAfterViewInit(): void {
+    this.sseServiceRegirty();
+    console.log('Después de asignar this.paginator:', this.paginator);
+  }
+
+  ngOnInit(): void {
+    this.breadcrumbService.agregarRuta(this.router.url,'historicos');
+    this.breadcrumbs = this.breadcrumbService.obtenerBreadcrumbs();
+    this.dynamicFilterService.dynamicFilter('filterValue')
+  }
+  
+  sseServiceRegirty() {
+    this.activateRouter.params.subscribe((params) => {
+      this.sseFuntion(params['id']);
+    });
+  }
 
   displayedColumns: string[] = [
     'registry_id',
@@ -95,62 +97,13 @@ this.dynamicFilterService.dynamicFilter('filterValue')
     'histSuccessfulTest',
   ];
 
-  Service_registry(index: number) {
-    this.http
-      .get<ServicesRegistry>(
-        `${environment.baseUrl}registry/application/${index}/service`
-      )
-      .subscribe({
-        next: this.getRegistryApisSuccess.bind(this),
-        error: this.getApisResgistryError.bind(this),
-      });
-  }
+    //configuración del dataSource
+    dataSource = new MatTableDataSource<any>();
 
-  getRegistryApisSuccess(respose: any) {
-    let ServicesRegistry: Array<ServicesRegistry> = respose;
-    console.log('response', respose);
+    //paginacion del las tablas
+    @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
+    @ViewChild(MatSort) sort!: MatSort;
 
-    if(respose){
-    ServicesRegistry.forEach((servicesRegistry) => {
-      this.data.push({
-        registry_id: servicesRegistry.registry_id,
-        servicesId: servicesRegistry.serviceId,
-        status: servicesRegistry.status,
-        health: servicesRegistry.health,
-        applicationId: servicesRegistry.applicationId,
-        label_app: servicesRegistry.label_app,
-        nameSpace: servicesRegistry.nameSpace,
-        consecutiveFailedTest: servicesRegistry.consecutiveFailedTest,
-        histFailedTest: servicesRegistry.histFailedTest,
-        lastTestDate: this.utils.formatDate(servicesRegistry.lastTestDate),
-        response_time: servicesRegistry.response_time,
-        consecutiveSuccessfulTest: servicesRegistry.consecutiveSuccessfulTest,
-        histSuccessfulTest: servicesRegistry.histSuccessfulTest,
-      });
-      this.name_element = servicesRegistry.label_app;
-    });
-    console.log(this.data);
-    this.dataGraph = this.serv.dataGraph_load_balancer(
-      respose,
-      this.name_element
-    );
-    this.dataSource = new MatTableDataSource<any>(this.data);
-    this.dataSource.paginator = this.paginator;
-    this.dataSource.sort = this.sort;
-    }
-    return console.log('no hay nada compa');
-    
-  }
-
-  getApisResgistryError(error: any) {
-    console.error(error);
-  }
-
-  sseServiceRegirty() {
-    this.activateRouter.params.subscribe((params) => {
-      this.sseFuntion(params['id']);
-    });
-  }
 
   sseFuntion(index: any) {
     const httpApiLIst = `${environment.baseUrl}registry/application/${index}/service`;
@@ -159,16 +112,13 @@ this.dynamicFilterService.dynamicFilter('filterValue')
       .pipe(takeUntil(this.unsuscribe$))
       .subscribe({
         next: this.Success.bind(this),
-        error: this.Error.bind(this),
-        complete: () => console.log('completed'),
+        error: this.Error.bind(this)
       });
   }
 
   Success(response: any) {
-    let datos: any[] = [];    
-    console.log(response);
-    
-    if(response.statusCodeValue1 == 200){
+
+    let datos: any[] = [];
     response.forEach((servicesRegistry: ServicesRegistry) => {
       datos.push({
         registry_id: servicesRegistry.registry_id,
@@ -187,40 +137,28 @@ this.dynamicFilterService.dynamicFilter('filterValue')
       });
       this.name_element = servicesRegistry.label_app;
     });
-    console.log('datos',datos);
+
+    this.dataGraph = [...this.serv.dataGraph_load_balancer(response,this.name_element)]
+    console.log(this.dataGraph);
+    console.log(datos);
 
     if (datos.length > 0) {
-      console.log('cayo en data');
-      
-      this.tableIsEmpty = false;
       this.dataSource = new MatTableDataSource<any>(datos);
       this.dataSource.paginator = this.paginator;
       this.dataSource.sort = this.sort;
-      this.currentPageIndex = this.paginator.pageIndex;
+      this.currentPageIndex = this.paginator.pageIndex
       this.applyFilter();
-
-    }else{
-      console.log('cayo en data vacia');
-      this.dataSource = new MatTableDataSource<any>([])
-      this.dataSource.data = [{message:'Sin datos para mostrar'}];
-      this.tableIsEmpty = true;
+      this.tableIsEmpty = false;
+    } else {
+      this.dataSource = new MatTableDataSource<any>([]);
+      this.dataSource.data = [{ message: 'Sin datos para mostrar' }];
+      this.tableIsEmpty = false;
     }
   }
-  return this.tableIsEmpty=true;
-  }
-  currentPageIndex: number;
-
   Error(error: any) {
     this.tableIsEmpty = true;
     console.log('error sse', error);
   }
+  
 
-  // applyFilter(event: Event) {
-  //   const filterValue = (event.target as HTMLInputElement).value;
-  //   this.dataSource.filter = filterValue.trim().toLowerCase();
-
-  //   if (this.dataSource.paginator) {
-  //     this.dataSource.paginator.firstPage();
-  //   }
-  // }
 }

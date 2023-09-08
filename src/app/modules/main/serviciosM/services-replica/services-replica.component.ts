@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
@@ -12,6 +12,7 @@ import { MetadataComponent } from '../../../../components/modals/metadata/metada
 import { SseServiceService } from 'src/app/services/sse/sse-service.service';
 import { Subject, takeUntil } from 'rxjs';
 import { DynamicFilterService } from 'src/app/services/dynamic-Filter/dynamic-filter.service';
+import { BreadcrumbService } from 'src/app/components/breadcrumb/breadcrumb.service';
 
 @Component({
   selector: 'app-services-replica',
@@ -27,7 +28,10 @@ export class ServicesReplicaComponent implements OnInit {
     private router: Router,
     private sseServiceService: SseServiceService,
     private dynamicFilterService: DynamicFilterService
-  ) {}
+  ) { }
+
+  breadcrumbService = inject(BreadcrumbService)
+  title:String = '';
 
   ngOnDestroy() {
     this.unsuscribe$.next();
@@ -48,7 +52,7 @@ export class ServicesReplicaComponent implements OnInit {
   applyFilter() {
     this.dataSource.filter = this.filterValue;
     if (this.dataSource.paginator) {
-      this.dataSource.paginator.pageIndex=this.currentPageIndex
+      this.dataSource.paginator.pageIndex = this.currentPageIndex
     }
     localStorage.setItem('filterValue', this.filterValue);
     console.log('valor almacenado', this.filterValue);
@@ -59,7 +63,12 @@ export class ServicesReplicaComponent implements OnInit {
     this.applyFilter();
   }
 
+  public breadcrumbs: { label: string; url: string }[] = [];
+
   ngOnInit(): void {
+    this.breadcrumbService.agregarRuta(this.router.url, "replicas");
+    this.breadcrumbs = this.breadcrumbService.obtenerBreadcrumbs();
+    console.log(this.breadcrumbs);
     this.dynamicFilterService.dynamicFilter('filterValue');
   }
 
@@ -104,7 +113,7 @@ export class ServicesReplicaComponent implements OnInit {
 
       this.data.push({
         replica_id: servicesReplica.replica_id,
-        serviceId: servicesReplica.serviceId        ,
+        serviceId: servicesReplica.serviceId,
         replicaIp: servicesReplica.replicaIp,
         metadata: servicesReplica.metadata,
         status: servicesReplica.status,
@@ -115,6 +124,8 @@ export class ServicesReplicaComponent implements OnInit {
       });
 
       this.name = servicesReplica.replica_name.split('-')[0];
+      this.title = servicesReplica.replica_name
+      console.log('titulo',this.title);
     });
     console.log(this.data);
     this.dataSource = new MatTableDataSource<any>(this.data);
@@ -178,39 +189,62 @@ export class ServicesReplicaComponent implements OnInit {
 
 
   Success(response: any) {
-    let datos: any[] = [];
-    response.forEach((ServiceReplicasResgistry: ServicesReplica) => {
-      datos.push({
-        replica_id: ServiceReplicasResgistry.replica_id,
-        serviceId: ServiceReplicasResgistry.serviceId,
-        replicaIp: ServiceReplicasResgistry.replicaIp,
-        metadata: ServiceReplicasResgistry.metadata,
-        status: ServiceReplicasResgistry.status,
-        creation_date: this.utils.formatDate(
-          ServiceReplicasResgistry.creation_date
-        ),
-        replica_name: ServiceReplicasResgistry.replica_name,
-        lastTestDate: this.utils.formatearFecha(
-          ServiceReplicasResgistry.lastTestDate
-        ),
-        label_hash: ServiceReplicasResgistry.label_hash,
+    try {
+      if (response.body === "") {
+        return
+      }
+      let datos: any[] = [];
+      response.forEach((ServiceReplicasResgistry: ServicesReplica) => {
+        datos.push({
+          replica_id: ServiceReplicasResgistry.replica_id,
+          serviceId: ServiceReplicasResgistry.serviceId,
+          replicaIp: ServiceReplicasResgistry.replicaIp,
+          metadata: ServiceReplicasResgistry.metadata,
+          status: ServiceReplicasResgistry.status,
+          creation_date: this.utils.formatDate(
+            ServiceReplicasResgistry.creation_date
+          ),
+          replica_name: ServiceReplicasResgistry.replica_name,
+          lastTestDate: this.utils.formatearFecha(
+            ServiceReplicasResgistry.lastTestDate
+          ),
+          label_hash: ServiceReplicasResgistry.label_hash,
+        });
+        this.name = ServiceReplicasResgistry.replica_name.split('-')[0];
+        this.title = this.name
+        console.log('titulo',this.title);
+
       });
-      this.name = ServiceReplicasResgistry.replica_name.split('-')[0];
-    });
-    console.log(datos);
-    if (datos.length > 0) {
-      this.tableIsEmpty = false;
-      this.dataSource = new MatTableDataSource<any>(datos);
-      this.dataSource.paginator = this.paginator;
-      this.dataSource.sort = this.sort;
-      this.currentPageIndex = this.paginator.pageIndex;
-      this.applyFilter();
-    } else {
-      this.dataSource = new MatTableDataSource<any>([]);
-      this.dataSource.data = [{ message: 'Sin datos para mostrar' }];
-      this.tableIsEmpty = false;
+      console.log(datos);
+      if (datos.length > 0) {
+        this.tableIsEmpty = false;
+        this.dataSource = new MatTableDataSource<any>(datos);
+        this.dataSource.paginator = this.paginator;
+        this.dataSource.sort = this.sort;
+        this.currentPageIndex = this.paginator.pageIndex;
+        this.applyFilter();
+      } else {
+        this.dataSource = new MatTableDataSource<any>([]);
+        this.dataSource.data = [{ message: 'Sin datos para mostrar' }];
+        this.tableIsEmpty = false;
+      }
     }
+    catch (error) {
+      this.algo();
+      console.log(this.prueba);
+      this.msgError = response.statusCode + " " + response.statusCodeValue
+    }
+
+
   }
+
+  algo() {
+    this.prueba = !this.prueba
+  }
+
+  public prueba: boolean = true;
+  msgError: String = '';
+
   currentPageIndex: number;
 
   Error(error: any) {

@@ -23,3 +23,19 @@ export interface ServicesList {
     response_time:             number;
 }
 
+export interface ServiceInfo {
+    Id: number;
+    status: string;
+    nameSpace: string;
+    test_interval: number;
+    label_app: string;
+    response_time: number;
+    last_test: string;
+    health: string;
+    applId: number;
+    triggerLow: number;
+    triggerHigh: number;
+    lowAlarm: number;
+    highAlarm: number;
+    url: string;
+  }

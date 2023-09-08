@@ -27,10 +27,10 @@ table {
   align-self: center;
 }
 
-/* .mat-row:hover {
+.mat-row:hover {
   cursor: pointer;
-  box-shadow: inset 0 0 0 3px black;
-} */
+  box-shadow: inset 0 0 0 2px black;
+}
 
 .mat-column-triggerHigh {
   width: fit-content;

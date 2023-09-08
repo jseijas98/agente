@@ -1,15 +1,16 @@
 import { HttpClient } from '@angular/common/http';
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnInit, ViewChild, inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
+import { MatTableDataSource } from '@angular/material/table';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatSort } from '@angular/material/sort';
-import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 import StringUtils from 'src/app/common/util/stringUtils';
+import { BreadcrumbService } from 'src/app/components/breadcrumb/breadcrumb.service';
 import { UpdateparamsComponent } from 'src/app/components/modals/updateparams/updateparams.component';
-import { ServicesList } from 'src/app/modules/interfaces/model.services/model.services-list';
+import { ServiceInfo, ServicesList } from 'src/app/modules/interfaces/model.services/model.services-list';
 import { AppNameService } from 'src/app/services/app-name/app-name.service';
 import { DeleteService } from 'src/app/services/deleteElement/delete.service';
 import { DynamicFilterService } from 'src/app/services/dynamic-Filter/dynamic-filter.service';
@@ -35,10 +36,17 @@ export class ServicesListComponent implements AfterViewInit {
     private appName: AppNameService,
     private sseServiceService: SseServiceService,
     private dynamicFilterService: DynamicFilterService
-  ) {}
+  ) { }
 
-  //TODO: LISTO con sse
+  //TODO: LISTO con sse 
 
+  filterValue: string = '';
+  currentPageIndex: number;
+
+  breadcrumbService = inject(BreadcrumbService)
+  public breadcrumbs: { label: string; url: string }[] = [];
+
+//variables
   appname: string;
   unsuscribe$ = new Subject<void>();
   public index: string = 'service';
@@ -47,41 +55,37 @@ export class ServicesListComponent implements AfterViewInit {
   baseUrl = environment.baseUrl;
   tableIsEmpty = true;
 
+
   ngOnDestroy() {
     this.unsuscribe$.next();
     this.unsuscribe$.complete();
-    console.log('se cerro el sse');
     this.sseServiceService.closeEventSource();
+    console.log('se cerro el sse');
   }
 
   ngAfterViewInit(): void {
-    // this.activateRouter.params.subscribe((params) => {
-    //   this.appName
-    //     .getDataFromApi(params['id'])
-    //     .pipe(takeUntil(this.unsuscribe$))
-    //     .subscribe((data) => (this.appname = data));
-    // });
-    // this.callServiceData();
-
     this.activateRouter.params.subscribe((params) => {
       this.appName
         .getDataFromApi(params['id']).pipe(takeUntil(this.unsuscribe$))
-        .subscribe((data) => (this.appname = data));
+        .subscribe((data) => {
+          this.appname = data
+          this.breadcrumbService.agregarRuta('/','Dashboard');
+          this.breadcrumbService.agregarRuta('/graph-app/' + params['id'], this.appname)
+          this.breadcrumbService.agregarRuta('/services-list/' + params['id'], 'servicios')
+          this.breadcrumbs = this.breadcrumbService.obtenerBreadcrumbs();
+
+        }
+        );
     });
 
-
-    // this.activateRouter.params.subscribe((params) => {
-    //   this.appName.nameApp(params['id']).subscribe((data) => (this.appname = data));
-    // });
     this.sseServiceList();
   }
 
-  filterValue: string = '';
 
   applyFilter() {
     this.dataSource.filter = this.filterValue;
     if (this.dataSource.paginator) {
-      this.dataSource.paginator.pageIndex=this.currentPageIndex
+      this.dataSource.paginator.pageIndex = this.currentPageIndex
     }
     localStorage.setItem('filterValue', this.filterValue);
     console.log('valor almacenado', this.filterValue);
@@ -93,7 +97,9 @@ export class ServicesListComponent implements AfterViewInit {
   }
 
   ngOnInit(): void {
+    console.log(this.breadcrumbService.obtenerBreadcrumbs());
     this.dynamicFilterService.dynamicFilter('filterValue');
+    console.log('Después de asignar this.paginator:', this.paginator);
   }
 
   callServiceData() {
@@ -115,11 +121,8 @@ export class ServicesListComponent implements AfterViewInit {
     'last_test',
     'status',
     'health',
-    'registros',
-    'replicas',
     'lowAlarm',
     'highAlarm',
-    'editar',
     'select',
   ];
 
@@ -161,11 +164,14 @@ export class ServicesListComponent implements AfterViewInit {
         triggerHigh: services.highTrigger,
         lowAlarm: services.lowAlarm,
         highAlarm: services.highAlarm,
+        url: services.testUrl
       });
       console.log(data);
     });
 
     this.dataSource = new MatTableDataSource<any>(data);
+    console.log(this.dataSource);
+    
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
   }
@@ -173,15 +179,6 @@ export class ServicesListComponent implements AfterViewInit {
   getServicesError(error: any) {
     console.error(error);
   }
-
-  // applyFilter(event: Event) {
-  //   const filterValue = (event.target as HTMLInputElement).value;
-  //   this.dataSource.filter = filterValue.trim().toLowerCase();
-
-  //   if (this.dataSource.paginator) {
-  //     this.dataSource.paginator.firstPage();
-  //   }
-  // }
 
   changeParameters(dataupdate: any) {
     this.http.post<any>(this.baseUrl + 'params', dataupdate).subscribe({
@@ -210,6 +207,7 @@ export class ServicesListComponent implements AfterViewInit {
         tlow: row.triggerLow,
         thigh: row.triggerHigh,
         testinterval: row.test_interval,
+        testUrl: row.test_url
       },
     });
 
@@ -234,6 +232,19 @@ export class ServicesListComponent implements AfterViewInit {
     this.router.navigateByUrl(`services-replicas/${api_id}`);
   }
 
+  setParams(serviceInfo: ServiceInfo) {
+    let details = JSON.stringify(serviceInfo)
+    console.log('fasdsandsa', details);
+
+    return btoa(details)
+  }
+
+  servicesDetails(serviceInfo: ServiceInfo) {
+    let data = this.setParams(serviceInfo)
+    console.log("data rows:", data);
+    this.router.navigateByUrl(`servicesDetails/${data}`);
+  };
+
   addItem(newItem: any) {
     newItem !== undefined
       ? console.log('data', newItem)
@@ -244,7 +255,6 @@ export class ServicesListComponent implements AfterViewInit {
   deleteData() {
     this.service.dataSource = this.dataSource;
     this.service.DeleteData(this.index);
-    // this.callServiceData();
     this.sseServiceList();
   }
 
@@ -283,6 +293,7 @@ export class ServicesListComponent implements AfterViewInit {
         triggerHigh: services.highTrigger,
         lowAlarm: services.lowAlarm,
         highAlarm: services.highAlarm,
+        url: services.testUrl
       });
     });
     console.log(datos);
@@ -290,11 +301,15 @@ export class ServicesListComponent implements AfterViewInit {
     if (datos.length > 0) {
       this.tableIsEmpty = false;
       this.dataSource = new MatTableDataSource<any>(datos);
+      console.log(this.dataSource);
+      
       this.dataSource.paginator = this.paginator;
+      console.log(this.paginator);
+      
       this.dataSource.sort = this.sort;
       this.currentPageIndex = this.paginator.pageIndex;
       this.applyFilter();
-   
+
 
     } else {
       this.dataSource = new MatTableDataSource<any>([]);
@@ -302,7 +317,7 @@ export class ServicesListComponent implements AfterViewInit {
       this.tableIsEmpty = false;
     }
   }
-  currentPageIndex: number;
+ 
 
   Error(error: any) {
     console.log('error sse', error);

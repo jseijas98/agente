@@ -1,0 +1,18 @@
+/* styles.css o tu archivo de estilos */
+.breadcrumbs-list {
+  display: flex; /* Hace que los elementos se alineen en una fila */
+  list-style: none; /* Quita los puntos de la lista */
+  padding: 0; /* Quita el espacio de padding predeterminado de la lista */
+  margin: 0; /* Quita el espacio de margen predeterminado de la lista */
+}
+
+.breadcrumbs-list li {
+  margin-right: 5px; /* Espacio entre las migas de pan */
+  font-size: 16px;
+}
+
+/* Cambia el estilo del último enlace en las migas de pan */
+.breadcrumbs-list li:last-child a {
+  color: red;
+  font-weight: bold;
+}

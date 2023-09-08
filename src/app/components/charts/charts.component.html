@@ -8,7 +8,9 @@
           ></mat-card-subtitle
         >
       </div>
-      <div *ngIf="!dataIsEmpty">
+
+
+      <div *ngIf="!dataIsEmpty" class="w-full h-full"> 
       <mat-card-title>Grafico de {{ title }}</mat-card-title>
       <mat-card-subtitle
         >aqui podras ver el estado en el tiempo del
@@ -18,23 +20,24 @@
     </mat-card-title-group>
   </mat-card-header>
 
+  <div class="chart-container" #chartContainer>
   <ngx-charts-area-chart
-    scheme="cool"
-    [view]="[1300, 400]"
+    scheme="ocean"
+    [view]="[chartWidth, chartHeight]"
     [results]="dataIn"
-    [legend]="false"
+    [legend]="true"
     [animations]="true"
     [xAxis]="true"
     [yAxis]="true"
     [legendTitle]="legentTitleIn"
-    [gradient]="true"
+    [gradient]="false"
     [timeline]="true"
     [yAxisLabel]="ylabel"
     [xAxisLabel]="xlabel"
     [showXAxisLabel]="false"
     [showYAxisLabel]="true"
     [trimXAxisTicks]="true"
-    [maxXAxisTickLength]="20"
+    [maxXAxisTickLength]="1000000"
     [xAxisTickFormatting]="this.utils.formatDate"
     [tooltipDisabled]="false"
 
@@ -75,4 +78,5 @@
       </div>
     </ng-template>
   </ngx-charts-area-chart>
+</div>
 </mat-card>

@@ -17,10 +17,12 @@ import { ServicesRegistryReplicaComponent } from './serviciosM/services-registry
 import { PersistenceRegistryComponent } from './persistenceM/persistence-registry/persistence-registry.component';
 import { LoadBalancerListComponent } from './loadbalancerM/load-balancer-list/load-balancer-list.component';
 import { LoadBalancerRegistryComponent } from './loadbalancerM/load-balancer-registry/load-balancer-registry.component';
+import { ServicesDetailsComponent } from './serviciosM/services-details/services-details.component';
+import { ApisDetailsComponent } from './apisM/apis-details/apis-details.component';
 
 const routes: Routes = [
   {
-    path: '',
+    path: "",
     component: MainComponent,
     children: [
       {
@@ -90,6 +92,14 @@ const routes: Routes = [
       {
         path: 'loadBalancer-registry/:id',
         component: LoadBalancerRegistryComponent,
+      },
+      {
+        path: 'servicesDetails/:id',
+        component: ServicesDetailsComponent,
+      },
+      {
+        path: 'apisDetails/:id',
+        component: ApisDetailsComponent,
       },
     ],
   },

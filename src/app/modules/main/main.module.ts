@@ -39,6 +39,10 @@ import { AddNewElementComponent } from 'src/app/components/modals/add-new-elemen
 import { DataFormatPipe } from 'src/app/components/pipes/data-fromat-char/data-format.pipe';
 import { NgHttpLoaderModule } from 'ng-http-loader';
 import { NoRegistriesComponent } from 'src/app/errors/no-registries/no-registries.component';
+import { BreadcrumbComponent } from 'src/app/components/breadcrumb/breadcrumb.component';
+import { ServicesDetailsComponent } from './serviciosM/services-details/services-details.component';
+import { NotificationComponent } from 'src/app/components/notification/notification.component';
+import { ApisDetailsComponent } from './apisM/apis-details/apis-details.component';
 
 @NgModule({
   imports: [
@@ -60,9 +64,8 @@ import { NoRegistriesComponent } from 'src/app/errors/no-registries/no-registrie
     FormsModule,
     ReactiveFormsModule,
     MaterialModule,
-    NgHttpLoaderModule
-
-
+    NgHttpLoaderModule,
+    
   ],
 
   declarations: [
@@ -90,7 +93,11 @@ import { NoRegistriesComponent } from 'src/app/errors/no-registries/no-registrie
     ServicesRegistryReplicaComponent,
     AddNewElementComponent,
     DataFormatPipe,
-    NoRegistriesComponent
+    NoRegistriesComponent,
+    BreadcrumbComponent,
+    ServicesDetailsComponent,
+    NotificationComponent,
+    ApisDetailsComponent
   ],
 })
 export class MainModule {}

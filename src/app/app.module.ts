@@ -17,10 +17,10 @@ import { AddNewElementFormComponent } from './components/add-new-element-form/ad
 import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { NgHttpLoaderModule } from 'ng-http-loader';
 import { NoRegistriesComponent } from './errors/no-registries/no-registries.component';
-
+import { BreadcrumbComponent } from './components/breadcrumb/breadcrumb.component';
 
 @NgModule({
-  declarations: [AppComponent, NotificationComponent, UpdateparamsComponent, AddNewElementFormComponent],
+  declarations: [AppComponent, UpdateparamsComponent, AddNewElementFormComponent],
   imports: [
     BrowserModule,
     HttpClientModule,
@@ -35,7 +35,7 @@ import { NoRegistriesComponent } from './errors/no-registries/no-registries.comp
     ReactiveFormsModule,
     FormsModule,
     ReactiveFormsModule,
-    NgHttpLoaderModule
+    NgHttpLoaderModule,
   ],
   providers: [StringUtils],
   bootstrap: [AppComponent],

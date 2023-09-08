@@ -1,16 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import {
-  AfterViewInit,
-  Component,
-  EventEmitter,
-  OnChanges,
-  inject,
-  Input,
-  OnInit,
-  Output,
-  ViewChild,
-  SimpleChanges,
-} from '@angular/core';
+import {AfterViewInit,Component,inject, Input,OnInit,ViewChild} from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
@@ -29,6 +18,7 @@ import { Subject, takeUntil } from 'rxjs';
 import { AppNameService } from 'src/app/services/app-name/app-name.service';
 import { SseServiceService } from 'src/app/services/sse/sse-service.service';
 import { DynamicFilterService } from 'src/app/services/dynamic-Filter/dynamic-filter.service';
+import { BreadcrumbService } from 'src/app/components/breadcrumb/breadcrumb.service';
 
 @Component({
   selector: 'app-api-list',
@@ -45,6 +35,10 @@ export class ApiListComponent implements AfterViewInit, OnInit {
   appname: string;
   tableIsEmpty: boolean = true;
 
+
+  breadcrumbService = inject(BreadcrumbService)
+  public breadcrumbs: { label: string; url: string }[] = [];
+
   constructor(
     private http: HttpClient,
     private router: Router,
@@ -57,27 +51,19 @@ export class ApiListComponent implements AfterViewInit, OnInit {
     public service: DeleteService,
     private appName: AppNameService,
     private sseServiceService: SseServiceService,
-    private dynamicFilterService:DynamicFilterService
-  ) {}
-
-  // applyFilter(event: Event) {
-  //   const filterValue = (event.target as HTMLInputElement).value;
-  //   this.dataSource.filter = filterValue.trim().toLowerCase();
-
-  //   if (this.dataSource.paginator) {
-  //     this.dataSource.paginator.firstPage();
-  //   }
-  // }
+    private dynamicFilterService: DynamicFilterService
+  ) { }
 
   filterValue: string = '';
+  currentPageIndex: number;
 
   applyFilter() {
     this.dataSource.filter = this.filterValue;
     if (this.dataSource.paginator) {
-      this.dataSource.paginator.pageIndex=this.currentPageIndex
+      this.dataSource.paginator.pageIndex = this.currentPageIndex
     }
     localStorage.setItem('filterValue', this.filterValue);
-    console.log('valor almacenado',this.filterValue);
+    console.log('valor almacenado', this.filterValue);
 
   }
   onFilterInputChanged(event: Event) {
@@ -87,36 +73,36 @@ export class ApiListComponent implements AfterViewInit, OnInit {
   }
 
   ngOnInit(): void {
-this.dynamicFilterService.dynamicFilter('filterValue')
+    this.dynamicFilterService.dynamicFilter('filterValue')
   }
 
   ngOnDestroy() {
     this.unsuscribe$.next();
     this.unsuscribe$.complete();
     localStorage.removeItem('filterValue');
+    this.sseServiceService.closeEventSource();
   }
 
   ngAfterViewInit() {
-    // this.activateRouter.params.subscribe((params) => {
-    //   this.appName
-    //     .getDataFromApplication(params['id'])
-    //     .pipe(takeUntil(this.unsuscribe$))
-    //     .subscribe((data) => (this.appname = data));
-    // });
-    // this.callApisData();
     this.activateRouter.params.subscribe((params) => {
       this.appName
         .getDataFromApi(params['id']).pipe(takeUntil(this.unsuscribe$))
-        .subscribe((data) => (this.appname = data));
+        .subscribe((data) => {
+          this.appname = data
+          this.breadcrumbService.agregarRuta('/', 'Dashboard');
+          this.breadcrumbService.agregarRuta('/graph-app/' + params['id'], this.appname)
+          this.breadcrumbService.agregarRuta('/apis-list/' + params['id'], 'apis')
+          this.breadcrumbs = this.breadcrumbService.obtenerBreadcrumbs();
+        });
     });
     this.sseApisList();
   }
 
   //columnsas que se muestran
   displayedColumns: string[] = [
-    'applId',
-    'Id',
-    'test_interval',
+    'applicationId',
+    'apiId',
+    'testInterv',
     'nameSpace',
     'triggerLow',
     'response_time',
@@ -128,65 +114,29 @@ this.dynamicFilterService.dynamicFilter('filterValue')
     'registros',
     'replicas',
     'lowAlarm',
-    'highAlarm',
+    'triggerLow',
     'editar',
     'select',
   ];
 
-  //TODO: LISTO con sse
   //configuración del dataSource
   dataSource = new MatTableDataSource<any>();
   //paginacion del las tablas
   @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
-  callApisData() {
-    this.activateRouter.params.subscribe((params) => {
-      this.Api(params['id']);
-    });
+  setParams(apis: GetApis) {
+    console.log(apis);
+    let details = JSON.stringify(apis)
+    console.log('fasdsandsa', details);
+    return btoa(details)
   }
 
-  Api(index: number) {
-    this.http
-      .get<GetApis>(`${environment.baseUrl}list/application/${index}/apis`)
-      .pipe(takeUntil(this.unsuscribe$))
-      .subscribe({
-        next: this.getApisSuccess.bind(this),
-        error: this.getApisError.bind(this),
-        complete: () => console.log('completed'),
-      });
-  }
-
-  getApisSuccess(respose: any) {
-    let apisList: Array<GetApis> = respose;
-    let data: any[] = [];
-    apisList.forEach((api) => {
-      data.push({
-        Id: api.apiId,
-        status: api.status,
-        nameSpace: api.nameSpace,
-        test_interval: api.testInterv,
-        label_app: api.label_app,
-        response_time: api.response_time,
-        last_test: this.utils.formatDate(api.lastTestDate),
-        health: api.health,
-        applId: api.applicationId,
-        triggerLow: api.lowTrigger,
-        triggerHigh: api.highTrigger,
-        lowAlarm: api.lowAlarm,
-        highAlarm: api.highAlarm,
-      });
-      console.log('data',data);
-    });
-    this.dataSource = new MatTableDataSource<any>(data);
-    this.dataSource.paginator = this.paginator;
-    this.dataSource.sort = this.sort;
-    this.applyFilter();
-  }
-
-  getApisError(error: any) {
-    console.error(error);
-  }
+  apiDetails(apis: GetApis) {
+    let data = this.setParams(apis)
+    console.log("data rows:", data);
+    this.router.navigateByUrl(`apisDetails/${data}`);
+  };
 
   getApiReplica(api_id: any): void {
     this.router.navigateByUrl(`apis-replicas/${api_id}`);
@@ -220,7 +170,7 @@ this.dynamicFilterService.dynamicFilter('filterValue')
           : 'Error en la actualizacion de parametros',
         'ACEPTAR'
       );
-      this.callApisData();
+      this.sseApisList();
     });
   }
 
@@ -228,13 +178,13 @@ this.dynamicFilterService.dynamicFilter('filterValue')
     newItem !== undefined
       ? console.log('data', newItem)
       : console.log('closed dialog without item update!');
-    this.callApisData();
+    this.sseApisList();
   }
 
   deleteData() {
     this.service.dataSource = this.dataSource;
     this.service.DeleteData('api');
-      this.sseApisList();
+    this.sseApisList();
   }
 
   sseApisList() {
@@ -255,54 +205,54 @@ this.dynamicFilterService.dynamicFilter('filterValue')
       });
   }
 
-
-  Success(response: any) {
+  Success(response: GetApis[]) {
     console.log(response);
-    
-    let datos: any[] = [];
-    response.forEach((api: GetApis) => {
-      datos.push({
-        Id: api.apiId,
-        status: api.status,
-        nameSpace: api.nameSpace,
-        test_interval: api.testInterv,
-        label_app: api.label_app,
-        response_time: api.response_time,
-        last_test: this.utils.formatDate(api.lastTestDate),
-        health: api.health,
-        applId: api.applicationId,
-        triggerLow: api.lowTrigger,
-        triggerHigh: api.highTrigger,
-        lowAlarm: api.lowAlarm,
-        highAlarm: api.highAlarm,
-      });
-      this.activateRouter.params.subscribe((params) => {
-        this.appName.nameApp(params['id']).subscribe((data) => (this.appname = data));
-      });
-
-    });
-
-    console.log(datos);
-
-    if (datos.length > 0) {
+    const apiDataList: Array<GetApis> = response.map((api) => this.mapApiData(api));
+    this.handleApiData(apiDataList);
+  }
+  
+  private mapApiData(api: GetApis): GetApis {
+    return {
+      apiId: api.apiId,
+      status: api.status,
+      nameSpace: api.nameSpace,
+      testInterv: api.testInterv,
+      label_app: api.label_app,
+      response_time: api.response_time,
+      lastTestDate: this.utils.formatDate(api.lastTestDate),
+      health: api.health,
+      applicationId: api.applicationId,
+      lowTrigger: api.lowTrigger,
+      highTrigger: api.highTrigger,
+      lowAlarm: api.lowAlarm,
+      highAlarm: api.highAlarm,
+      base_url: api.base_url,
+      common: api.common,
+      numTest: api.numTest,
+      consecutiveFailedTest: api.consecutiveFailedTest,
+      consecutiveSuccessfulTest: api.consecutiveSuccessfulTest,
+      histFailedTest: api.histFailedTest,
+      histSuccessfulTest: api.histSuccessfulTest
+    };
+  }
+  
+  private handleApiData(apiDataList:Array<GetApis>) {
+    if (apiDataList.length > 0) {
       this.tableIsEmpty = false;
-      this.dataSource = new MatTableDataSource<any>(datos);
+      this.dataSource = new MatTableDataSource<any>(apiDataList);
       this.dataSource.paginator = this.paginator;
       this.dataSource.sort = this.sort;
       this.currentPageIndex = this.paginator.pageIndex;
       this.applyFilter();
-
-    }else{
-      this.dataSource = new MatTableDataSource<any>([])
-      this.dataSource.data = [{message:'Sin datos para mostrar'}];
+    } else {
+      this.dataSource = new MatTableDataSource<any>([]);
+      this.dataSource.data = [{ message: 'Sin datos para mostrar' }];
       this.tableIsEmpty = false;
     }
-
   }
-  currentPageIndex: number;
+
   Error(error: any) {
-    console.log('error sse apis', error);
+    console.error('error sse apis', error);
+    this.tableIsEmpty=true;
   }
-
-
 }

@@ -56,7 +56,6 @@ export class GraphAppComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.closeConect();
     this.unsusbribe();
-    console.log('se cerro el sse');
     this.sseServiceService.closeEventSource();
   }
 

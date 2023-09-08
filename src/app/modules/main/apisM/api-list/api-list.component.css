@@ -17,7 +17,6 @@
   background-color: #b9c5fe;
 }
 
-
 .mat-expansion-panel {
   width: 98%;
 }
@@ -30,9 +29,13 @@
   align-self: center;
 }
 
+.mat-row:hover {
+  cursor: pointer;
+  box-shadow: inset 0 0 0 2px black;
+}
 
 td {
-  width: 4%
+  width: 4%;
 }
 
 th {
@@ -48,4 +51,3 @@ th {
   justify-content: center;
   margin-left: 20% !important;
 }
-

@@ -1,16 +1,13 @@
 
-
 <ng-http-loader></ng-http-loader>
 
-
-
 <div>
-  <h1 class="title text-center mb-4 mt-4">{{ graph }}</h1>
+  <h1 class="title text-center">{{ graph }}</h1>
 
   <div class="app-body">
 <ngx-graph
   class="#chartcontainer"
-  [view]="[1200, 750]"
+  [view]="[1200,750]"
   [links]="dataLink"
   [curve]="curve"
   [animate]="false"
@@ -77,26 +74,5 @@
   </ng-template>
 </ngx-graph>
 </div>
-
 </div>
 
-
-<!-- la grafaica ***************************** -->
-<!--
-<div class="spinner-container">
-  <div class="spinner"></div>
-  <br>
-  <p class="text-center"> Cargando...</p>
-</div> -->
-
-<!-- <div  *ngIf="isLoading">
-
-  <h1 class="title text-center mb-4 mt-4">{{ graph }}</h1>
-  <div #mydiv class="app-body">
-    <div #zoneFlowChart class="flow-chart-wrapper text-center">
-      <app-flow-chart #flow></app-flow-chart>
-    </div>
-  </div>
-
-
-</div> -->
