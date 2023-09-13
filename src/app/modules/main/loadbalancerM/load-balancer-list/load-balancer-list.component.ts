@@ -197,9 +197,9 @@ export class LoadBalancerListComponent implements AfterViewInit {
   }
 
   deleteData() {
-    this.service.dataSource = this.dataSource;
-    this.service.DeleteData('loadBalancer');
-    this.sseLoadbalancerList();
+    // this.service.dataSource = this.dataSource;
+    // this.service.DeleteData('loadBalancer');
+    // this.sseLoadbalancerList();
   }
 
   sseLoadbalancerList() {

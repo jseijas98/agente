@@ -253,9 +253,9 @@ export class ServicesListComponent implements AfterViewInit {
   }
 
   deleteData() {
-    this.service.dataSource = this.dataSource;
-    this.service.DeleteData(this.index);
-    this.sseServiceList();
+    // this.service.dataSource = this.dataSource;
+    // this.service.DeleteData(this.index);
+    // this.sseServiceList();
   }
 
   sseServiceList() {

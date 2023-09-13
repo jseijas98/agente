@@ -65,7 +65,7 @@ export class DeleteService {
         )
       ) {
         elementSelected.forEach((element) => {
-          this.delete(element.Id, type);
+          this.delete(element.id, type);
         });
       }
     } else {

@@ -1,20 +1,21 @@
 <mat-card>
   <nav>
-    <mat-card-title>{{ app }} {{ title }} {{element}}</mat-card-title>
-    <br>
+    <mat-card-title>{{ app }} {{ title }} {{ element }}</mat-card-title>
+    <br />
     <mat-card-actions align="start">
-      <div class="mx-5">
-        <ul class="breadcrumbs-list"> <!-- Aplica la clase breadcrumbs-list aquí -->
+      <section class="ml-3">
+        <ul class="breadcrumbs-list">
+          <!-- Aplica la clase breadcrumbs-list aquí -->
           <li *ngFor="let breadcrumb of breadcrumbs; let last = last">
-            <ng-container *ngIf="!last; else lastBreadcrumb">
-              <a [routerLink]="breadcrumb.url" class="text-blue-800">{{ breadcrumb.label}}</a> >
+            <ng-container *ngIf="!last; else lastBreadcrumb" class="breadcrumb-item">
+              <a [routerLink]="breadcrumb.url" class="text-blue-800 px-1">{{ breadcrumb.label }}</a> /
             </ng-container>
             <ng-template #lastBreadcrumb>
-             <span  class="text-gray-400">{{ breadcrumb.label }}</span> 
+              <span class="text-gray-400">{{ breadcrumb.label }}</span>
             </ng-template>
           </li>
         </ul>
-      </div>
+      </section>
     </mat-card-actions>
   </nav>
 </mat-card>

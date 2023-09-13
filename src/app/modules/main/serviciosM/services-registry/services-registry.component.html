@@ -1,13 +1,13 @@
 <ng-http-loader></ng-http-loader>
 
-<div class="mx-5 mt-5">
+<header class="mx-5 mt-5">
   <app-breadcrumb
     *ngIf="!tableIsEmpty"
     [breadcrumbsData]="breadcrumbs"
     [title]="name_element"
     [app]="'Historicos de'"
   ></app-breadcrumb>
-</div>
+</header>
 <app-no-registries [error]="tableIsEmpty"></app-no-registries>
 
 <app-charts *ngIf="!tableIsEmpty"
@@ -36,6 +36,14 @@
       #input
     />
   </mat-form-field>
+  <button
+  mat-icon-button
+  color="primary"
+  (click)="downlaod()"
+  aria-label="descargar Historicos"
+>
+  <mat-icon class="text-3xl">download</mat-icon>
+</button>
 
   <div class="mat-elevation-z8 m-auto">
     <table mat-table [dataSource]="dataSource" matSort>

@@ -1,9 +1,33 @@
 <ng-http-loader></ng-http-loader>
 
+<header class="mx-5 mt-5">
+  <app-breadcrumb
+    *ngIf="!tableIsEmpty"
+    [breadcrumbsData]="breadcrumbs"
+    [title]="apiName"
+    [app]="'Historicos de'"
+  ></app-breadcrumb>
+</header>
 
+<!-- <button
+  mat-icon-button
+  color="primary"
+  (click)="exportToExcel()"
+  aria-label="descargar Historicos"
+>
+  <mat-icon>download</mat-icon>
+</button> -->
 
-<app-charts [dataIn]="dataGraph" [legentTitleIn]="apiName" [xlabel]="'fecha'" [ylabel]="'tiempo de respuesta (ms)'" [title]="apiName" [legend1]="legend1" [legend2]="legend2" [dataIsEmpty]="tableIsEmpty"></app-charts>
-
+<app-charts
+  [dataIn]="dataGraph"
+  [legentTitleIn]="apiName"
+  [xlabel]="'fecha'"
+  [ylabel]="'tiempo de respuesta (ms)'"
+  [title]="apiName"
+  [legend1]="legend1"
+  [legend2]="legend2"
+  [dataIsEmpty]="tableIsEmpty"
+></app-charts>
 
 <br />
 
@@ -18,11 +42,19 @@
     <mat-label>Filter</mat-label>
     <input
       matInput
-      (keyup)=" onFilterInputChanged($event)"
+      (keyup)="onFilterInputChanged($event)"
       placeholder="Ex. gateway"
       #input
     />
   </mat-form-field>
+  <button
+  mat-icon-button
+  color="primary"
+  (click)="downlaod()"
+  aria-label="descargar Historicos"
+>
+  <mat-icon class="text-3xl">download</mat-icon>
+</button>
 
   <div class="mat-elevation-z8 m-auto">
     <table mat-table [dataSource]="dataSource" matSort>
@@ -145,4 +177,3 @@
 </mat-expansion-panel>
 <br />
 <!-- </mat-card> -->
-

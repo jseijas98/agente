@@ -208,11 +208,11 @@ this.dynamicFilterService.dynamicFilter('filterValue')
   }
 
   deleteData() {
-    this.service.dataSource = this.dataSource;
-    this.service.DeleteData(this.index);
-    setTimeout(() => {
-      this.callPersistenceData();
-    }, 100);
+    // this.service.dataSource = this.dataSource;
+    // this.service.DeleteData(this.index);
+    // setTimeout(() => {
+    //   this.callPersistenceData();
+    // }, 100);
   }
 
   ssePersistenceList(){

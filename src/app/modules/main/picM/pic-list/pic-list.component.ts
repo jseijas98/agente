@@ -215,11 +215,11 @@ this.dynamicFilterService.dynamicFilter('filterValue')
   }
 
   deleteData() {
-    this.service.dataSource = this.dataSource;
-    this.service.DeleteData(this.index);
+    // this.service.dataSource = this.dataSource;
+    // this.service.DeleteData(this.index);
 
-      // this.callPicData();
-      this.ssePicList();
+    //   // this.callPicData();
+    //   this.ssePicList();
 
   }
 

@@ -5,6 +5,7 @@ import {
   OnInit,
   ViewChild,
   OnDestroy,
+  inject,
 } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
@@ -17,6 +18,11 @@ import { ApiRegistry } from '../../../interfaces/model.apis/model.apiResgistry';
 import { SseServiceService } from 'src/app/services/sse/sse-service.service';
 import { Subject, takeUntil } from 'rxjs';
 import { DynamicFilterService } from 'src/app/services/dynamic-Filter/dynamic-filter.service';
+import { BreadcrumbService } from 'src/app/components/breadcrumb/breadcrumb.service';
+import * as XLSX from 'xlsx';
+import { ExportExcelService } from 'src/app/services/export-excel/export-excel.service';
+
+// Resto de tu código
 
 @Component({
   selector: 'app-registrys-apis',
@@ -35,11 +41,19 @@ export class RegistrysApisComponent
     private dynamicFilterService: DynamicFilterService
   ) {}
 
+  router = inject(Router);
+  breadcrumbService = inject(BreadcrumbService);
+  excel = inject(ExportExcelService);
+  public breadcrumbs: { label: string; url: string }[] = [];
+  filterValue: string = '';
+
   ngOnInit(): void {
     this.dynamicFilterService.dynamicFilter('filterValue');
   }
 
-  filterValue: string = '';
+  downlaod(){
+    this.excel.exportToExcel(this.dataSource,this.displayedColumns,this.apiName);
+  }
 
   applyFilter() {
     this.dataSource.filter = this.filterValue;
@@ -56,6 +70,8 @@ export class RegistrysApisComponent
   }
 
   ngAfterViewInit(): void {
+    this.breadcrumbService.agregarRuta(this.router.url,'historicos');
+    this.breadcrumbs = this.breadcrumbService.obtenerBreadcrumbs();
     this.activateRouter.params.subscribe((params) => {
       this.Api_registry(params['id']);
     });
@@ -70,7 +86,6 @@ export class RegistrysApisComponent
     console.log('se cerro el sse');
   }
 
-  //TODO: LISTO con sse
   protected legend1: string = 'tiempo de respuesta';
   protected legend2: string = 'ms';
   data: any[] = [];
@@ -142,15 +157,6 @@ export class RegistrysApisComponent
   getApisResgistryError(error: any) {
     console.error(error);
   }
-
-  // applyFilter(event: Event) {
-  //   const filterValue = (event.target as HTMLInputElement).value;
-  //   this.dataSource.filter = filterValue.trim().toLowerCase();
-
-  //   if (this.dataSource.paginator) {
-  //     this.dataSource.paginator.firstPage();
-  //   }
-  // }
 
   sseApisRegistry() {
     this.activateRouter.params.subscribe((params) => {

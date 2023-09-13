@@ -4,6 +4,7 @@ import { ServiceInfo } from 'src/app/modules/interfaces/model.services/model.ser
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { Subject } from 'rxjs';
 import { BreadcrumbService } from 'src/app/components/breadcrumb/breadcrumb.service';
+import { Location } from '@angular/common'
 
 @Component({
   selector: 'app-services-details',
@@ -19,10 +20,11 @@ export class ServicesDetailsComponent implements OnInit, OnDestroy  {
   activatedRoute = inject(ActivatedRoute)
   router =inject(Router);  
   fb = inject(FormBuilder);
+  breadcrumbService = inject(BreadcrumbService)
+  location = inject(Location);
   servicesDetails:ServiceInfo;
   public form: FormGroup;
   public onSubmit: Subject<any> = new Subject();
-  breadcrumbService = inject(BreadcrumbService)
   public breadcrumbs: { label: string; url: string }[] = [];
 
  public setForm() {
@@ -43,6 +45,7 @@ export class ServicesDetailsComponent implements OnInit, OnDestroy  {
 
       toRequest() {
           console.log('el formulario',this.form.getRawValue());
+          this.location.back();
           return this.form.getRawValue();
       }
 

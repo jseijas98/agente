@@ -103,12 +103,12 @@ export class ApisDetailsComponent implements OnInit {
 
   getServicesReplica(): void {
     this.loadRuta();
-    this.router.navigateByUrl(`services-replicas/${this.apis.apiId}`);
+    this.router.navigateByUrl(`apis-replicas/${this.apis.apiId}`);
   }
 
   Registry() {
     this.loadRuta();
-    this.router.navigateByUrl(`services-registry/${this.apis.apiId}`);
+    this.router.navigateByUrl(`apis-registry/${this.apis.apiId}`);
   }
   
 

@@ -12,6 +12,7 @@ import { DynamicFilterService } from 'src/app/services/dynamic-Filter/dynamic-fi
 import { GraphServiceService } from 'src/app/services/graph/graph-service.service';
 import { SseServiceService } from 'src/app/services/sse/sse-service.service';
 import { environment } from 'src/environments/environment';
+import { ExportExcelService } from 'src/app/services/export-excel/export-excel.service';
 
 @Component({
   selector: 'app-services-registry',
@@ -28,7 +29,6 @@ export class ServicesRegistryComponent implements OnInit, AfterViewInit {
   ){}
 
   router = inject(Router);
-
   breadcrumbService = inject(BreadcrumbService);
   public breadcrumbs: { label: string; url: string }[] = [];
   filterValue: string = '';
@@ -103,6 +103,12 @@ export class ServicesRegistryComponent implements OnInit, AfterViewInit {
     //paginacion del las tablas
     @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
     @ViewChild(MatSort) sort!: MatSort;
+
+    excel = inject(ExportExcelService);
+
+    downlaod(){
+      this.excel.exportToExcel(this.dataSource,this.displayedColumns,this.name_element);
+    }
 
 
   sseFuntion(index: any) {

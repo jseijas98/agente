@@ -24,9 +24,6 @@ export class GraphServiceService {
       multi2 = { name: name, series: series };
       multi = [multi2];
     });
-
-    console.log('service', multi);
-
     return multi;
   }
 
@@ -47,7 +44,6 @@ export class GraphServiceService {
       multi2 = { name: name, series: series };
       multi = [multi2];
     });
-    console.log('series services', multi);
     return multi;
   }
 
@@ -66,9 +62,6 @@ export class GraphServiceService {
       multi2 = { name: name, series: series };
       multi = [multi2];
     });
-
-    console.log('service', multi);
-
     return multi;
   }
 

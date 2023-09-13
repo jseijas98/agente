@@ -5,6 +5,7 @@ import {
   OnDestroy,
   OnInit,
   ViewChild,
+  inject,
 } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { ApiReplicas } from '../../../interfaces/model.apis/model.ApiReplicas';
@@ -18,6 +19,7 @@ import { MetadataComponent } from '../../../../components/modals/metadata/metada
 import { SseServiceService } from 'src/app/services/sse/sse-service.service';
 import { Subject, takeUntil } from 'rxjs';
 import { DynamicFilterService } from 'src/app/services/dynamic-Filter/dynamic-filter.service';
+import { BreadcrumbService } from 'src/app/components/breadcrumb/breadcrumb.service';
 
 @Component({
   selector: 'app-api-replicas',
@@ -35,10 +37,15 @@ export class ApiReplicasComponent implements OnInit, AfterViewInit, OnDestroy {
     private dynamicFilterService:DynamicFilterService
   ) {}
 
+  breadcrumbService = inject(BreadcrumbService)
+  title:String = '';
+  
+  public breadcrumbs: { label: string; url: string }[] = [];
+
   ngAfterViewInit(): void {
-    // this.activateRouter.params.subscribe((params) => {
-    //   this.Api_replicas(params['id']);
-    // });
+ 
+    this.breadcrumbService.agregarRuta(this.router.url, "replicas");
+    this.breadcrumbs = this.breadcrumbService.obtenerBreadcrumbs();
 
     this.sseApisReplia();
   }

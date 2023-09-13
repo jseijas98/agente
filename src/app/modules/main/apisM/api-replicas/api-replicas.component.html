@@ -2,6 +2,15 @@
 
 <ng-http-loader></ng-http-loader>
 
+<div class="mx-5 mt-5">
+  <app-breadcrumb
+    [breadcrumbsData]="breadcrumbs"
+    [title]="'Replicas del servcio ' + title "
+    [app]="''"
+  ></app-breadcrumb>
+</div>
+
+
 <mat-card class="mt-10 text-center m-5">
   <mat-card-header class="justify-center">
     <mat-card-title-group>
