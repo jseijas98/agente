@@ -12,7 +12,7 @@ import { BreadcrumbService } from 'src/app/components/breadcrumb/breadcrumb.serv
 import { UpdateparamsComponent } from 'src/app/components/modals/updateparams/updateparams.component';
 import { ServiceInfo, ServicesList } from 'src/app/modules/interfaces/model.services/model.services-list';
 import { AppNameService } from 'src/app/services/app-name/app-name.service';
-import { DeleteService } from 'src/app/services/deleteElement/delete.service';
+import { DeleteService, PayloadType } from 'src/app/services/deleteElement/delete.service';
 import { DynamicFilterService } from 'src/app/services/dynamic-Filter/dynamic-filter.service';
 import { RowAlertService } from 'src/app/services/row-alert/row-alert.service';
 import { SseServiceService } from 'src/app/services/sse/sse-service.service';
@@ -46,7 +46,7 @@ export class ServicesListComponent implements AfterViewInit {
   breadcrumbService = inject(BreadcrumbService)
   public breadcrumbs: { label: string; url: string }[] = [];
 
-//variables
+  //variables
   appname: string;
   unsuscribe$ = new Subject<void>();
   public index: string = 'service';
@@ -69,7 +69,7 @@ export class ServicesListComponent implements AfterViewInit {
         .getDataFromApi(params['id']).pipe(takeUntil(this.unsuscribe$))
         .subscribe((data) => {
           this.appname = data
-          this.breadcrumbService.agregarRuta('/','Dashboard');
+          this.breadcrumbService.agregarRuta('/', 'Dashboard');
           this.breadcrumbService.agregarRuta('/graph-app/' + params['id'], this.appname)
           this.breadcrumbService.agregarRuta('/services-list/' + params['id'], 'servicios')
           this.breadcrumbs = this.breadcrumbService.obtenerBreadcrumbs();
@@ -170,8 +170,6 @@ export class ServicesListComponent implements AfterViewInit {
     });
 
     this.dataSource = new MatTableDataSource<any>(data);
-    console.log(this.dataSource);
-    
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
   }
@@ -253,9 +251,9 @@ export class ServicesListComponent implements AfterViewInit {
   }
 
   deleteData() {
-    // this.service.dataSource = this.dataSource;
-    // this.service.DeleteData(this.index);
-    // this.sseServiceList();
+    this.service.dataSource = this.dataSource;
+    this.service.DeleteData(PayloadType["SERVICE"]);
+    this.sseServiceList();
   }
 
   sseServiceList() {
@@ -301,11 +299,13 @@ export class ServicesListComponent implements AfterViewInit {
     if (datos.length > 0) {
       this.tableIsEmpty = false;
       this.dataSource = new MatTableDataSource<any>(datos);
-      console.log(this.dataSource);
+      console.log(this.dataSource.data);
       
+
+
       this.dataSource.paginator = this.paginator;
-      console.log(this.paginator);
-      
+ 
+
       this.dataSource.sort = this.sort;
       this.currentPageIndex = this.paginator.pageIndex;
       this.applyFilter();
@@ -317,7 +317,7 @@ export class ServicesListComponent implements AfterViewInit {
       this.tableIsEmpty = false;
     }
   }
- 
+
 
   Error(error: any) {
     console.log('error sse', error);

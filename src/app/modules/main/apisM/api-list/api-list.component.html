@@ -101,13 +101,13 @@
         <!-- triggerHigh -->
         <ng-container matColumnDef="triggerHigh">
           <th mat-header-cell *matHeaderCellDef>triggerHigh</th>
-          <td mat-cell *matCellDef="let row">{{ row.triggerHigh }} %</td>
+          <td mat-cell *matCellDef="let row">{{ row.highTrigger }} %</td>
         </ng-container> 
 
         <!-- triggerLow -->
         <ng-container matColumnDef="triggerLow" class="max-">
           <th mat-header-cell *matHeaderCellDef>triggerLow</th>
-          <td mat-cell *matCellDef="let row">{{ row.triggerLow }} %</td>
+          <td mat-cell *matCellDef="let row">{{ row.lowTrigger }} %</td>
         </ng-container>
 
         <!-- label:app -->
@@ -125,7 +125,7 @@
         <!--  ultimo test -->
         <ng-container matColumnDef="last_test">
           <th mat-header-cell *matHeaderCellDef mat-sort-header>Último test</th>
-          <td mat-cell *matCellDef="let row">{{ row.last_test }}</td>
+          <td mat-cell *matCellDef="let row">{{ row.lastTestDate }}</td>
         </ng-container>
 
         <!-- status-->

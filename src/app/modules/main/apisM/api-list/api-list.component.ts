@@ -13,7 +13,7 @@ import { NotificationsService } from 'src/app/services/notification/notification
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { UpdateparamsComponent } from 'src/app/components/modals/updateparams/updateparams.component';
 import { RowAlertService } from 'src/app/services/row-alert/row-alert.service';
-import { DeleteService } from 'src/app/services/deleteElement/delete.service';
+import { DeleteService, PayloadType } from 'src/app/services/deleteElement/delete.service';
 import { Subject, takeUntil } from 'rxjs';
 import { AppNameService } from 'src/app/services/app-name/app-name.service';
 import { SseServiceService } from 'src/app/services/sse/sse-service.service';
@@ -183,7 +183,7 @@ export class ApiListComponent implements AfterViewInit, OnInit {
 
   deleteData() {
     this.service.dataSource = this.dataSource;
-    this.service.DeleteData('api');
+    this.service.DeleteData(PayloadType["API"]);
     this.sseApisList();
   }
 
