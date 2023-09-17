@@ -1,10 +1,13 @@
 import {
   AfterViewInit,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   ComponentFactoryResolver,
   ComponentRef,
   ElementRef,
   EventEmitter,
+  HostListener,
   Input,
   OnDestroy,
   OnInit,
@@ -33,24 +36,32 @@ export class GraphAppComponent implements OnInit, OnDestroy {
     private router: Router,
     private appName: AppNameService,
     private sseServiceService: SseServiceService,
-    private renderer: Renderer2,
-    private elementRef: ElementRef
+    private cdr: ChangeDetectorRef
   ) {}
 
   public graph: string;
-  isLoading = true;
-  valor = true;
+  unsuscribe$ = new Subject<void>();
+
+  public dimensions: [number, number] = [0, 0];
 
   //--------------------------------------------Oninit()-----------------------------------
   ngOnInit(): void {
     this.activateRouter.params.subscribe((params) => {
-      this.isLoading = true;
       this.sseGetHealth(params['id']);
-
-      this.appName.getDataFromApi(params['id'])
+      this.appName
+        .getDataFromApi(params['id'])
         .subscribe((data) => (this.graph = data));
     });
   }
+
+  ngAfterViewInit(): void {  this.flowChartService.zoneDimensions$.subscribe(([w, h]) => {
+    if (w && h) {
+      this.dimensions = [w, h];
+      console.log(this.dimensions);
+      this.cdr.detectChanges();
+    }
+  });
+}
   //---------------------------------------------------------------------------------------
 
   ngOnDestroy(): void {
@@ -59,33 +70,15 @@ export class GraphAppComponent implements OnInit, OnDestroy {
     this.sseServiceService.closeEventSource();
   }
 
-
   unsusbribe() {
     console.log('se desuscribio');
     this.unsuscribe$.complete();
     this.unsuscribe$.next();
   }
 
-  unsuscribe$ = new Subject<void>();
 
-  ngAfterViewInit(): void {
-  }
 
-  removeElement() {
-    const element =
-      this.elementRef.nativeElement.querySelector('#chartcontainer');
-    element.remove();
-  }
 
-  addElement() {
-    const div = this.renderer.createElement('div');
-    const text = this.renderer.createText('Este es el nuevo elemento');
-    this.renderer.appendChild(div, text);
-    this.renderer.appendChild(
-      this.elementRef.nativeElement.ownerDocument.body,
-      div
-    );
-  }
 
   redirect(prefix: string) {
     this.activateRouter.params.subscribe((params) => {
@@ -94,15 +87,13 @@ export class GraphAppComponent implements OnInit, OnDestroy {
   }
 
   //conexion sse
-
   sseGetHealth(index: any) {
     this.sseServiceService
       .getDataFromServer(`${environment.baseUrl}health/application/${index}`)
       .pipe(takeUntil(this.unsuscribe$))
       .subscribe((data) => {
-      
         console.log(data);
-        
+
         let getHealth: DataAplication = data;
         let data1 = getHealth.data;
         this.health_api = this.colorScheme(data1[0].health);
@@ -115,12 +106,8 @@ export class GraphAppComponent implements OnInit, OnDestroy {
         this.message_loadbalancer = data1[3].message;
         this.message_db = data1[4].message;
         this.message_services = data1[1].message;
-        this.update$.next(false);
-        this.isLoading = true;
-
         this.data();
         this.datanode();
-        this.update$.next(true);
       });
   }
 
@@ -139,7 +126,7 @@ export class GraphAppComponent implements OnInit, OnDestroy {
           data: {
             title: 'LOAD BALANCER',
             img: '../../../assets/LB_base.png',
-            text: 'BALANCEADOR DE CARGA',
+            text: 'BALANCEADORES',
             link: 'loadBalancer-list',
             msg: this.message_loadbalancer,
             Color: this.health_loadbalancer,
@@ -237,13 +224,10 @@ export class GraphAppComponent implements OnInit, OnDestroy {
   public health_integration: string;
 
   public data$: BehaviorSubject<any> = new BehaviorSubject(null);
-  public update$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(
-    false
-  );
 
   colorScheme(data: number): string {
     let color: string;
-  
+
     if (data < 50) {
       color = '#E73628'; // rojo
     } else if (data < 65 || data < 80) {
@@ -255,7 +239,7 @@ export class GraphAppComponent implements OnInit, OnDestroy {
     } else {
       color = '#818181'; // gris
     }
-  
+
     return color;
   }
 

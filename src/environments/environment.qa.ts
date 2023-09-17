@@ -1,7 +1,5 @@
 export const environment = {
   production: false,
-  /*domainStream:"https://bdvmetricas.banvenez.com.ve/",
-    baseUrl:"https://bdvmetricas.banvenez.com.ve/",*/
     domainStream:"https://bdvmetricas.banvenez.com.ve/",
     baseUrl:"https://bdvmetricas.banvenez.com.ve/",
   streamPath:"bdvanalitycs",

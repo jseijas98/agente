@@ -1,5 +1,4 @@
-
-import { AfterViewInit, Component, ElementRef, OnInit } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { Applications } from '../interfaces/model.applications';
 import { Router, RouterLinkActive } from '@angular/router';
 import { AppNameService } from 'src/app/services/app-name/app-name.service';
@@ -20,41 +19,42 @@ export class MainComponent implements OnInit, AfterViewInit {
     private appName: AppNameService,
     public colors: FlowChartService,
     private sseServiceService: SseServiceService,
-    private spinner: SpinnerVisibilityService
+    private flowChartService: FlowChartService
+  ) {}
 
-  ) { }
+  @ViewChild('RenderZone') zoneFlowChart: ElementRef = new ElementRef('')
 
-  ngAfterViewInit(): void { 
+
+dimensions: [number, number] = [0, 0];
+
+  ngAfterViewInit(): void {
+    const el = this.zoneFlowChart.nativeElement
+    this.flowChartService.calculateDimensions(el);
   }
 
-  ngOnDestroy() {
-  }
+  ngOnDestroy() {}
 
   ngOnInit(): void {
     this.sseInit();
   }
 
-  
   sseInit() {
     this.sseServiceService
       .getDataFromServerNoClose(environment.baseUrl + 'list/application')
       .subscribe(
         (response: Applications[]) => {
-
-          if (response){
+          if (response) {
             const data: Applications[] = response;
             this.appslist = response;
             this.appName.appSee(data);
             // this.appName.appNameSee(data);
           }
-      
         },
         (error) => {
           console.log(error);
         }
       );
   }
-
 
   appslist: any[] = [];
   dataCard: Applications[] = [];

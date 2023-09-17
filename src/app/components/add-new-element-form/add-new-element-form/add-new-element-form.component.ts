@@ -1,280 +1,272 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, DoCheck, EventEmitter, Inject, Input, OnInit, Output } from '@angular/core';
-import { FormControl, Validators, FormGroup } from '@angular/forms';
+import {
+  Component,
+  EventEmitter,
+  Inject,
+  OnInit,
+  Output,
+} from '@angular/core';
+import {
+  FormControl,
+  Validators,
+  FormGroup,
+  FormBuilder,
+} from '@angular/forms';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { ActivatedRoute, Router } from '@angular/router';
-import { id } from '@swimlane/ngx-charts';
 import { BehaviorSubject, timeout } from 'rxjs';
 import StringUtils from 'src/app/common/util/stringUtils';
 import {
-  NewIntegration,
-  NewPersistence,
-  NewService,
-  NewApi,
-  NewLoadBalancer,
   Element,
 } from 'src/app/modules/interfaces/model.add-new-element';
+import { PayloadType } from 'src/app/services/deleteElement/delete.service';
 import { FormMessageService } from 'src/app/services/form-message/form-message.service';
 import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-add-new-element-form',
-  templateUrl:'./add-new-element-form.component.html',
+  templateUrl: './add-new-element-form.component.html',
   styleUrls: ['./add-new-element-form.component.css'],
 })
 export class AddNewElementFormComponent implements OnInit {
-  constructor(
-    private http: HttpClient,
-    @Inject(MAT_DIALOG_DATA) public data: any,
-    public serv: FormMessageService,
-    private Utils: StringUtils
-  ) {}
+  ngOnInit(): void {}
+
+  onSelectedValueChange(newValue: PayloadType) {
+    this.clearForm();
+    console.log('Selected value changed to:', newValue);
+    this.updateValidatorsForFields(newValue);
+  }
 
   public data$: BehaviorSubject<any> = new BehaviorSubject(null);
   @Output() newItemEvent = new EventEmitter<string>();
 
-  // (ngSubmit)="clicked($event)"
-
-  addNewItem(value: any) {
-    this.newItemEvent.emit(value);
+  constructor(
+    private http: HttpClient,
+    @Inject(MAT_DIALOG_DATA) public data: any,
+    public serv: FormMessageService,
+    private Utils: StringUtils,
+    private fb: FormBuilder
+  ) {
+    //formulario inicial
+    this.form = this.createForm();
+    this.db = this.formDB();
   }
- 
-  ngOnInit(): void {}
 
-  newElement: Element[] = [
-    { value: 'integration', viewValue: 'servicios de pic' },
-    { value: 'persistence', viewValue: 'base de datos' },
-    { value: 'service', viewValue: 'services' },
-    { value: 'apis', viewValue: 'apis' },
-    { value: 'loadbalancer', viewValue: 'load balancer' },
-  ];
-  
+  form: FormGroup;
+  db: FormGroup;
+  payloadType = PayloadType;
   hide = true;
   selectedValue: string;
 
-  // **********************************PIC*********************************************
-  pic: FormGroup = new FormGroup({
-    testInterval: new FormControl('', [
-      Validators.required,
-      Validators.max(60000),
-      Validators.min(100),
-      Validators.pattern(this.Utils.numberRegEx),
-    ]),
-    url: new FormControl('', [Validators.required, Validators.maxLength(255)]),
-    json: new FormControl('', [Validators.required]),
-    channel: new FormControl('', [
-      Validators.required,
-      Validators.maxLength(45),
-    ]),
-    description: new FormControl('', [
-      Validators.nullValidator,
-      Validators.maxLength(45)
-    ]),
-  });
+  updateValidatorsForFields(type: PayloadType): void {
+    // Obtén referencias a los campos que deseas cambiar
+    const labelAppControl = this.form.get('labelApp');
+    const namespaceControl = this.form.get('namespace');
+    const jsonControl = this.form.get('json');
+    const channelControl = this.form.get('channel');
 
-  onSubmit_pic(
-    testInterval: any,
-    url: any,
-    json: any,
-    channel: any,
-    description: any
-  ) {
-    let pic: NewIntegration;
-    let type = 'integration';
-    pic = {
-      applicationId: parseInt(this.data),
-      testInterval: parseInt(testInterval),
-      url: url,
-      json: json,
-      channel: channel,
-      description: description,
-    };
-    this.addNewElement(pic, type);
-    console.log('submit', pic);
+    // Restablece el estado 'disabled' de todos los campos
+    labelAppControl?.enable();
+    namespaceControl?.enable();
+    jsonControl?.enable();
+    channelControl?.enable();
+
+    // Deshabilita todos los campos para el tipo LOADBALANCER
+    if (type === PayloadType.LOADBALANCER) {
+      labelAppControl?.disable();
+      namespaceControl?.disable();
+      jsonControl?.disable();
+      channelControl?.disable();
+    } else if (type === PayloadType.API || type === PayloadType.SERVICE) {
+      // Deshabilita campos que no son necesarios
+      jsonControl?.disable();
+      channelControl?.disable();
+    } else if (type === PayloadType.INTEGRATION) {
+      // Deshabilita campos que no son necesarios
+      labelAppControl?.disable();
+      namespaceControl?.disable();
+    }
   }
 
-  //***********************************persistence or data bases***********************
-  dataBase: FormGroup = new FormGroup({
-    name: new FormControl('', [Validators.required, Validators.maxLength(45)]),
-    sqlSentence: new FormControl('', [
-      Validators.required,
-      Validators.maxLength(45),
-    ]),
-    username: new FormControl('', [
-      Validators.required,
-      Validators.maxLength(45),
-    ]),
-    password: new FormControl('', [
-      Validators.required,
-      Validators.maxLength(45),
-    ]),
-    testInterval: new FormControl('', [
-      Validators.required,
-      Validators.pattern(this.Utils.numberRegEx),
-      Validators.min(100),
-      Validators.max(60000),
-    ]),
-    url: new FormControl('', [Validators.required,  Validators.maxLength(255),]),
-    dataBaseType: new FormControl('', [
-      Validators.required,
-      Validators.maxLength(45),
-    ]),
-    description: new FormControl('', [
-      Validators.nullValidator,
-      Validators.maxLength(45),
-    ]),
-  });
+  newElement: Element[] = [
+    { value: PayloadType['INTEGRATION'], viewValue: 'servicios de pic' },
+    { value: PayloadType['API'], viewValue: 'apis' },
+    { value: PayloadType['APIVALUE'], viewValue: 'api valor' },
+    { value: PayloadType['SERVICE'], viewValue: 'services' },
+    { value: PayloadType['SERVICEVALUE'], viewValue: 'sercicio valor' },
+    { value: PayloadType['LOADBALANCER'], viewValue: 'load balancer' },
+    { value: PayloadType['PERSISTENCE'], viewValue: 'base de datos' },
+  ];
 
-  onSubmit_DB(
-    name: any,
-    sqlSentence: any,
-    username: any,
-    password: any,
-    testInterval: any,
-    url: any,
-    dataBaseType: any,
-    description: any
-  ) {
-    let type = 'persistence';
-    let DB: NewPersistence = {
-      applicationId: parseInt(this.data),
-      name: name,
-      sqlSentence: sqlSentence,
-      username: username,
-      password: password,
-      testInterval: parseInt(testInterval),
-      url: url,
-      dataBaseType: dataBaseType,
-      description: description,
-    };
-    this.addNewElement(DB, type);
-    console.log('submit', DB);
+  //********************* new element *********************
+  createForm(): FormGroup {
+    return this.fb.group({
+      type: new FormControl({ value: this.selectedValue, disabled: false }, []),
+      applicationId: new FormControl(
+        { value: parseInt(this.data), disabled: true },
+        []
+      ),
+      url: new FormControl(null, [
+        Validators.required,
+        Validators.maxLength(255),
+      ]),
+      testInterval: new FormControl(null, [
+        Validators.required,
+        Validators.max(60000),
+        Validators.min(100),
+        Validators.pattern(this.Utils.numberRegEx),
+      ]),
+      description: new FormControl(null, [
+        Validators.nullValidator,
+        Validators.maxLength(45),
+      ]),
+      labelApp: new FormControl({ value: null, disabled: false }, [
+        Validators.required,
+        Validators.maxLength(45),
+      ]),
+      namespace: new FormControl({ value: null, disabled: false }, [
+        Validators.required,
+        Validators.minLength(2),
+        Validators.maxLength(45),
+      ]),
+      json: new FormControl(null, [Validators.required]),
+      channel: new FormControl('', [
+        Validators.required,
+        Validators.maxLength(45),
+      ]),
+    });
   }
-  // ***********************************services***************************************
-  service: FormGroup = new FormGroup({
-    testInterval: new FormControl('', [
-      Validators.required,
-      Validators.minLength(2),
-      Validators.pattern(this.Utils.numberRegEx),
-      Validators.min(100),
-      Validators.max(60000),
-    ]),
-    name: new FormControl('', [Validators.required,Validators.maxLength(45)]),
-    labelApp: new FormControl('', [
-      Validators.required,Validators.maxLength(45)
-    ]),
-    namespace: new FormControl('', [
-      Validators.required,
-      Validators.minLength(2),Validators.maxLength(45)
-    ]),
-    url: new FormControl('', [Validators.required, Validators.maxLength(255)]),
-    description: new FormControl('', [
-      Validators.nullValidator,Validators.maxLength(45)
-    ]),
-  });
 
-  onSubmit_service(
-    testInterval: any,
-    name: any,
-    labelApp: any,
-    namespace: any,
-    url: any,
-    description: any
-  ) {
-    let type = 'service';
-    let service: NewService = {
-      applicationId: parseInt(this.data),
-      testInterval: parseInt(testInterval),
-      name: name,
-      labelApp: labelApp,
-      namespace: namespace,
-      url: url,
-      description: description,
-    };
-    this.addNewElement(service, type);
-    console.log('submit', service);
+  onSubmit() {
+    let postBody: FormData = this.form.getRawValue();
+    console.log('body', postBody);
+    this.addNewElement(postBody, this.selectedValue);
+    this.clearForm();
   }
-  // *************************************apis*****************************************
-  apis: FormGroup = new FormGroup({
-    labelApp: new FormControl('', [
-      Validators.required,
-      Validators.minLength(2),Validators.maxLength(45)
-    ]),
-    namespace: new FormControl('', [
-      Validators.required,
-      Validators.minLength(2),Validators.maxLength(45)
-    ]),
-    testInterval: new FormControl('', [
-      Validators.required,
-      Validators.minLength(2),
-      Validators.pattern(this.Utils.numberRegEx),
-      Validators.min(100),
-      Validators.max(60000),
-    ]),
-    url: new FormControl('', [Validators.required, Validators.minLength(2),Validators.maxLength(45)]),
-  });
-  onSubmit_apis(labelApp: any, namespace: any, testInterval: any, url: any) {
-    const type = 'api';
-    let api: NewApi = {
-      applicationId: parseInt(this.data),
-      labelApp: labelApp,
-      namespace: namespace,
-      testInterval: parseInt(testInterval),
-      url: url,
-    };
-    this.addNewElement(api, type);
 
-    console.log('submit', api);
-  }
-  // *******************************load balancer***************************************
-  loadBalancer: FormGroup = new FormGroup({
-    testInterval: new FormControl('', [
-      Validators.required,
-      Validators.min(100),
-      Validators.max(60000),
-      Validators.pattern(this.Utils.numberRegEx),
-    ]),
-    url: new FormControl('', [Validators.required, Validators.minLength(2), Validators.maxLength(255)]),
-    json: new FormControl('', [Validators.required, Validators.minLength(2)]),
-    description: new FormControl('', [
-      Validators.required,
-      Validators.minLength(2),Validators.maxLength(45)
-    ]),
-  });
-  onSubmit_laodBalancer(
-    testInterval: any,
-    url: any,
-    json: any,
-    description: any
-  ) {
-    const type = 'loadBalancer';
-    let LB: NewLoadBalancer = {
-      applicationId: parseInt(this.data),
-      testInterval: parseInt(testInterval),
-      url: url,
-      json: json,
-      description: description,
+  getPayloadTypeValue(type: string): string {
+    const typeToValueMap: Record<string, string> = {
+      [PayloadType.PERSISTENCE]: '2',
+      [PayloadType.API]: '1',
+      [PayloadType.SERVICE]: '1',
+      [PayloadType.INTEGRATION]: '1',
+      [PayloadType.LOADBALANCER]: '1',
+      [PayloadType.APIVALUE]: '1',
+      [PayloadType.SERVICEVALUE]: '1',
     };
-    this.addNewElement(LB,type)
-    console.log('submit', LB);
+    return typeToValueMap[type] || '0';
   }
+
+  clearForm(): void {
+    this.form.reset();
+    this.form.patchValue({ applicationId: parseInt(this.data) });
+    this.form.patchValue({ type: this.selectedValue });
+  }
+
+  cancelButton(): boolean {
+    return this.serv.buttontoggle(this.selectedValue);
+  }
+
+  errorTestInterval(): string {
+    return this.serv.getErrorMessage_testInterval(
+      this.form.get('testInterval')
+    );
+  }
+
+  errorUrl(): string {
+    return this.serv.max_content255(this.form.get('url'));
+  }
+
+  errorJson(): string {
+    return this.serv.json_max(this.form.get('json'));
+  }
+
+  errorChannel(): string {
+    return this.serv.max_content45(this.form.get('channel'));
+  }
+  errorDescription() {
+    return this.serv.max_content45(this.form.get('description'));
+  }
+
+  errorlabelApp() {
+    return this.serv.max_content45(this.form.get('labelApp'));
+  }
+
+  errorNamespace() {
+    return this.serv.max_content45(this.form.get('namespace'));
+  }
+
+  //***********************persistence or data bases***********************
+
+  // Define el formulario utilizando FormBuilder
+  formDB(): FormGroup {
+    return this.fb.group({
+      applicationId: new FormControl(
+        { value: parseInt(this.data), disabled: true },
+        []
+      ),
+      name: new FormControl('', [
+        Validators.required,
+        Validators.maxLength(45),
+      ]),
+      sqlSentence: new FormControl('', [
+        Validators.required,
+        Validators.maxLength(45),
+      ]),
+      username: new FormControl('', [
+        Validators.required,
+        Validators.maxLength(45),
+      ]),
+      password: new FormControl('', [
+        Validators.required,
+        Validators.maxLength(45),
+      ]),
+      testInterval: new FormControl('', [
+        Validators.required,
+        Validators.pattern(this.Utils.numberRegEx),
+        Validators.min(100),
+        Validators.max(60000),
+      ]),
+      url: new FormControl('', [
+        Validators.required,
+        Validators.maxLength(255),
+      ]),
+      dataBaseType: new FormControl('', [
+        Validators.required,
+        Validators.maxLength(45),
+      ]),
+      description: new FormControl('', [
+        Validators.nullValidator,
+        Validators.maxLength(45),
+      ]),
+    });
+  }
+
+  onSubmit_DB() {
+    let postBody: FormData = this.db.getRawValue();
+    console.log('body', postBody);
+    this.addNewElement(postBody, this.selectedValue);
+    this.clearForm();
+  }
+
 
   addNewElement(element: Object, type: string) {
-    this.http
-      .post(`${environment.baseUrl}newElement/${type}`, element)
-      .subscribe({
-        next: this.success.bind(this),
-        error: this.error.bind(this),
-      });
+    let url: string = '';
+    type === PayloadType['PERSISTENCE']
+      ? (url = environment.url.add)
+      : (url = environment.url.add);
+
+    this.http.post(url, element).subscribe({
+      next: this.success.bind(this),
+      error: this.error.bind(this),
+    });
   }
   success(response: any) {
     this.data$.next(response);
-    console.log('mensaje',response.message,'resposne',response);
+    console.log('mensaje', response.message, 'resposne', response);
   }
-  
+
   error(error: any) {
     this.data$.error(error);
     console.log(error);
   }
-
 }

@@ -1,7 +1,7 @@
-.mat-sidenav-content,
-.mat-sidenav-container,
-.mat-drawer-content {
-    transform: none !important;
+
+.sidenav-container{
+  height:100%;
+  width: 100%;
 }
 
 .logo{
@@ -23,5 +23,10 @@
   .logoName{
     font-size: 32px;
     line-height: 2px;
+  }
+
+  .mat-sidenav-content {
+    height: 100%;
+    overflow: hidden; /* Para ocultar cualquier desbordamiento */
   }
 

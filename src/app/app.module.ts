@@ -20,7 +20,11 @@ import { NoRegistriesComponent } from './errors/no-registries/no-registries.comp
 import { BreadcrumbComponent } from './components/breadcrumb/breadcrumb.component';
 
 @NgModule({
-  declarations: [AppComponent, UpdateparamsComponent, AddNewElementFormComponent],
+  declarations: [
+    AppComponent,
+    UpdateparamsComponent,
+    AddNewElementFormComponent,
+  ],
   imports: [
     BrowserModule,
     HttpClientModule,

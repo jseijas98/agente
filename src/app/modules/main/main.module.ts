@@ -28,7 +28,6 @@ import { PicRegistryComponent } from './picM/pic-registry/pic-registry.component
 import { PersistenceListComponent } from './persistenceM/persistence-list/persistence-list.component';
 import { PersistenceRegistryComponent } from './persistenceM/persistence-registry/persistence-registry.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { FlowChartComponent } from 'src/app/components/flow-chart/flow-chart.component';
 import { NgxGraphModule } from '@swimlane/ngx-graph';
 import { NodeFlowChartComponent } from 'src/app/components/node-flow-chart/node-flow-chart.component';
 import { LoadBalancerListComponent } from './loadbalancerM/load-balancer-list/load-balancer-list.component';
@@ -65,7 +64,7 @@ import { ApisDetailsComponent } from './apisM/apis-details/apis-details.componen
     ReactiveFormsModule,
     MaterialModule,
     NgHttpLoaderModule,
-    
+
   ],
 
   declarations: [
@@ -85,7 +84,6 @@ import { ApisDetailsComponent } from './apisM/apis-details/apis-details.componen
     PicRegistryComponent,
     PersistenceListComponent,
     PersistenceRegistryComponent,
-    FlowChartComponent,
     NodeFlowChartComponent,
     LoadBalancerListComponent,
     LoadBalancerRegistryComponent,

@@ -14,7 +14,7 @@ export class AddNewElementComponent implements OnInit {
   constructor(
     public dialog: MatDialog,
     private activateRouter: ActivatedRoute,
-    private snakbar: MatSnackBar,
+    private snakbar: MatSnackBar
   ) {}
 
   ngOnInit(): void {}
@@ -32,20 +32,18 @@ export class AddNewElementComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe((result) => {
-      console.log('dialog:', result?._value?.message);
-      this.addNewItem(result?._value?.message)
+      console.log('hola', result);
+      console.log('dialog:', result?._value?.status);
+      this.addNewItem(result?._value?.status);
 
       this.snakbar.open(
-        result?._value.data
-          ? result?._value?.message
-          : 'ocurrio un error',
+        result?._value?.status !== 1000
+          ? 'ERROR: al agregar nuevo elemento'
+          : result?._value?.message,
         'ACEPTAR'
       );
     });
   }
-
-
-
 
   getActiveRouter(): any {
     let id: any;

@@ -1,17 +1,10 @@
 
-  
 
   <mat-sidenav-container autosiz class="fixed" >
-
-
-
     <mat-sidenav mode="side" opened [disableClose]="true" fixedInViewport  >
-
-    
-
-      <mat-toolbar class="text-center items-center">
+      <mat-toolbar class="text-center items-center bg-blue-300">
         <div class="mx-5 flex items-center">
-          <img src="../../assets/logonuevo.png" alt="Logo BDV" class="w-48 h-9"/> 
+          <img src="../../assets/logonuevo.png" alt="Logo BDV" class="w-48 h-9"/>
         </div>
       </mat-toolbar>
 
@@ -38,25 +31,20 @@
         </mat-list-item>
       </mat-list>
 
-    
+
 
     </mat-sidenav>
-    <div class="min-h-screen">
-
+    <div #RenderZone class="min-h-screen">
       <mat-toolbar color="primary" class="fixed z-50">
         <div class="row flex">
           <span class="self-center text-2xl">Agente de monitoreo</span>
         </div>
-    
         <span class="spacer"></span>
-    
         <div class="row flex mr-64">
           <app-go-back class="" *ngIf="router.url !== '/'"></app-go-back>
           <app-notification class="mr-5"></app-notification>
         </div>
-
       </mat-toolbar>
-
       <div id="espacer" class="h-16"></div>
       <router-outlet></router-outlet>
     </div>

@@ -7,15 +7,13 @@
 }
 
 .node-template {
-  /* background-color: rgba(255, 255, 255, .12); */
   border-radius: var(--border-radius);
-  min-height: 80px;
+  height: 100%;
   color: var(--text-color-1);
   padding: 0;
   cursor: pointer;
   width: 100%;
   display: flex;
-  /* box-shadow: 0 0 8px 2px #0000006b; */
   flex-direction: column;
   justify-content: center;
 }
@@ -54,9 +52,7 @@
   padding: 1px;
 }
 
-
 /* --------------------------------------------------------------------- */
-
 .tooltip-text {
   padding: 9px 16px;
   background: #cffafa;

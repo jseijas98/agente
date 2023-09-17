@@ -31,15 +31,12 @@ export class FlowChartService {
   ) {}
 
   public data$: BehaviorSubject<any> = new BehaviorSubject(null);
-  public update$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(
-    false
-  );
 
   // -------------------esquema de colores----------------------------
 
   colorScheme(data: number): string {
     let color: string;
-  
+
     if (data < 50) {
       color = '#E73628'; // rojo
     } else if (data < 65) {
@@ -48,49 +45,45 @@ export class FlowChartService {
       color = '#EFB950'; // amarillo
     } else if (data >= 90 && data < 99) {
       color = '#A0D41C'; // verde-amarillo
-    } else if (data = 100) {
+    } else if ((data = 100)) {
       color = '#008f39'; // verde
     } else {
       color = '#818181'; // gris
     }
-  
+
     return color;
   }
-
 
   unsuscribe$ = new Subject<void>();
   ruta$: BehaviorSubject<any> = new BehaviorSubject(null);
 
+  sseGetHealth(index: any) {
+    this.spinner.show();
+    this.closeConect();
+    this.sseServiceService
+      .getDataFromServer(`${environment.baseUrl}health/application/${index}`)
+      .subscribe((data) => {
+        let getHealth: DataAplication = data;
+        let data1 = getHealth.data;
+        this.health_api = this.colorScheme(data1[0].health);
+        this.health_loadbalancer = this.colorScheme(data1[2].health);
+        this.health_db = this.colorScheme(data1[3].health);
+        this.health_integration = this.colorScheme(data1[1].health);
+        this.health_services = this.colorScheme(data1[4].health);
+        this.message_api = data1[0].message;
+        this.message_loadbalancer = data1[2].message;
+        this.message_db = data1[3].message;
+        this.message_integration = data1[1].message;
+        this.message_services = data1[4].message;
 
-
-  sseGetHealth(index:any) {
-      this.spinner.show();
-      this.closeConect();
-      this.sseServiceService
-        .getDataFromServer(`${environment.baseUrl}health/application/${index}`)
-        .subscribe((data) => {
-          let getHealth: DataAplication = data;
-          let data1 = getHealth.data;
-          this.health_api = this.colorScheme(data1[0].health);
-          this.health_loadbalancer = this.colorScheme(data1[2].health);
-          this.health_db = this.colorScheme(data1[3].health);
-          this.health_integration = this.colorScheme(data1[1].health);
-          this.health_services = this.colorScheme(data1[4].health);
-          this.message_api = data1[0].message;
-          this.message_loadbalancer = data1[2].message;
-          this.message_db = data1[3].message;
-          this.message_integration = data1[1].message;
-          this.message_services = data1[4].message;
-          this.update$.next(false);
-          setTimeout(() => {
-            this.data();
-            this.update$.next(true);
-          }, 100);
-        });
-      this.spinner.hide();
+        setTimeout(() => {
+          this.data();
+        }, 100);
+      });
+    this.spinner.hide();
   }
 
-  closeConect(){
+  closeConect() {
     console.log('se cerro la conexion');
     this.unsuscribe$.next();
     this.unsuscribe$.complete();
@@ -114,11 +107,8 @@ export class FlowChartService {
     this.message_integration = data1[1].message;
     this.message_services = data1[4].message;
 
-    this.update$.next(false);
-
     setTimeout(() => {
       this.data();
-      this.update$.next(true);
       this.spinner.hide();
     }, 100);
     this.unsuscribe$.next();
@@ -179,11 +169,6 @@ export class FlowChartService {
     setTimeout(() => {
       this.data();
     }, 100);
-
-    // this.sseGetHealth(index);
-    // setTimeout(() => {
-    //   this.data();
-    // }, 100);
   }
 
   data() {
@@ -280,4 +265,12 @@ export class FlowChartService {
 
     this.data$.next(http$);
   }
+
+  public zoneDimensions$: BehaviorSubject<[number, number]> = new BehaviorSubject([0, 0])
+
+  calculateDimensions(el: HTMLElement): void {
+    const { width, height } = el.getBoundingClientRect()
+    this.zoneDimensions$.next([width -300, height])
+  }
+
 }

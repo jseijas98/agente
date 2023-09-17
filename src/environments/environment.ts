@@ -8,6 +8,13 @@ export const environment = {
   Cisnerosip:'http://180.183.85.70:80/',
   listAplications:'/list/application/',
 
+  url:{
+        delete:'http://180.183.170.56:30446/monitor-agent-service/editElement/delete',
+        add:'http://180.183.170.56:30446/monitor-agent-service/editElement/newElement',
+        modify:'http://180.183.170.56:30446/monitor-agent-service/editElement/newValue',
+        newDB:'http://180.183.170.56:30446/monitor-agent-service/editElement/newPersistence'
+  },
+
   admin:{
     appList:'admin/apps',
     findUser:'admin/findUser',
@@ -20,6 +27,8 @@ properties:{
   maxValuesForLineGraph:50,
   maxReconectValues:5
 }
+
+
 };
 
 /*
