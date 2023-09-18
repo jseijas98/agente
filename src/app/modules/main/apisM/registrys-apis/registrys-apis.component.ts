@@ -72,6 +72,7 @@ export class RegistrysApisComponent
   ngAfterViewInit(): void {
     this.breadcrumbService.agregarRuta(this.router.url,'historicos');
     this.breadcrumbs = this.breadcrumbService.obtenerBreadcrumbs();
+
     this.activateRouter.params.subscribe((params) => {
       this.Api_registry(params['id']);
     });

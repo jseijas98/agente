@@ -19,6 +19,7 @@ import { LoadBalancerListComponent } from './loadbalancerM/load-balancer-list/lo
 import { LoadBalancerRegistryComponent } from './loadbalancerM/load-balancer-registry/load-balancer-registry.component';
 import { ServicesDetailsComponent } from './serviciosM/services-details/services-details.component';
 import { ApisDetailsComponent } from './apisM/apis-details/apis-details.component';
+import { ElementDetailsComponent } from './element-details/element-details.component';
 
 const routes: Routes = [
   {
@@ -101,6 +102,10 @@ const routes: Routes = [
         path: 'apisDetails/:id',
         component: ApisDetailsComponent,
       },
+      {
+        path: 'details/:app/:id/:type',
+        component: ElementDetailsComponent,
+      }
     ],
   },
 ];

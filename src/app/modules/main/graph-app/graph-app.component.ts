@@ -54,14 +54,15 @@ export class GraphAppComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngAfterViewInit(): void {  this.flowChartService.zoneDimensions$.subscribe(([w, h]) => {
-    if (w && h) {
-      this.dimensions = [w, h];
-      console.log(this.dimensions);
-      this.cdr.detectChanges();
-    }
-  });
-}
+  ngAfterViewInit(): void {
+    this.flowChartService.zoneDimensions$.subscribe(([w, h]) => {
+      if (w && h) {
+        this.dimensions = [w, h];
+        console.log(this.dimensions);
+        this.cdr.detectChanges();
+      }
+    });
+  }
   //---------------------------------------------------------------------------------------
 
   ngOnDestroy(): void {
@@ -75,10 +76,6 @@ export class GraphAppComponent implements OnInit, OnDestroy {
     this.unsuscribe$.complete();
     this.unsuscribe$.next();
   }
-
-
-
-
 
   redirect(prefix: string) {
     this.activateRouter.params.subscribe((params) => {

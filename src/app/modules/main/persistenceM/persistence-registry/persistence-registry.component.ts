@@ -1,13 +1,21 @@
 import { HttpClient } from '@angular/common/http';
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  OnInit,
+  ViewChild,
+  inject,
+} from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 import StringUtils from 'src/app/common/util/stringUtils';
+import { BreadcrumbService } from 'src/app/components/breadcrumb/breadcrumb.service';
 import { PersistenceRegistry } from 'src/app/modules/interfaces/model.persistence/model.persistenceRegistry';
 import { DynamicFilterService } from 'src/app/services/dynamic-Filter/dynamic-filter.service';
+import { ExportExcelService } from 'src/app/services/export-excel/export-excel.service';
 import { GraphServiceService } from 'src/app/services/graph/graph-service.service';
 import { SseServiceService } from 'src/app/services/sse/sse-service.service';
 import { environment } from 'src/environments/environment';
@@ -24,26 +32,22 @@ export class PersistenceRegistryComponent implements OnInit, AfterViewInit {
     private activateRouter: ActivatedRoute,
     private serv: GraphServiceService,
     private sseServiceService: SseServiceService,
-    private dynamicFilterService:DynamicFilterService
+    private dynamicFilterService: DynamicFilterService
   ) {}
 
   ngAfterViewInit(): void {
-    // this.activateRouter.params.subscribe((params) => {
-    //   this.persistence_registry(params['id']);
-    // });
-     this.ssePersistenceRegistry();
+    this.breadcrumbService.agregarRuta(this.router.url, 'historicos');
+    this.breadcrumbs = this.breadcrumbService.obtenerBreadcrumbs();
+    this.ssePersistenceRegistry();
   }
-
-  filterValue: string = '';
 
   applyFilter() {
     this.dataSource.filter = this.filterValue;
     if (this.dataSource.paginator) {
-      this.dataSource.paginator.pageIndex=this.currentPageIndex
+      this.dataSource.paginator.pageIndex = this.currentPageIndex;
     }
     localStorage.setItem('filterValue', this.filterValue);
-    console.log('valor almacenado',this.filterValue);
-
+    console.log('valor almacenado', this.filterValue);
   }
   onFilterInputChanged(event: Event) {
     const inputValue = (event.target as HTMLInputElement).value;
@@ -52,7 +56,7 @@ export class PersistenceRegistryComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
-this.dynamicFilterService.dynamicFilter('filterValue')
+    this.dynamicFilterService.dynamicFilter('filterValue');
   }
 
   ngOnDestroy() {
@@ -76,19 +80,27 @@ this.dynamicFilterService.dynamicFilter('filterValue')
     'histSuccessfulTest',
   ];
 
-
+  filterValue: string = '';
+  excel = inject(ExportExcelService);
+  router = inject(Router);
+  breadcrumbService = inject(BreadcrumbService);
+  public breadcrumbs: { label: string; url: string }[] = [];
   data: any[] = [];
   dataGraph: Object[] = [];
-  persistence_name:string;
+  persistence_name: string;
   baseUrl = environment.baseUrl;
-   //pointer grph info
-   protected legend1: string = 'tiempo de respuesta';
-   protected legend2: string = 'ms';
+  //pointer grph info
+  protected legend1: string = 'tiempo de respuesta';
+  protected legend2: string = 'ms';
   dataSource = new MatTableDataSource<any>(this.data);
   unsuscribe$ = new Subject<void>();
   @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
-  tableIsEmpty=true;
+  tableIsEmpty = true;
+
+  downlaod(){
+    this.excel.exportToExcel(this.dataSource,this.displayedColumns,this.persistence_name);
+  }
 
   persistence_registry(index: number) {
     this.http
@@ -113,17 +125,22 @@ this.dynamicFilterService.dynamicFilter('filterValue')
         description: PersistenceRegistry.description,
         consecutiveFailedTest: PersistenceRegistry.consecutiveFailedTest,
         histFailedTest: PersistenceRegistry.histFailedTest,
-        lastTestDate: this.utils.formatearFecha(PersistenceRegistry.lastTestDate),
+        lastTestDate: this.utils.formatearFecha(
+          PersistenceRegistry.lastTestDate
+        ),
         response_time: PersistenceRegistry.response_time,
         consecutiveSuccessfulTest:
           PersistenceRegistry.consecutiveSuccessfulTest,
-        histSuccessfulTest: PersistenceRegistry.histSuccessfulTest
+        histSuccessfulTest: PersistenceRegistry.histSuccessfulTest,
       });
 
-      this.persistence_name = PersistenceRegistry.description
+      this.persistence_name = PersistenceRegistry.description;
     });
 
-    this.dataGraph = this.serv.dataGraph_load_balancer(respose,this.persistence_name)
+    this.dataGraph = this.serv.dataGraph_load_balancer(
+      respose,
+      this.persistence_name
+    );
     console.log(this.data);
     this.dataSource = new MatTableDataSource<any>(this.data);
     this.dataSource.paginator = this.paginator;
@@ -134,23 +151,14 @@ this.dynamicFilterService.dynamicFilter('filterValue')
     console.error(error);
   }
 
-  // applyFilter(event: Event) {
-  //   const filterValue = (event.target as HTMLInputElement).value;
-  //   this.dataSource.filter = filterValue.trim().toLowerCase();
-
-  //   if (this.dataSource.paginator) {
-  //     this.dataSource.paginator.firstPage();
-  //   }
-  // }
-
-  ssePersistenceRegistry(){
+  ssePersistenceRegistry() {
     this.activateRouter.params.subscribe((params) => {
       this.sseFuntion(params['id']);
     });
   }
 
   sseFuntion(index: any) {
-    const httpApiLIst =`${environment.baseUrl}registry/application/${index}/persistence`;
+    const httpApiLIst = `${environment.baseUrl}registry/application/${index}/persistence`;
     this.sseServiceService
       .getDataFromServer(httpApiLIst)
       .pipe(takeUntil(this.unsuscribe$))
@@ -163,37 +171,41 @@ this.dynamicFilterService.dynamicFilter('filterValue')
 
   Success(response: any) {
     let datos: any[] = [];
-    response.forEach((PersistenceRegistry: PersistenceRegistry) =>
-     { datos.push({
-      registry_id: PersistenceRegistry.registryId,
-      persistence_id: PersistenceRegistry.dbId,
-      status: PersistenceRegistry.status,
-      applicationId: PersistenceRegistry.applicationId,
-      description: PersistenceRegistry.description,
-      consecutiveFailedTest: PersistenceRegistry.consecutiveFailedTest,
-      histFailedTest: PersistenceRegistry.histFailedTest,
-      lastTestDate: this.utils.formatearFecha(PersistenceRegistry.lastTestDate),
-      response_time: PersistenceRegistry.response_time,
-      consecutiveSuccessfulTest:
-        PersistenceRegistry.consecutiveSuccessfulTest,
-      histSuccessfulTest: PersistenceRegistry.histSuccessfulTest
-      })
-      this.persistence_name = PersistenceRegistry.description
+    response.forEach((PersistenceRegistry: PersistenceRegistry) => {
+      datos.push({
+        registry_id: PersistenceRegistry.registryId,
+        persistence_id: PersistenceRegistry.dbId,
+        status: PersistenceRegistry.status,
+        applicationId: PersistenceRegistry.applicationId,
+        description: PersistenceRegistry.description,
+        consecutiveFailedTest: PersistenceRegistry.consecutiveFailedTest,
+        histFailedTest: PersistenceRegistry.histFailedTest,
+        lastTestDate: this.utils.formatearFecha(
+          PersistenceRegistry.lastTestDate
+        ),
+        response_time: PersistenceRegistry.response_time,
+        consecutiveSuccessfulTest:
+          PersistenceRegistry.consecutiveSuccessfulTest,
+        histSuccessfulTest: PersistenceRegistry.histSuccessfulTest,
+      });
+      this.persistence_name = PersistenceRegistry.description;
     });
     console.log(datos);
 
     if (datos.length > 0) {
-      this.dataGraph = this.serv.dataGraph_load_balancer(response,this.persistence_name)
+      this.dataGraph = this.serv.dataGraph_load_balancer(
+        response,
+        this.persistence_name
+      );
       this.tableIsEmpty = false;
       this.dataSource = new MatTableDataSource<any>(datos);
       this.dataSource.paginator = this.paginator;
       this.dataSource.sort = this.sort;
       this.currentPageIndex = this.paginator.pageIndex;
       this.applyFilter();
-
-    }else{
-      this.dataSource = new MatTableDataSource<any>([])
-      this.dataSource.data = [{message:'Sin datos para mostrar'}];
+    } else {
+      this.dataSource = new MatTableDataSource<any>([]);
+      this.dataSource.data = [{ message: 'Sin datos para mostrar' }];
       this.tableIsEmpty = false;
     }
   }
@@ -203,5 +215,4 @@ this.dynamicFilterService.dynamicFilter('filterValue')
   Error(error: any) {
     console.log('error sse loadbalancer', error);
   }
-
 }

@@ -1,6 +1,6 @@
 import { SelectionModel } from '@angular/cdk/collections';
 import { HttpClient } from '@angular/common/http';
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnInit, ViewChild, inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -9,6 +9,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 import StringUtils from 'src/app/common/util/stringUtils';
+import { BreadcrumbService } from 'src/app/components/breadcrumb/breadcrumb.service';
 import { UpdateparamsComponent } from 'src/app/components/modals/updateparams/updateparams.component';
 import { PicList } from 'src/app/modules/interfaces/model.pic/model.pic-list';
 import { AppNameService } from 'src/app/services/app-name/app-name.service';
@@ -48,6 +49,9 @@ export class PicListComponent implements OnInit, AfterViewInit {
   index = 'integration';
   tableIsEmpty=true;
 
+  breadcrumbService = inject(BreadcrumbService)
+  public breadcrumbs: { label: string; url: string }[] = [];
+
   //configuración del dataSource
   dataSource = new MatTableDataSource<any>();
 
@@ -62,7 +66,13 @@ export class PicListComponent implements OnInit, AfterViewInit {
     this.activateRouter.params.subscribe((params) => {
       this.appName
         .getDataFromApi(params['id']).pipe(takeUntil(this.unsuscribe$))
-        .subscribe((data) => (this.appname = data));
+        .subscribe((data) => {
+          this.appname = data
+          this.breadcrumbService.agregarRuta('/', 'Dashboard');
+          this.breadcrumbService.agregarRuta('/graph-app/' + params['id'], this.appname)
+          this.breadcrumbService.agregarRuta('/pic-list/' + params['id'], 'servicios pic')
+          this.breadcrumbs = this.breadcrumbService.obtenerBreadcrumbs();
+        });
     });
     // this.callPicData();
     // this.activateRouter.params.subscribe((params) => {
@@ -243,8 +253,8 @@ this.dynamicFilterService.dynamicFilter('filterValue')
 
   Success(response: any) {
     console.log('response',response);
-    
-    
+
+
     let datos: any[] = [];
     response.forEach((pic: PicList) =>
      { datos.push({

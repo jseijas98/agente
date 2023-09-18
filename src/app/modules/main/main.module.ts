@@ -42,6 +42,7 @@ import { BreadcrumbComponent } from 'src/app/components/breadcrumb/breadcrumb.co
 import { ServicesDetailsComponent } from './serviciosM/services-details/services-details.component';
 import { NotificationComponent } from 'src/app/components/notification/notification.component';
 import { ApisDetailsComponent } from './apisM/apis-details/apis-details.component';
+import { ElementDetailsComponent } from './element-details/element-details.component';
 
 @NgModule({
   imports: [
@@ -95,7 +96,8 @@ import { ApisDetailsComponent } from './apisM/apis-details/apis-details.componen
     BreadcrumbComponent,
     ServicesDetailsComponent,
     NotificationComponent,
-    ApisDetailsComponent
+    ApisDetailsComponent,
+    ElementDetailsComponent
   ],
 })
 export class MainModule {}

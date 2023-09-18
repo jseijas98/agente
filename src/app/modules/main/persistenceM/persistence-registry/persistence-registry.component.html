@@ -1,5 +1,15 @@
 <ng-http-loader></ng-http-loader>
 
+<header class="mx-5 mt-5">
+  <app-breadcrumb
+    *ngIf="!tableIsEmpty"
+    [breadcrumbsData]="breadcrumbs"
+    [title]="persistence_name"
+    [app]="'Historicos de'"
+  ></app-breadcrumb>
+</header>
+<app-no-registries [error]="tableIsEmpty"></app-no-registries>
+
 <app-charts
   [dataIn]="dataGraph"
   [legentTitleIn]="persistence_name"
@@ -13,7 +23,7 @@
 
 <br />
 
-<mat-expansion-panel class="w-11/12 m-auto">
+<mat-expansion-panel class="w-11/12 m-auto text-center">
   <mat-expansion-panel-header>
     <mat-panel-title>busqueda avanzada</mat-panel-title>
   </mat-expansion-panel-header>
@@ -27,6 +37,14 @@
       #input
     />
   </mat-form-field>
+  <button
+  mat-icon-button
+  color="primary"
+  (click)="downlaod()"
+  aria-label="descargar Historicos"
+>
+  <mat-icon class="text-3xl">download</mat-icon>
+</button>
 
   <div class="mat-elevation-z8 m-auto">
     <table mat-table [dataSource]="dataSource" matSort>

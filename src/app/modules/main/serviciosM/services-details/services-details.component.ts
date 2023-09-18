@@ -16,9 +16,8 @@ export class ServicesDetailsComponent implements OnInit, OnDestroy  {
   ngOnDestroy(): void {
   }
 
-
   activatedRoute = inject(ActivatedRoute)
-  router =inject(Router);  
+  router =inject(Router);
   fb = inject(FormBuilder);
   breadcrumbService = inject(BreadcrumbService)
   location = inject(Location);
@@ -45,14 +44,13 @@ export class ServicesDetailsComponent implements OnInit, OnDestroy  {
 
       toRequest() {
           console.log('el formulario',this.form.getRawValue());
-          this.location.back();
           return this.form.getRawValue();
       }
 
       submit() {
           this.onSubmit.next(this.toRequest());
       }
-  
+
   info:ServiceInfo;// Objeto FormGroup para manejar el formulario
 
   ngOnInit(): void {
@@ -62,7 +60,7 @@ export class ServicesDetailsComponent implements OnInit, OnDestroy  {
     console.log('hola',this.form.getRawValue());
     this.breadcrumbService.agregarRuta(this.router.url,this.servicesDetails.label_app);
     this.breadcrumbs = this.breadcrumbService.obtenerBreadcrumbs();
-    
+
   }
 
   title: String;

@@ -10,7 +10,7 @@
       </div>
 
 
-      <div *ngIf="!dataIsEmpty" class="w-full h-full"> 
+      <div *ngIf="!dataIsEmpty" class="w-full h-full">
       <mat-card-title>Grafico de {{ title }}</mat-card-title>
       <mat-card-subtitle
         >aqui podras ver el estado en el tiempo del
@@ -20,7 +20,7 @@
     </mat-card-title-group>
   </mat-card-header>
 
-  <div class="chart-container" #chartContainer>
+  <div class="chart-container">
   <ngx-charts-area-chart
     scheme="ocean"
     [view]="[chartWidth, chartHeight]"

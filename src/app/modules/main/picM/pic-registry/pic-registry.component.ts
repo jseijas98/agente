@@ -1,13 +1,15 @@
 import { HttpClient } from '@angular/common/http';
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnInit, ViewChild, inject } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 import StringUtils from 'src/app/common/util/stringUtils';
+import { BreadcrumbService } from 'src/app/components/breadcrumb/breadcrumb.service';
 import { PicRegistry } from 'src/app/modules/interfaces/model.pic/model.pic-registry';
 import { DynamicFilterService } from 'src/app/services/dynamic-Filter/dynamic-filter.service';
+import { ExportExcelService } from 'src/app/services/export-excel/export-excel.service';
 import { GraphServiceService } from 'src/app/services/graph/graph-service.service';
 import { SseServiceService } from 'src/app/services/sse/sse-service.service';
 import { environment } from 'src/environments/environment';
@@ -31,8 +33,9 @@ export class PicRegistryComponent implements OnInit, AfterViewInit {
     // this.activateRouter.params.subscribe((params) => {
     // //   this.PIC_registry(params['id']);
     // // });
-
     this.ssePicRegistry();
+    this.breadcrumbService.agregarRuta(this.router.url,'hitoricos');
+    this.breadcrumbs = this.breadcrumbService.obtenerBreadcrumbs();
   }
 
   ngOnDestroy() {
@@ -42,6 +45,11 @@ export class PicRegistryComponent implements OnInit, AfterViewInit {
     this.sseServiceService.closeEventSource();
   }
 
+  router = inject(Router);
+  breadcrumbService = inject(BreadcrumbService);
+  excel = inject(ExportExcelService);
+  public breadcrumbs: { label: string; url: string }[] = [];
+
   //pointer grph info
   protected legend1: string = 'tiempo de respuesta';
   protected legend2: string = 'ms';
@@ -49,7 +57,6 @@ export class PicRegistryComponent implements OnInit, AfterViewInit {
   integration_name: string;
   dataGraph: Object[] = [];
   tableIsEmpty = true;
-
   filterValue: string = '';
 
   applyFilter() {
@@ -135,6 +142,8 @@ export class PicRegistryComponent implements OnInit, AfterViewInit {
     console.error(error);
   }
 
+
+  //TODO:revisar que demonios hace esto
   // applyFilter(event: Event) {
   //   const filterValue = (event.target as HTMLInputElement).value;
   //   this.dataSource.filter = filterValue.trim().toLowerCase();
@@ -192,7 +201,7 @@ export class PicRegistryComponent implements OnInit, AfterViewInit {
       this.dataSource.sort = this.sort;
       this.currentPageIndex = this.paginator.pageIndex;
       this.applyFilter();
-     
+
     } else {
       this.dataSource = new MatTableDataSource<any>([]);
       this.dataSource.data = [{ message: 'Sin datos para mostrar' }];

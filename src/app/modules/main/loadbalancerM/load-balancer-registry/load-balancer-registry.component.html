@@ -1,10 +1,27 @@
-
 <ng-http-loader></ng-http-loader>
 
-<app-charts [dataIn]="dataGraph" [legentTitleIn]="name_element" [xlabel]="'fecha'" [ylabel]="'tiempo de respuesta(ms)'" [title]="name_element" [legend1]="legend1" [legend2]="legend2" [dataIsEmpty]="tableIsEmpty" ></app-charts>
+<header class="mx-5 mt-5">
+  <app-breadcrumb
+    *ngIf="!tableIsEmpty"
+    [breadcrumbsData]="breadcrumbs"
+    [title]="name_element"
+    [app]="'Historicos del'"
+  ></app-breadcrumb>
+</header>
+
+<app-charts
+  [dataIn]="dataGraph"
+  [legentTitleIn]="name_element"
+  [xlabel]="'fecha'"
+  [ylabel]="'tiempo de respuesta(ms)'"
+  [title]="name_element"
+  [legend1]="legend1"
+  [legend2]="legend2"
+  [dataIsEmpty]="tableIsEmpty"
+></app-charts>
 <br />
 
-<mat-expansion-panel class="w-11/12 m-auto">
+<mat-expansion-panel class="w-11/12 m-auto text-center">
   <mat-expansion-panel-header>
     <mat-panel-title>busqueda avanzada</mat-panel-title>
   </mat-expansion-panel-header>
@@ -18,6 +35,14 @@
       #input
     />
   </mat-form-field>
+  <button
+    mat-icon-button
+    color="primary"
+    (click)="downlaod()"
+    aria-label="descargar Historicos"
+  >
+    <mat-icon class="text-3xl">download</mat-icon>
+  </button>
 
   <div class="mat-elevation-z8 m-auto">
     <table mat-table [dataSource]="dataSource" matSort>

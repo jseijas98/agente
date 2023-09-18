@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnInit, ViewChild, inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -17,6 +17,7 @@ import { AppNameService } from 'src/app/services/app-name/app-name.service';
 import { Subject, takeUntil } from 'rxjs';
 import { SseServiceService } from 'src/app/services/sse/sse-service.service';
 import { DynamicFilterService } from 'src/app/services/dynamic-Filter/dynamic-filter.service';
+import { BreadcrumbService } from 'src/app/components/breadcrumb/breadcrumb.service';
 
 @Component({
   selector: 'app-persistence-list',
@@ -39,6 +40,9 @@ export class PersistenceListComponent implements AfterViewInit {
     private dynamicFilterService:DynamicFilterService
   ) {}
 
+  breadcrumbService = inject(BreadcrumbService)
+  public breadcrumbs: { label: string; url: string }[] = [];
+
   ngOnDestroy() {
     this.unsuscribe$.next();
     this.unsuscribe$.complete();
@@ -56,7 +60,15 @@ export class PersistenceListComponent implements AfterViewInit {
     // this.callPersistenceData()
 
     this.activateRouter.params.subscribe((params) => {
-      this.appName.nameApp(params['id']).subscribe((data) => (this.appname = data));
+      this.appName.getDataFromApi(params['id']).subscribe((data) => {
+        this.appname = data
+        this.breadcrumbService.agregarRuta('/', 'Dashboard');
+        this.breadcrumbService.agregarRuta('/graph-app/' + params['id'], this.appname)
+        this.breadcrumbService.agregarRuta('/persistence-list/' + params['id'], 'bases de datos')
+        this.breadcrumbs = this.breadcrumbService.obtenerBreadcrumbs();
+
+      }
+      );
     });
 
     this. ssePersistenceList();

@@ -42,8 +42,8 @@ export class ChartsComponent implements OnInit {
 
 
    // Dimensiones iniciales de la gráfica
-   chartWidth: number = 1250; // ancho inicial 
-   chartHeight: number = 400; // altura inicial 
+   chartWidth: number = 950 // ancho inicial
+   chartHeight: number;// altura inicial
 
     // Detecta cambios en el tamaño de la ventana del navegador
   @HostListener('window:resize', ['$event'])
@@ -54,11 +54,13 @@ export class ChartsComponent implements OnInit {
 
   // Función para actualizar las dimensiones de la gráfica
   updateChartDimensions() {
-    
-    const container = document.querySelector('.chart-container'); 
+
+    const container = document.querySelector('.chart-container');
     if (container) {
-      this.chartWidth = container.clientWidth; 
-      this.chartHeight = container.clientHeight; 
+      this.chartWidth = container.clientWidth;
+      this.chartHeight = container.clientHeight;
+      console.log(container.clientWidth,container.clientHeight);
+
     }
   }
 

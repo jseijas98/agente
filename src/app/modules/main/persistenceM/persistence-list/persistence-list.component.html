@@ -1,5 +1,20 @@
 
 <ng-http-loader></ng-http-loader>
+<div *ngIf="!tableIsEmpty" class="mx-5 mt-5">
+  <app-breadcrumb
+    [breadcrumbsData]="breadcrumbs"
+    [title]="'- bases de datos'"
+    [app]="appname"
+  ></app-breadcrumb>
+</div>
+
+<div  *ngIf="!tableIsEmpty" class="mb-0 mx-5 mt-5">
+  <app-add-new-element
+    (newItemEvent)="addItem($event)"
+    class="self-end"
+  ></app-add-new-element>
+</div>
+
 <mat-card class="text-center m-5">
   <mat-card-header class="justify-center">
     <mat-card-title-group>
@@ -208,10 +223,5 @@
         aria-label="Select page of users"
       ></mat-paginator>
     </div>
-    <br />
-    <app-add-new-element
-      (newItemEvent)="addItem($event)"
-      class="self-end"
-    ></app-add-new-element>
   </div>
 </mat-card>
