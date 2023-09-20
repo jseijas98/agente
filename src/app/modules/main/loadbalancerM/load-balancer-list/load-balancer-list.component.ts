@@ -12,12 +12,13 @@ import { LoadBalancerList } from 'src/app/modules/interfaces/model.loadBalancer/
 import { RowAlertService } from 'src/app/services/row-alert/row-alert.service';
 import { NotificationsService } from 'src/app/services/notification/notifications.service';
 import { environment } from 'src/environments/environment';
-import { DeleteService } from 'src/app/services/deleteElement/delete.service';
+import { DeleteService, PayloadType } from 'src/app/services/deleteElement/delete.service';
 import { AppNameService } from 'src/app/services/app-name/app-name.service';
 import { Subject, takeUntil } from 'rxjs';
 import { SseServiceService } from 'src/app/services/sse/sse-service.service';
 import { DynamicFilterService } from 'src/app/services/dynamic-Filter/dynamic-filter.service';
 import { BreadcrumbService } from 'src/app/components/breadcrumb/breadcrumb.service';
+import { ResponseModel } from 'src/app/modules/interfaces/model.apis/model.getApis';
 
 @Component({
   selector: 'app-load-balancer-list',
@@ -91,10 +92,10 @@ export class LoadBalancerListComponent implements AfterViewInit {
     'test_interval',
     'response_time',
     'last_test',
-    'triggerLow',
-    'triggerHigh',
-    'lowAlarm',
-    'highAlarm',
+    'warningTrigger',
+    'criticalTrigger',
+    'warningAlarm',
+    'criticalAlarm',
     'consecutiveFailedTest',
     'consecutiveSuccessfulTest',
     'registros',
@@ -139,10 +140,10 @@ export class LoadBalancerListComponent implements AfterViewInit {
         response_time: loadBalancer.response_time,
         last_test: this.utils.formatDate(loadBalancer.lastTestDate),
         applId: loadBalancer.applicationId,
-        triggerLow: loadBalancer.lowTrigger,
-        triggerHigh: loadBalancer.highTrigger,
-        lowAlarm: loadBalancer.lowAlarm,
-        highAlarm: loadBalancer.highAlarm,
+        warningTrigger: loadBalancer.warningTrigger,
+        criticalTrigger: loadBalancer.criticalTrigger,
+        warningAlarm: loadBalancer.warningAlarm,
+        criticalAlarm: loadBalancer.criticalAlarm,
         consecutiveSuccessfulTest: loadBalancer.consecutiveSuccessfulTest,
         consecutiveFailedTest: loadBalancer.consecutiveFailedTest,
       });
@@ -181,8 +182,8 @@ export class LoadBalancerListComponent implements AfterViewInit {
         appid: row.applId,
         label: row.label_app,
         space: row.nameSpace,
-        tlow: row.triggerLow,
-        thigh: row.triggerHigh,
+        tlow: row.warningTrigger,
+        thigh: row.criticalTrigger,
         testinterval: row.test_interval,
       },
     });
@@ -208,9 +209,9 @@ export class LoadBalancerListComponent implements AfterViewInit {
   }
 
   deleteData() {
-    // this.service.dataSource = this.dataSource;
-    // this.service.DeleteData('loadBalancer');
-    // this.sseLoadbalancerList();
+    this.service.dataSource = this.dataSource;
+    this.service.DeleteData(PayloadType.LOADBALANCER);
+    this.sseLoadbalancerList();
   }
 
   sseLoadbalancerList() {
@@ -220,7 +221,7 @@ export class LoadBalancerListComponent implements AfterViewInit {
   }
 
   sseFuntion(index: any) {
-    const httpApiLIst = `${environment.baseUrl}list/application/${index}/loadBalancer`;
+    const httpApiLIst = `http://180.183.170.56:30446/monitor-agent-service/v2/get/all/${index}/${this.index}`;
     this.sseServiceService
       .getDataFromServer(httpApiLIst)
       .pipe(takeUntil(this.unsuscribe$))
@@ -231,9 +232,9 @@ export class LoadBalancerListComponent implements AfterViewInit {
       });
   }
 
-  Success(response: any) {
+  Success(response: ResponseModel) {
     let datos: any[] = [];
-    response.forEach((loadBalancer: LoadBalancerList) => {
+    response.data.forEach((loadBalancer: LoadBalancerList) => {
       datos.push({
         Id: loadBalancer.vserverId,
         description: loadBalancer.description,
@@ -242,10 +243,10 @@ export class LoadBalancerListComponent implements AfterViewInit {
         response_time: loadBalancer.response_time,
         last_test: this.utils.formatDate(loadBalancer.lastTestDate),
         applId: loadBalancer.applicationId,
-        triggerLow: loadBalancer.lowTrigger,
-        triggerHigh: loadBalancer.highTrigger,
-        lowAlarm: loadBalancer.lowAlarm,
-        highAlarm: loadBalancer.highAlarm,
+        warningTrigger: loadBalancer.warningTrigger,
+        criticalTrigger: loadBalancer.criticalTrigger,
+        warningAlarm: loadBalancer.warningAlarm,
+        criticalAlarm: loadBalancer.criticalAlarm,
         consecutiveSuccessfulTest: loadBalancer.consecutiveSuccessfulTest,
         consecutiveFailedTest: loadBalancer.consecutiveFailedTest,
       });

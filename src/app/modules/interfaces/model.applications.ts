@@ -12,8 +12,8 @@ export interface Applications {
     historyFailedTest:         string,
     minFailTest:               string,
     maxFailTest:               string,
-    lowAlarm:                  string,
-    highAlarm:                 string,
+    warningAlarm:                  string,
+    criticalAlarm:                 string,
     reqSeg:                    string,
     testInterv:                string,
 }

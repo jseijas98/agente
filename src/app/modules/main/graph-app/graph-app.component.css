@@ -3,13 +3,19 @@
   font: 400 36px / 36px Roboto, "Helvetica Neue", sans-serif;
 }
 
+:host ::ng-deep {
+  display: block;
+  height: inherit;
+  width: inherit;
+}
+
 .algo {
   cursor: pointer;
 }
 .app-body{
   display: flex;
-  justify-content:
-  center; align-items: center;
+  justify-content:end; 
+  align-items: center;
   width: 100%;
   height: 100%;
 }
@@ -22,6 +28,6 @@
 }
 
 .node-size {
-  width: 10rem;
-  height: 11rem;
+  width: 15%;
+  height: 25%;
 }

@@ -1,5 +1,13 @@
 import { Time } from "@angular/common";
 
+
+export interface ResponseModel{
+data:any;
+message:string;
+code:number;
+status:number;
+}
+
 export interface GetApis {
     apiId:                     number;
     status:                    string;
@@ -12,10 +20,10 @@ export interface GetApis {
     numTest:                   number;
     consecutiveFailedTest:     number;
     histFailedTest:            number;
-    lowTrigger  :              number;
-    highTrigger :              number;
-    lowAlarm:                  boolean;
-    highAlarm:                 boolean;
+    warningTrigger  :          number;
+    criticalTrigger :          number;
+    warningAlarm:              boolean;
+    criticalAlarm:             boolean;
     lastTestDate:              string;
     response_time:             number;
     testInterv:                number;

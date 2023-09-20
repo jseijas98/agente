@@ -15,10 +15,10 @@ export interface ComponentListElement {
     numTest:                   number;
     consecutiveFailedTest:     number;
     histFailedTest:            number;
-    lowTrigger:                number | null;
-    highTrigger:               number | null;
-    lowAlarm:                  boolean;
-    highAlarm:                 boolean;
+    warningTrigger:                number | null;
+    criticalTrigger:               number | null;
+    warningAlarm:                  boolean;
+    criticalAlarm:                 boolean;
     lastTestDate:              number[];
     response_time:             number;
     testInterv:                number;

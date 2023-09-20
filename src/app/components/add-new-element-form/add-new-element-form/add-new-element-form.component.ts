@@ -28,7 +28,7 @@ import { environment } from 'src/environments/environment';
   styleUrls: ['./add-new-element-form.component.css'],
 })
 export class AddNewElementFormComponent implements OnInit {
-  ngOnInit(): void {}
+  ngOnInit(): void { }
 
   onSelectedValueChange(newValue: PayloadType) {
     this.clearForm();
@@ -63,6 +63,7 @@ export class AddNewElementFormComponent implements OnInit {
     const namespaceControl = this.form.get('namespace');
     const jsonControl = this.form.get('json');
     const channelControl = this.form.get('channel');
+    const urlControl = this.form.get('url');
 
     // Restablece el estado 'disabled' de todos los campos
     labelAppControl?.enable();
@@ -78,6 +79,7 @@ export class AddNewElementFormComponent implements OnInit {
       channelControl?.disable();
     } else if (type === PayloadType.API || type === PayloadType.SERVICE) {
       // Deshabilita campos que no son necesarios
+      urlControl?.disable();
       jsonControl?.disable();
       channelControl?.disable();
     } else if (type === PayloadType.INTEGRATION) {
@@ -90,9 +92,7 @@ export class AddNewElementFormComponent implements OnInit {
   newElement: Element[] = [
     { value: PayloadType['INTEGRATION'], viewValue: 'servicios de pic' },
     { value: PayloadType['API'], viewValue: 'apis' },
-    { value: PayloadType['APIVALUE'], viewValue: 'api valor' },
     { value: PayloadType['SERVICE'], viewValue: 'services' },
-    { value: PayloadType['SERVICEVALUE'], viewValue: 'sercicio valor' },
     { value: PayloadType['LOADBALANCER'], viewValue: 'load balancer' },
     { value: PayloadType['PERSISTENCE'], viewValue: 'base de datos' },
   ];
@@ -150,8 +150,6 @@ export class AddNewElementFormComponent implements OnInit {
       [PayloadType.SERVICE]: '1',
       [PayloadType.INTEGRATION]: '1',
       [PayloadType.LOADBALANCER]: '1',
-      [PayloadType.APIVALUE]: '1',
-      [PayloadType.SERVICEVALUE]: '1',
     };
     return typeToValueMap[type] || '0';
   }

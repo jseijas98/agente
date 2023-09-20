@@ -15,6 +15,8 @@
   </mat-toolbar>
 </div>
 
+
+
 <div class="flex justify-center">
   <div class="w-1/5 m-5">
     <div class="grid space-y-3">
@@ -40,25 +42,25 @@
           <!-- campo 1 -->
           <mat-form-field appearance="outline" class="" [floatLabel]="'auto'">
             <mat-label>id del servicio</mat-label>
-            <input matInput formControlName="Id" />
+            <input matInput formControlName="ElementId" />
           </mat-form-field>
 
           <!-- campo 2 -->
           <mat-form-field appearance="outline" class="" [floatLabel]="'auto'">
             <mat-label>nombre del servcio</mat-label>
-            <input matInput formControlName="label_app" />
+            <input matInput formControlName="labelApp" />
           </mat-form-field>
 
           <!-- campo 3-->
           <mat-form-field class="" appearance="outline" [floatLabel]="'auto'">
             <mat-label>Namespace</mat-label>
-            <input matInput formControlName="nameSpace" />
+            <input matInput formControlName="namespace" />
           </mat-form-field>
 
           <!-- campo 4 -->
           <mat-form-field class="" appearance="outline" [floatLabel]="'auto'">
-            <mat-label>Id de aplicación</mat-label>
-            <input matInput formControlName="applId" />
+            <mat-label>descripción</mat-label>
+            <input matInput formControlName="description" />
           </mat-form-field>
         </div>
 
@@ -67,30 +69,30 @@
           <!-- campo 5 -->
           <mat-form-field class="" appearance="outline" [floatLabel]="'auto'">
             <mat-label>disparador de alarma bajo</mat-label>
-            <input matInput formControlName="triggerLow" />
+            <input matInput formControlName="warningTrigger" />
           </mat-form-field>
 
           <!-- campo 6 -->
           <mat-form-field class="" appearance="outline" [floatLabel]="'auto'">
             <mat-label>disparador de alarma alto</mat-label>
-            <input matInput formControlName="triggerHigh" />
+            <input matInput formControlName="criticalTrigger" />
           </mat-form-field>
 
           <!-- campo 7 -->
           <mat-form-field class="" appearance="outline" [floatLabel]="'auto'">
             <mat-label>intervalo entre test</mat-label>
-            <input matInput formControlName="test_interval" />
+            <input matInput formControlName="testInterval" />
           </mat-form-field>
 
           <!-- campo 8 -->
-          <mat-form-field class="" appearance="outline" [floatLabel]="'auto'">
+          <!-- <mat-form-field class="" appearance="outline" [floatLabel]="'auto'">
             <mat-label>URL de purebas</mat-label>
-            <input matInput formControlName="testUrl" />
-          </mat-form-field>
+            <input matInput formControlName="url" />
+          </mat-form-field> -->
         </div>
       </div>
 
-      <div class="text-center px-4">
+      <div class="text-center ">
         <button
           mat-stroked-button
           color="primary"
@@ -100,6 +102,7 @@
           Implementar cambios
         </button>
       </div>
+
     </form>
   </mat-card>
 </div>

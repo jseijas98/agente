@@ -17,6 +17,7 @@ import { DynamicFilterService } from 'src/app/services/dynamic-Filter/dynamic-fi
 import { RowAlertService } from 'src/app/services/row-alert/row-alert.service';
 import { SseServiceService } from 'src/app/services/sse/sse-service.service';
 import { environment } from 'src/environments/environment';
+import { ResponseModel } from 'src/app/modules/interfaces/model.apis/model.getApis';
 
 @Component({
   selector: 'app-services-list',
@@ -113,16 +114,16 @@ export class ServicesListComponent implements AfterViewInit {
     'applId',
     'Id',
     'nameSpace',
-    'triggerLow',
+    'warningTrigger',
     'test_interval',
     'label_app',
     'response_time',
-    'triggerHigh',
+    'criticalTrigger',
     'last_test',
     'status',
     'health',
-    'lowAlarm',
-    'highAlarm',
+    'warningAlarm',
+    'criticalAlarm',
     'select',
   ];
 
@@ -160,11 +161,11 @@ export class ServicesListComponent implements AfterViewInit {
         last_test: this.utils.formatDate(services.lastTestsDate),
         health: services.health,
         applId: services.applicationId,
-        triggerLow: services.lowTrigger,
-        triggerHigh: services.highTrigger,
-        lowAlarm: services.lowAlarm,
-        highAlarm: services.highAlarm,
-        url: services.testUrl
+        warningTrigger: services.warningTrigger,
+        criticalTrigger: services.criticalTrigger,
+        warningAlarm: services.warningAlarm,
+        criticalAlarm: services.criticalAlarm,
+        url: services.base_url
       });
       console.log(data);
     });
@@ -202,8 +203,8 @@ export class ServicesListComponent implements AfterViewInit {
         appid: row.applId,
         label: row.label_app,
         space: row.nameSpace,
-        tlow: row.triggerLow,
-        thigh: row.triggerHigh,
+        tlow: row.warningTrigger,
+        thigh: row.criticalTrigger,
         testinterval: row.test_interval,
         testUrl: row.test_url
       },
@@ -263,7 +264,7 @@ export class ServicesListComponent implements AfterViewInit {
   }
 
   sseFuntion(index: any) {
-    const httpApiLIst = `${environment.baseUrl}list/application/${index}/service`;
+    const httpApiLIst = `http://180.183.170.56:30446/monitor-agent-service/v2/get/all/${index}/${this.index}`;
     this.sseServiceService
       .getDataFromServer(httpApiLIst)
       .pipe(takeUntil(this.unsuscribe$))
@@ -274,9 +275,11 @@ export class ServicesListComponent implements AfterViewInit {
       });
   }
 
-  Success(response: any) {
+  Success(response: ResponseModel) {
+    console.log(response);
+    
     let datos: any[] = [];
-    response.forEach((services: ServicesList) => {
+    response.data.forEach((services: ServicesList) => {
       datos.push({
         Id: services.serviceId,
         status: services.status,
@@ -287,11 +290,11 @@ export class ServicesListComponent implements AfterViewInit {
         last_test: this.utils.formatDate(services.lastTestsDate),
         health: services.health,
         applId: services.applicationId,
-        triggerLow: services.lowTrigger,
-        triggerHigh: services.highTrigger,
-        lowAlarm: services.lowAlarm,
-        highAlarm: services.highAlarm,
-        url: services.testUrl
+        warningTrigger: services.warningTrigger,
+        criticalTrigger: services.criticalTrigger,
+        warningAlarm: services.warningAlarm,
+        criticalAlarm: services.criticalAlarm,
+        url: services.base_url
       });
     });
     console.log(datos);

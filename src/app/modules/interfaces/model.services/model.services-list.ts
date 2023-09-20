@@ -5,14 +5,14 @@ export interface ServicesList {
     applicationId:             number;
     serviceName:               string;
     labelApp:                  string;
-    testUrl:                   string;
+    base_url:                   string;
     numTest:                   number;
     consecutiveFailedTest:     number;
     histFailedTest:            number;
-    highTrigger:               number;
-    lowTrigger:                number;
-    lowAlarm:                  null;
-    highAlarm:                 null;
+    criticalTrigger:               number;
+    warningTrigger:                number;
+    warningAlarm:                  null;
+    criticalAlarm:                 null;
     reqSeg:                    null;
     testInterv:                number;
     histSuccessfulTest:        number;
@@ -33,9 +33,10 @@ export interface ServiceInfo {
     last_test: string;
     health: string;
     applId: number;
-    triggerLow: number;
-    triggerHigh: number;
-    lowAlarm: number;
-    highAlarm: number;
-    url: string;
+    warningTrigger: number;
+    criticalTrigger: number;
+    warningAlarm: number;
+    criticalAlarm: number;
+    base_url: string;
+    description:null;
   }

@@ -4,7 +4,7 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, Params, Router } from '@angular/router';
-import { GetApis } from '../../../interfaces/model.apis/model.getApis';
+import { GetApis, ResponseModel } from '../../../interfaces/model.apis/model.getApis';
 import StringUtils from '../../../../common/util/stringUtils';
 import { environment } from 'src/environments/environment';
 import { __values } from 'tslib';
@@ -104,17 +104,16 @@ export class ApiListComponent implements AfterViewInit, OnInit {
     'apiId',
     'testInterv',
     'nameSpace',
-    'triggerLow',
     'response_time',
-    'triggerHigh',
+    'criticalTrigger',
     'label_app',
     'last_test',
     'status',
     'health',
     'registros',
     'replicas',
-    'lowAlarm',
-    'triggerLow',
+    'warningAlarm',
+    'warningTrigger',
     'editar',
     'select',
   ];
@@ -155,8 +154,8 @@ export class ApiListComponent implements AfterViewInit, OnInit {
         appid: row.applId,
         label: row.label_app,
         space: row.nameSpace,
-        tlow: row.triggerLow,
-        thigh: row.triggerHigh,
+        tlow: row.warningTrigger,
+        thigh: row.criticalTrigger,
         testinterval: row.test_interval,
       },
     });
@@ -194,7 +193,7 @@ export class ApiListComponent implements AfterViewInit, OnInit {
   }
 
   sseFuntion(index: any) {
-    const httpApiLIst = `${environment.baseUrl}list/application/${index}/apis`;
+    const httpApiLIst = `http://180.183.170.56:30446/monitor-agent-service/v2/get/all/${index}/${PayloadType.API}`;
     this.sseServiceService
       .getDataFromServer(httpApiLIst)
       .pipe(takeUntil(this.unsuscribe$))
@@ -205,9 +204,9 @@ export class ApiListComponent implements AfterViewInit, OnInit {
       });
   }
 
-  Success(response: GetApis[]) {
-    console.log(response);
-    const apiDataList: Array<GetApis> = response.map((api) => this.mapApiData(api));
+  Success(response: ResponseModel) {
+    console.log(response);  
+    const apiDataList: Array<GetApis> = response.data.map((api: GetApis) => this.mapApiData(api));
     this.handleApiData(apiDataList);
   }
   
@@ -222,10 +221,10 @@ export class ApiListComponent implements AfterViewInit, OnInit {
       lastTestDate: this.utils.formatDate(api.lastTestDate),
       health: api.health,
       applicationId: api.applicationId,
-      lowTrigger: api.lowTrigger,
-      highTrigger: api.highTrigger,
-      lowAlarm: api.lowAlarm,
-      highAlarm: api.highAlarm,
+      warningTrigger: api.warningTrigger,
+      criticalTrigger: api.criticalTrigger,
+      warningAlarm: api.warningAlarm,
+      criticalAlarm: api.criticalAlarm,
       base_url: api.base_url,
       common: api.common,
       numTest: api.numTest,

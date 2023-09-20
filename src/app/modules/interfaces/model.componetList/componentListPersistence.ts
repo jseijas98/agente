@@ -12,10 +12,10 @@ export interface ComponentList {
     numTest:                   number;
     consecutiveFailedTest:     number;
     historyFailedTest:         number;
-    lowTrigger:                number | null;
-    highTrigger:               number | null;
-    lowAlarm:                  boolean;
-    highAlarm:                 boolean;
+    warningTrigger:                number | null;
+    criticalTrigger:               number | null;
+    warningAlarm:                  boolean;
+    criticalAlarm:                 boolean;
     lastTestDate:              number[];
     reqSeg:                    null;
     testInterv:                number;

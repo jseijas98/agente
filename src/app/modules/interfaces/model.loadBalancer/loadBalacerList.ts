@@ -9,10 +9,10 @@ export interface LoadBalancerList {
     consecutiveSuccessfulTest: number;
     consecutiveFailedTest:     number;
     historyFailedTest:         number;
-    lowTrigger:                null;
-    highTrigger:               null;
-    lowAlarm:                  boolean;
-    highAlarm:                 boolean;
+    warningTrigger:                null;
+    criticalTrigger:               null;
+    warningAlarm:                  boolean;
+    criticalAlarm:                 boolean;
     reqSeg:                    null;
     testInterv:                number;
     applicationId:             number;

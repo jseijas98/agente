@@ -18,6 +18,7 @@ import { Subject, takeUntil } from 'rxjs';
 import { SseServiceService } from 'src/app/services/sse/sse-service.service';
 import { DynamicFilterService } from 'src/app/services/dynamic-Filter/dynamic-filter.service';
 import { BreadcrumbService } from 'src/app/components/breadcrumb/breadcrumb.service';
+import { ResponseModel } from 'src/app/modules/interfaces/model.apis/model.getApis';
 
 @Component({
   selector: 'app-persistence-list',
@@ -112,8 +113,8 @@ this.dynamicFilterService.dynamicFilter('filterValue')
     'consecutiveSuccessfulTest',
     'lowT',
     'highT',
-    'lowAlarm',
-    'highAlarm',
+    'warningAlarm',
+    'criticalAlarm',
     'registros',
     'editar',
     'select',
@@ -155,10 +156,10 @@ this.dynamicFilterService.dynamicFilter('filterValue')
         consecutiveFailedTest: persistence.consecutiveFailedTest,
         consecutiveSuccessfulTest: persistence.consecutiveSuccessfulTest,
         description: persistence.description,
-        lowT: persistence.highTrigger,
-        highT: persistence.lowTrigger,
-        lowAlarm: persistence.lowAlarm,
-        highAlarm: persistence.highAlarm,
+        lowT: persistence.criticalTrigger,
+        highT: persistence.warningTrigger,
+        warningAlarm: persistence.warningAlarm,
+        criticalAlarm: persistence.criticalAlarm,
       });
       console.log('data', data);
     });
@@ -245,9 +246,9 @@ this.dynamicFilterService.dynamicFilter('filterValue')
       });
   }
 
-  Success(response: any) {
+  Success(response: ResponseModel) {
     let datos: any[] = [];
-    response.forEach((persistence: PersistenceList) =>
+    response.data.forEach((persistence: PersistenceList) =>
      { datos.push({
       Id: persistence.dbId,
       status: persistence.status,
@@ -258,10 +259,10 @@ this.dynamicFilterService.dynamicFilter('filterValue')
       consecutiveFailedTest: persistence.consecutiveFailedTest,
       consecutiveSuccessfulTest: persistence.consecutiveSuccessfulTest,
       description: persistence.description,
-      lowT: persistence.highTrigger,
-      highT: persistence.lowTrigger,
-      lowAlarm: persistence.lowAlarm,
-      highAlarm: persistence.highAlarm
+      lowT: persistence.criticalTrigger,
+      highT: persistence.warningTrigger,
+      warningAlarm: persistence.warningAlarm,
+      criticalAlarm: persistence.criticalAlarm
       })
     });
     console.log(datos);

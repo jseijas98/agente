@@ -78,8 +78,8 @@ export class UpdateparamsComponent implements OnInit {
       type: this.data.type,
       idNumber: this.data.item_id,
       testInterv: this._validateData(interval),
-      lowTrigger: this._validateData(low),
-      highTrigger: this._validateData(high),
+      warningTrigger: this._validateData(low),
+      criticalTrigger: this._validateData(high),
     };
     this.changeParameters(dataUpdate);
     console.log('data send', dataUpdate);

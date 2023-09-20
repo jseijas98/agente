@@ -270,7 +270,7 @@ export class FlowChartService {
 
   calculateDimensions(el: HTMLElement): void {
     const { width, height } = el.getBoundingClientRect()
-    this.zoneDimensions$.next([width -250, height])
+    this.zoneDimensions$.next([width, height])
   }
 
 }

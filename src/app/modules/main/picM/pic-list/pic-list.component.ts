@@ -11,6 +11,7 @@ import { Subject, takeUntil } from 'rxjs';
 import StringUtils from 'src/app/common/util/stringUtils';
 import { BreadcrumbService } from 'src/app/components/breadcrumb/breadcrumb.service';
 import { UpdateparamsComponent } from 'src/app/components/modals/updateparams/updateparams.component';
+import { ResponseModel } from 'src/app/modules/interfaces/model.apis/model.getApis';
 import { PicList } from 'src/app/modules/interfaces/model.pic/model.pic-list';
 import { AppNameService } from 'src/app/services/app-name/app-name.service';
 import { DeleteService } from 'src/app/services/deleteElement/delete.service';
@@ -123,8 +124,8 @@ this.dynamicFilterService.dynamicFilter('filterValue')
     'lowT',
     'highT',
     'registros',
-    'lowAlarm',
-    'highAlarm',
+    'warningAlarm',
+    'criticalAlarm',
     'editar',
     'select',
   ];
@@ -160,10 +161,10 @@ this.dynamicFilterService.dynamicFilter('filterValue')
         consecutiveFailedTest: pic.consecutiveFailedTest,
         consecutiveSuccessfulTest: pic.consecutiveSuccessfulTest,
         description: pic.description,
-        lowT: pic.highTrigger,
-        highT: pic.lowTrigger,
-        lowAlarm: pic.lowAlarm,
-        highAlarm: pic.highAlarm
+        lowT: pic.criticalTrigger,
+        highT: pic.warningTrigger,
+        warningAlarm: pic.warningAlarm,
+        criticalAlarm: pic.criticalAlarm
       });
     });
 
@@ -251,12 +252,12 @@ this.dynamicFilterService.dynamicFilter('filterValue')
       });
   }
 
-  Success(response: any) {
+  Success(response: ResponseModel) {
     console.log('response',response);
 
 
     let datos: any[] = [];
-    response.forEach((pic: PicList) =>
+    response.data.forEach((pic: PicList) =>
      { datos.push({
       Id: pic.integrationId,
       status: pic.status,
@@ -268,10 +269,10 @@ this.dynamicFilterService.dynamicFilter('filterValue')
       consecutiveFailedTest: pic.consecutiveFailedTest,
       consecutiveSuccessfulTest: pic.consecutiveSuccessfulTest,
       description: pic.description,
-      lowT: pic.highTrigger,
-      highT: pic.lowTrigger,
-      lowAlarm: pic.lowAlarm,
-      highAlarm: pic.highAlarm
+      lowT: pic.criticalTrigger,
+      highT: pic.warningTrigger,
+      warningAlarm: pic.warningAlarm,
+      criticalAlarm: pic.criticalAlarm
       })
     });
     if (datos.length > 0) {

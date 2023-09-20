@@ -5,6 +5,7 @@ import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { Subject } from 'rxjs';
 import { BreadcrumbService } from 'src/app/components/breadcrumb/breadcrumb.service';
 import { Location } from '@angular/common'
+import { PayloadType } from 'src/app/services/deleteElement/delete.service';
 
 @Component({
   selector: 'app-services-details',
@@ -28,19 +29,32 @@ export class ServicesDetailsComponent implements OnInit, OnDestroy  {
 
  public setForm() {
       this.form = this.fb.group({
-          Id: new FormControl({ value: this.servicesDetails.Id, disabled: true }, []),
-          nameSpace:  new FormControl({ value:this.servicesDetails.nameSpace, disabled: false }, []),
-          test_interval:  new FormControl({ value:this.servicesDetails.test_interval, disabled: false }, []),
-          label_app:  new FormControl({ value: this.servicesDetails.label_app, disabled: false }, []),
-          health:  new FormControl({ value: this.servicesDetails.health, disabled: false }, []),
-          applId:  new FormControl({ value: this.servicesDetails.applId, disabled: true }, []),
-          triggerLow:  new FormControl({value:this.servicesDetails.triggerLow, disabled: false }, []),
-          triggerHigh:  new FormControl({ value:this.servicesDetails.triggerHigh, disabled: false }, []),
-          lowAlarm:  new FormControl({ value:this.servicesDetails.lowAlarm, disabled: false }, []),
-          highAlarm:  new FormControl({ value:this.servicesDetails.highAlarm, disabled: false }, []),
-          testUrl:  new FormControl({ value:this.servicesDetails.url, disabled: false }, []),
+          type:  new FormControl({ value:PayloadType.SERVICE, disabled: true }, []),
+          ElementId: new FormControl({ value: this.servicesDetails.Id, disabled: true }, []),
+          url:  new FormControl({ value:this.servicesDetails.base_url, disabled: false }, []),
+          testInterval:  new FormControl({ value:this.servicesDetails.test_interval, disabled: false }, []),
+          description:  new FormControl({ value: this.servicesDetails.description, disabled: false }, []),
+          labelApp:  new FormControl({ value: this.servicesDetails.label_app, disabled: false }, []),
+          namespace:  new FormControl({ value:this.servicesDetails.nameSpace, disabled: false }, []),
+          warningTrigger:  new FormControl({value:this.servicesDetails.warningTrigger, disabled: false }, []),
+          criticalTrigger:  new FormControl({ value:this.servicesDetails.criticalTrigger, disabled: false }, []),
         });
       }
+
+
+      // {
+      //   "type": "String", <----------(obligatorio)
+      //   "ElementId": 0, <----------(obligatorio)
+      //   "url": "String",
+      //   "testInterval": 0,
+      //   "description": "String",
+      //   "labelApp": "String",
+      //   "namespace": "String",
+      //   "json": "String",
+      //   "channel": "String",
+      //   "warningTrigger": 0,
+      //   "criticalTrigger": 0
+      // }
 
       toRequest() {
           console.log('el formulario',this.form.getRawValue());

@@ -45,14 +45,16 @@ export class ElementDetailsComponent implements OnInit {
   title: String;
 
 
-  request: BodyRequest = Dummybody
+  request: BodyRequest; 
 
-  response: BodyResponse = dataDummy;
+  response: BodyResponse;
+
+  
 
   ngOnInit(): void {
-    // this.getElement();
+   this.getElement();
     this.setForm();
-    this.succes(this.response);
+    // this.succes(this.response);
   }
 
   public setForm() {

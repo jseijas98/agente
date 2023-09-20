@@ -8,8 +8,8 @@ export interface PicList {
     consecutiveFailedTest:     number;
     minTestFailed:             number;
     maxTestFailed:             number;
-    lowAlarm:                  string;
-    highAlarm:                 string;
+    warningAlarm:                  string;
+    criticalAlarm:                 string;
     lastTestDate:              number[];
     reqSeg:                    string;
     testInterv:                number;
@@ -20,6 +20,6 @@ export interface PicList {
     historyFailedTest:         number;
     historySuccessfulTest:     number;
     response_time:             number;
-    lowTrigger:                number,
-    highTrigger:               number
+    warningTrigger:                number,
+    criticalTrigger:               number
 }

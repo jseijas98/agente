@@ -57,7 +57,7 @@ export class GraphAppComponent implements OnInit, OnDestroy {
   ngAfterViewInit(): void {
     this.flowChartService.zoneDimensions$.subscribe(([w, h]) => {
       if (w && h) {
-        this.dimensions = [w, h];
+        this.dimensions = [w -200 , h];
         console.log(this.dimensions);
         this.cdr.detectChanges();
       }

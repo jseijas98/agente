@@ -95,15 +95,15 @@
           </td>
         </ng-container>
 
-        <!--highTrigger-->
+        <!--criticalTrigger-->
         <ng-container matColumnDef="lowT">
-          <th mat-header-cell *matHeaderCellDef>highTrigger</th>
+          <th mat-header-cell *matHeaderCellDef>nivel Critico</th>
           <td mat-cell *matCellDef="let row">{{ row.lowT }}</td>
         </ng-container>
 
-        <!--lowTrigger-->
+        <!--warningTrigger-->
         <ng-container matColumnDef="highT">
-          <th mat-header-cell *matHeaderCellDef>lowTrigger</th>
+          <th mat-header-cell *matHeaderCellDef>aviso</th>
           <td mat-cell *matCellDef="let row">{{ row.highT }}</td>
         </ng-container>
 
@@ -152,7 +152,7 @@
         </ng-container>
 
         <!-- low alarm -->
-        <ng-container matColumnDef="lowAlarm">
+        <ng-container matColumnDef="warningAlarm">
           <th
             mat-header-cell
             [hidden]="true"
@@ -163,7 +163,7 @@
         </ng-container>
 
         <!-- high alarm -->
-        <ng-container matColumnDef="highAlarm">
+        <ng-container matColumnDef="criticalAlarm">
           <th
             mat-header-cell
             [hidden]="true"
@@ -204,8 +204,8 @@
           *matRowDef="let row; columns: displayedColumns"
           [ngStyle]="{
             'background-color': this.rowAlertService.rowAlert(
-              row.highAlarm,
-              row.lowAlarm
+              row.criticalAlarm,
+              row.warningAlarm
             )
           }"
         ></tr>

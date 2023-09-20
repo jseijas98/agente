@@ -31,10 +31,10 @@ export class ApisDetailsComponent implements OnInit {
           label_app:  new FormControl({ value:this.apis.label_app, disabled: false }, []),
           health:  new FormControl({ value:this.apis.health, disabled: false }, []),
           applId:  new FormControl({ value:this.apis.applicationId, disabled: true }, []),
-          triggerLow:  new FormControl({value:this.apis.lowTrigger, disabled: false }, []),
-          triggerHigh:  new FormControl({ value:this.apis.highTrigger, disabled: false }, []),
-          lowAlarm:  new FormControl({ value:this.apis.lowAlarm, disabled: false }, []),
-          highAlarm:  new FormControl({ value:this.apis.highAlarm, disabled: false }, []),
+          warningTrigger:  new FormControl({value:this.apis.warningTrigger, disabled: false }, []),
+          criticalTrigger:  new FormControl({ value:this.apis.criticalTrigger, disabled: false }, []),
+          warningAlarm:  new FormControl({ value:this.apis.warningAlarm, disabled: false }, []),
+          criticalAlarm:  new FormControl({ value:this.apis.criticalAlarm, disabled: false }, []),
           testUrl:  new FormControl({ value:this.apis.base_url, disabled: false }, []),
         });
       }

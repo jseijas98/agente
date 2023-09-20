@@ -9,10 +9,10 @@ export const environment = {
   listAplications:'/list/application/',
 
   url:{
-        delete:'http://180.183.170.56:30446/monitor-agent-service/editElement/delete',
-        add:'http://180.183.170.56:30446/monitor-agent-service/editElement/newElement',
-        modify:'http://180.183.170.56:30446/monitor-agent-service/editElement/newValue',
-        newDB:'http://180.183.170.56:30446/monitor-agent-service/editElement/newPersistence',
+        delete:'http://180.183.170.56:30446/monitor-agent-service/edit/delete',
+        add:'http://180.183.170.56:30446/monitor-agent-service/edit/newElement',
+        modify:'http://180.183.170.56:30446/monitor-agent-service/edit/newValue',
+        newDB:'http://180.183.170.56:30446/monitor-agent-service/edit/newPersistence',
         element:'http://180.183.170.56:30446/monitor-agent-service/v2/get/element'
   },
 

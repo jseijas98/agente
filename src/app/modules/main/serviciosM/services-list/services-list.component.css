@@ -32,12 +32,12 @@ table {
   box-shadow: inset 0 0 0 2px black;
 }
 
-.mat-column-triggerHigh {
+.mat-column-criticalTrigger {
   width: fit-content;
   max-width: 30px;
 }
 
-.mat-column-lowAlarm {
+.mat-column-warningAlarm {
   width: auto;
   max-width: 20px;
 }
@@ -54,7 +54,7 @@ table {
   word-break: break-all;
 }
 
-.mat-column-triggerLow {
+.mat-column-warningTrigger {
   width: fit-content;
   max-width: 30px;
 }
