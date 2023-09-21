@@ -41,6 +41,7 @@ export class GraphAppComponent implements OnInit, OnDestroy {
 
   public graph: string;
   unsuscribe$ = new Subject<void>();
+  update$: Subject<boolean> = new Subject();
 
   public dimensions: [number, number] = [0, 0];
 
@@ -60,6 +61,7 @@ export class GraphAppComponent implements OnInit, OnDestroy {
         this.dimensions = [w -200 , h];
         console.log(this.dimensions);
         this.cdr.detectChanges();
+        this.update$.next(true);
       }
     });
   }
@@ -105,6 +107,7 @@ export class GraphAppComponent implements OnInit, OnDestroy {
         this.message_services = data1[1].message;
         this.data();
         this.datanode();
+        this.update$.next(true);
       });
   }
 

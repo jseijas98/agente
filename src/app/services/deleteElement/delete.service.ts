@@ -78,6 +78,9 @@ export class DeleteService {
             // Código para eventos de tipo Persistence
             break;
           case PayloadType['LOADBALANCER']:
+            elementSelected.forEach((element) => {
+              this.delete(element.Id, type);
+            });
             // Código para eventos de tipo Integration
             break;
           case PayloadType['PERSISTENCE']:

@@ -1,0 +1,23 @@
+<div class="flex-row flex">
+  <div class="mx-5" *ngFor="let single of single">
+    <ngx-charts-pie-grid
+      class=""
+      [view]="view"
+      [scheme]="changeColor(single.alarm)"
+      [results]="single.values"
+      [designatedTotal]="single.valor"
+      [label]="single.values[0].name + ' actuales'"
+      [animations]="animation"
+    >
+    </ngx-charts-pie-grid>
+  </div>
+</div>
+
+<div class="text-center">
+  <div *ngFor="let single of single" class="inline mx-5">
+    <button type="button" class="text-black" [ngClass]="stylesColor(single.alarm)">
+      {{ single.values[0].name }}
+      <mat-icon>BUTTON_OK</mat-icon>
+    </button>
+  </div>
+</div>

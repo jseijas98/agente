@@ -15,8 +15,6 @@
   </mat-toolbar>
 </div>
 
-
-
 <div class="flex justify-center">
   <div class="w-1/5 m-5">
     <div class="grid space-y-3">
@@ -29,6 +27,11 @@
       <button mat-raised-button color="primary" (click)="Registry()">
         <mat-icon>format_list_bulleted</mat-icon>
         Registros historios
+      </button>
+
+      <button mat-raised-button color="primary" (click)="Registry()">
+        <mat-icon>pie_chart</mat-icon>
+        cambiar valores
       </button>
     </div>
   </div>
@@ -92,17 +95,19 @@
         </div>
       </div>
 
-      <div class="text-center ">
+      <div class="text-center px-4 py-2">
         <button
-          mat-stroked-button
-          color="primary"
+        mat-raised-button color="primary"
           (click)="toRequest()"
           class="w-full"
         >
           Implementar cambios
         </button>
       </div>
-
     </form>
   </mat-card>
+
+
+    <app-pie-chart></app-pie-chart>
+
 </div>

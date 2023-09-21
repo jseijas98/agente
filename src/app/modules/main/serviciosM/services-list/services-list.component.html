@@ -19,8 +19,15 @@
   <mat-card-header class="justify-center">
     <mat-card-title-group>
       <div *ngIf="tableIsEmpty">
-        <mat-card-title></mat-card-title>
+        <mat-card-title>
+        </mat-card-title>
         <mat-card-subtitle></mat-card-subtitle>
+      </div>
+      <div *ngIf="!tableIsEmpty">
+        <mat-card-title>Servicios de {{ appname }}</mat-card-title>
+        <mat-card-subtitle
+          >aqui podras ver todos los servicios de {{ appname }}
+        </mat-card-subtitle>
       </div>
 
       <!-- <div *ngIf="!tableIsEmpty">

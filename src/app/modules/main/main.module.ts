@@ -43,6 +43,7 @@ import { ServicesDetailsComponent } from './serviciosM/services-details/services
 import { NotificationComponent } from 'src/app/components/notification/notification.component';
 import { ApisDetailsComponent } from './apisM/apis-details/apis-details.component';
 import { ElementDetailsComponent } from './element-details/element-details.component';
+import { PieChartComponent } from 'src/app/components/pie-chart/pie-chart.component';
 
 @NgModule({
   imports: [
@@ -77,6 +78,7 @@ import { ElementDetailsComponent } from './element-details/element-details.compo
     ApiReplicasComponent,
     RegistrysApisReplicasComponent,
     ChartsComponent,
+    PieChartComponent,
     MetadataComponent,
     ServicesListComponent,
     ServicesRegistryComponent,
