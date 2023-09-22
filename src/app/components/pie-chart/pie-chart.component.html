@@ -7,7 +7,8 @@
       [results]="single.values"
       [designatedTotal]="single.valor"
       [label]="single.values[0].name + ' actuales'"
-      [animations]="animation"
+      [animations]="false"
+      (select)="onSelect($event)">
     >
     </ngx-charts-pie-grid>
   </div>

@@ -12,10 +12,11 @@ import { MatIconRegistry } from '@angular/material/icon';
 })
 export class PieChartComponent {
 
-  view: [number, number] = [200, 200];
+  view:[number, number] = [700, 400];
 
   styles = inject(StylesService)
 
+  animation = false; //
 
   single: single[] = [
     {
@@ -80,9 +81,6 @@ export class PieChartComponent {
     }
   ];
 
-  // options
-  showLegend: boolean = true;
-  showLabels: boolean = true;
 
   colorScheme = {
     domain: ['#FF0000'],
@@ -99,11 +97,13 @@ export class PieChartComponent {
       domain: [color],
     };
   }
-  animation = false; //
+  
 
   constructor(
     private matIconRegistry: MatIconRegistry,
     private domSanitizer: DomSanitizer) {
+
+    
 
       const BUTTON_OK = `<svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 16 12">
     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5.917 5.724 10.5 15 1.5"/>
@@ -120,8 +120,24 @@ export class PieChartComponent {
     this.single.forEach((algo) => console.log(algo));
   }
 
-  onSelect(event: any) {
-    console.log(event);
+
+    // options
+    gradient: boolean = true;
+    showLegend: boolean = true;
+    showLabels: boolean = true;
+    isDoughnut: boolean = true;
+    legendPosition: string = 'right';
+
+  onSelect(data: any): void {
+    console.log('Item clicked', JSON.parse(JSON.stringify(data)));
+  }
+
+  onActivate(data: any): void {
+    console.log('Activate', JSON.parse(JSON.stringify(data)));
+  }
+
+  onDeactivate(data: any): void {
+    console.log('Deactivate', JSON.parse(JSON.stringify(data)));
   }
 
 

@@ -274,7 +274,7 @@ export class ServicesListComponent implements AfterViewInit {
   }
 
   sseFuntion(index: any) {
-    const httpApiLIst = `http://180.183.170.56:30446/monitor-agent-service/v2/get/all/${index}/${this.index}`;
+    const httpApiLIst = `http://180.183.170.56:30446/monitor-agent-service/v2/get/all/${index}/${this.index}/0`;
     this.sseServiceService
       .getDataFromServer(httpApiLIst)
       .pipe(takeUntil(this.unsuscribe$))
