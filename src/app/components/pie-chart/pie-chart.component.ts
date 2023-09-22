@@ -38,6 +38,46 @@ export class PieChartComponent {
         },
       ],
     },
+    {
+      alarm: true,
+      valor: 2000,
+      values: [
+        {
+          name: 'jdbc.connections.max',
+          value: 1500,
+        },
+      ],
+    },
+    {
+      alarm: false,
+      valor: 500,
+      values: [
+        {
+          name: 'jdbc.connections.active',
+          value: 100,
+        },
+      ],
+    },
+    {
+      alarm: true,
+      valor: 2000,
+      values: [
+        {
+          name: 'jdbc.connections.max',
+          value: 1500,
+        },
+      ],
+    },
+    {
+      alarm: false,
+      valor: 500,
+      values: [
+        {
+          name: 'jdbc.connections.active',
+          value: 100,
+        },
+      ],
+    }
   ];
 
   // options
@@ -53,7 +93,7 @@ export class PieChartComponent {
     const color = alarm ? '#FF0000' : '#5AA454';
 
     return {
-      name: '', // 
+      name: '', //
       selectable: false,
       group: ScaleType.Linear,
       domain: [color],
@@ -61,7 +101,7 @@ export class PieChartComponent {
   }
   animation = false; //
 
-  constructor( 
+  constructor(
     private matIconRegistry: MatIconRegistry,
     private domSanitizer: DomSanitizer) {
 
@@ -88,7 +128,7 @@ export class PieChartComponent {
   stylesColor(alarm: boolean):string{
      const color = alarm ? this.styles.getStyle('BUTTOM_BAD') : this.styles.getStyle('BUTTON_OK');
      return color
-  
+
   }
 
 

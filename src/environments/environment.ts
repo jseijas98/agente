@@ -11,9 +11,11 @@ export const environment = {
   url:{
         delete:'http://180.183.170.56:30446/monitor-agent-service/edit/delete',
         add:'http://180.183.170.56:30446/monitor-agent-service/edit/newElement',
-        modify:'http://180.183.170.56:30446/monitor-agent-service/edit/newValue',
+        newValue:'http://180.183.170.56:30446/monitor-agent-service/edit/newValue',
         newDB:'http://180.183.170.56:30446/monitor-agent-service/edit/newPersistence',
-        element:'http://180.183.170.56:30446/monitor-agent-service/v2/get/element'
+        element:'http://180.183.170.56:30446/monitor-agent-service/v2/get/element',
+        modify:'http://180.183.170.56:30446/monitor-agent-service/edit/editElement'
+
   },
 
   admin:{

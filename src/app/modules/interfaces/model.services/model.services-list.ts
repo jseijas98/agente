@@ -40,3 +40,29 @@ export interface ServiceInfo {
     base_url: string;
     description:null;
   }
+
+  export interface ServiceResponse{
+      labelApp: string;
+      serviceId: number;
+      description: string | null;
+      health: string;
+      applicationId: number;
+      serviceName: string;
+      testUrl: string | null;
+      numTest: number;
+      consecutiveFailedTest: number;
+      histFailedTest: number;
+      warningTrigger: number;
+      criticalTrigger: number;
+      warningAlarm: boolean;
+      criticalAlarm: boolean;
+      reqSeg: string | null;
+      testInterv: number;
+      histSuccessfulTest: number;
+      lastTestsDate: string;
+      nameSpace: string;
+      status: string;
+      consecutiveSuccessfulTest: number;
+      response_time: number;
+    }
+

@@ -103,7 +103,7 @@ const routes: Routes = [
         component: ApisDetailsComponent,
       },
       {
-        path: 'details/:app/:id/:type',
+        path: 'details',
         component: ElementDetailsComponent,
       }
     ],

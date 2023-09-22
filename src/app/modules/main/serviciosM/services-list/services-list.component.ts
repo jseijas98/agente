@@ -39,7 +39,7 @@ export class ServicesListComponent implements AfterViewInit {
     private dynamicFilterService: DynamicFilterService
   ) { }
 
-  //TODO: LISTO con sse 
+  //TODO: LISTO con sse
 
   filterValue: string = '';
   currentPageIndex: number;
@@ -231,10 +231,20 @@ export class ServicesListComponent implements AfterViewInit {
     this.router.navigateByUrl(`services-replicas/${api_id}`);
   }
 
-  setParams(serviceInfo: ServiceInfo) {
-    let details = JSON.stringify(serviceInfo)
-    console.log('fasdsandsa', details);
 
+
+
+  setParams(serviceInfo: ServiceInfo) {
+
+    const params = {
+      applicationId: serviceInfo.applId,
+      type: "service",
+      elementId: serviceInfo.Id,
+      replicaIp: ""
+    }
+
+    let details = JSON.stringify(params)
+    console.log('fasdsandsa', details);
     return btoa(details)
   }
 
@@ -277,7 +287,7 @@ export class ServicesListComponent implements AfterViewInit {
 
   Success(response: ResponseModel) {
     console.log(response);
-    
+
     let datos: any[] = [];
     response.data.forEach((services: ServicesList) => {
       datos.push({
@@ -303,11 +313,11 @@ export class ServicesListComponent implements AfterViewInit {
       this.tableIsEmpty = false;
       this.dataSource = new MatTableDataSource<any>(datos);
       console.log(this.dataSource.data);
-      
+
 
 
       this.dataSource.paginator = this.paginator;
- 
+
 
       this.dataSource.sort = this.sort;
       this.currentPageIndex = this.paginator.pageIndex;

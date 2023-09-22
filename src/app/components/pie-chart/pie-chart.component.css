@@ -1,9 +1,14 @@
+/* Estilos para el contenedor principal */
 .flex-container {
-    display: flex;
-    flex-direction: row;
+  display: flex;
+  flex-wrap: wrap; /* Permite que los elementos salten a la siguiente línea si no caben */
+  justify-content: space-between; /* Espacio uniforme entre los elementos en la fila */
+}
 
-  }
-  
-  .single {
-    margin: 10px;
-  }
+/* Estilos para cada contenedor de gráfico */
+.chart-container {
+  flex: 0 0 calc(33.33% - 20px); /* Establece el ancho deseado y agrega un espacio entre elementos */
+  margin-bottom: 20px; /* Espacio entre filas (ajusta según tus necesidades) */
+}
+
+/* Estilos adicionales según sea necesario */

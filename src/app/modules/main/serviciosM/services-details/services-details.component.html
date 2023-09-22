@@ -15,7 +15,7 @@
   </mat-toolbar>
 </div>
 
-<div class="flex justify-center">
+<div *ngIf="update" class="flex justify-center">
   <div class="w-1/5 m-5">
     <div class="grid space-y-3">
       <button mat-raised-button disabled color="primary">Detalles</button>
@@ -36,7 +36,7 @@
     </div>
   </div>
 
-  <mat-card class="w-full lg:w-1/3 xl:w-2/5 mx-5">
+  <mat-card  class="w-full lg:w-1/3 xl:w-2/5 mx-5">
     <form class="text-center" [formGroup]="form">
       <div class="flex flex-wrap">
         <!-- Contenedor de las columnas -->
@@ -45,25 +45,25 @@
           <!-- campo 1 -->
           <mat-form-field appearance="outline" class="" [floatLabel]="'auto'">
             <mat-label>id del servicio</mat-label>
-            <input matInput formControlName="ElementId" />
+            <input matInput formControlName="elementId"/>
           </mat-form-field>
 
           <!-- campo 2 -->
           <mat-form-field appearance="outline" class="" [floatLabel]="'auto'">
             <mat-label>nombre del servcio</mat-label>
-            <input matInput formControlName="labelApp" />
+            <input matInput formControlName="labelApp"/>
           </mat-form-field>
 
           <!-- campo 3-->
           <mat-form-field class="" appearance="outline" [floatLabel]="'auto'">
             <mat-label>Namespace</mat-label>
-            <input matInput formControlName="namespace" />
+            <input matInput formControlName="nameSpace"/>
           </mat-form-field>
 
           <!-- campo 4 -->
           <mat-form-field class="" appearance="outline" [floatLabel]="'auto'">
             <mat-label>descripción</mat-label>
-            <input matInput formControlName="description" />
+            <input matInput formControlName="description"/>
           </mat-form-field>
         </div>
 
@@ -72,33 +72,33 @@
           <!-- campo 5 -->
           <mat-form-field class="" appearance="outline" [floatLabel]="'auto'">
             <mat-label>disparador de alarma bajo</mat-label>
-            <input matInput formControlName="warningTrigger" />
+            <input matInput formControlName="warningTrigger"/>
           </mat-form-field>
 
           <!-- campo 6 -->
           <mat-form-field class="" appearance="outline" [floatLabel]="'auto'">
             <mat-label>disparador de alarma alto</mat-label>
-            <input matInput formControlName="criticalTrigger" />
+            <input matInput formControlName="criticalTrigger"/>
           </mat-form-field>
 
           <!-- campo 7 -->
           <mat-form-field class="" appearance="outline" [floatLabel]="'auto'">
             <mat-label>intervalo entre test</mat-label>
-            <input matInput formControlName="testInterval" />
+            <input matInput formControlName="testInterval" >
           </mat-form-field>
 
           <!-- campo 8 -->
-          <!-- <mat-form-field class="" appearance="outline" [floatLabel]="'auto'">
+          <mat-form-field class="" appearance="outline" [floatLabel]="'auto'">
             <mat-label>URL de purebas</mat-label>
             <input matInput formControlName="url" />
-          </mat-form-field> -->
+          </mat-form-field>
         </div>
       </div>
 
-      <div class="text-center px-4 py-2">
+      <div class="text-center px-3 py-1">
         <button
         mat-raised-button color="primary"
-          (click)="toRequest()"
+          (click)="edit()"
           class="w-full"
         >
           Implementar cambios
@@ -106,8 +106,8 @@
       </div>
     </form>
   </mat-card>
+</div>
 
-
-    <app-pie-chart></app-pie-chart>
-
+<div *ngIf="!update" class="text-center">
+  no se encontro el servcio
 </div>
