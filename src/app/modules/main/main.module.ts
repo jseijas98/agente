@@ -44,6 +44,7 @@ import { NotificationComponent } from 'src/app/components/notification/notificat
 import { ApisDetailsComponent } from './apisM/apis-details/apis-details.component';
 import { ElementDetailsComponent } from './element-details/element-details.component';
 import { PieChartComponent } from 'src/app/components/pie-chart/pie-chart.component';
+import { ServiceValueComponent } from './serviciosM/service-value/service-value.component';
 
 @NgModule({
   imports: [
@@ -99,7 +100,8 @@ import { PieChartComponent } from 'src/app/components/pie-chart/pie-chart.compon
     ServicesDetailsComponent,
     NotificationComponent,
     ApisDetailsComponent,
-    ElementDetailsComponent
+    ElementDetailsComponent,
+    ServiceValueComponent
   ],
 })
 export class MainModule {}

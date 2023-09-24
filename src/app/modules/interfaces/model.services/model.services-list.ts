@@ -66,3 +66,48 @@ export interface ServiceInfo {
       response_time: number;
     }
 
+    export interface Metric {
+      valueId: number;
+      serviceId: number;
+      valuePath: string;
+      typeOfValue: string;
+      descriptionOfValue: string;
+      value: string;
+      normalValueState: string;
+      warningValueState: string;
+      criticValueState: string;
+      stateAlarm: boolean;
+      comparator: string;
+      actualStateValue: string;
+    }
+
+    export interface Value {
+      valueId: number;
+      apiId: number;
+      valuePath: string;
+      typeOfValue: string;
+      descriptionOfValue: string;
+      value: string;
+      normalValueState: string;
+      warningValueState: string | null;
+      criticValueState: string | null;
+      stateAlarm: boolean;
+      comparator: string | null;
+      actualStateValue: string;
+    }
+
+    export interface editValue {
+      type: string;
+      elementId: number;
+      valuePath?: string;
+      value?: string;
+      typeOfValue?: string;
+      descriptionOfValue?: string;
+      normalValueState?: string;
+      warningValueState?: string;
+      criticValueState?: string;
+      comparator?: string;
+      actualStateValue?: string;
+    }
+
+

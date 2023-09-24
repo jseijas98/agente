@@ -20,6 +20,7 @@ import { LoadBalancerRegistryComponent } from './loadbalancerM/load-balancer-reg
 import { ServicesDetailsComponent } from './serviciosM/services-details/services-details.component';
 import { ApisDetailsComponent } from './apisM/apis-details/apis-details.component';
 import { ElementDetailsComponent } from './element-details/element-details.component';
+import { ServiceValueComponent } from './serviciosM/service-value/service-value.component';
 
 const routes: Routes = [
   {
@@ -103,8 +104,8 @@ const routes: Routes = [
         component: ApisDetailsComponent,
       },
       {
-        path: 'details',
-        component: ElementDetailsComponent,
+        path: 'Seirvice-values/:app/:id',
+        component: ServiceValueComponent,
       }
     ],
   },

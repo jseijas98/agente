@@ -193,7 +193,7 @@ export class ApiListComponent implements AfterViewInit, OnInit {
   }
 
   sseFuntion(index: any) {
-    const httpApiLIst = `http://180.183.170.56:30446/monitor-agent-service/v2/get/all/${index}/${PayloadType.API}`;
+    const httpApiLIst = `http://180.183.170.56:30446/monitor-agent-service/v2/get/all/${index}/${PayloadType.API}/0`;
     this.sseServiceService
       .getDataFromServer(httpApiLIst)
       .pipe(takeUntil(this.unsuscribe$))
@@ -205,11 +205,11 @@ export class ApiListComponent implements AfterViewInit, OnInit {
   }
 
   Success(response: ResponseModel) {
-    console.log(response);  
+    console.log(response);
     const apiDataList: Array<GetApis> = response.data.map((api: GetApis) => this.mapApiData(api));
     this.handleApiData(apiDataList);
   }
-  
+
   private mapApiData(api: GetApis): GetApis {
     return {
       apiId: api.apiId,
@@ -234,7 +234,7 @@ export class ApiListComponent implements AfterViewInit, OnInit {
       histSuccessfulTest: api.histSuccessfulTest
     };
   }
-  
+
   private handleApiData(apiDataList:Array<GetApis>) {
     if (apiDataList.length > 0) {
       this.tableIsEmpty = false;

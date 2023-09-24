@@ -1,4 +1,4 @@
-<div class="flex-row flex">
+<!-- <div class="flex-row flex">
   <div class="mx-5" *ngFor="let single of single">
     <ngx-charts-pie-grid
       class=""
@@ -7,14 +7,24 @@
       [results]="single.values"
       [designatedTotal]="single.valor"
       [label]="single.values[0].name + ' actuales'"
-      [animations]="false"
-      (select)="onSelect($event)">
+      [animations]="animation"
     >
     </ngx-charts-pie-grid>
   </div>
-</div>
+</div> -->
 
-<!-- <div class="text-center">
+<section *ngFor="let single of data" class="m-20">
+  <ngx-charts-linear-gauge
+    [view]="view"
+    [value]="stringToNumberOrZero(single.criticValueState)"
+    [previousValue]="stringToNumberOrZero(single.criticValueState)"
+    (select)="onSelect(single)"
+    [units]="units"
+  >
+  </ngx-charts-linear-gauge>
+</section>
+
+<!-- <div class="text-center">n
   <div *ngFor="let single of single" class="inline">
     <button type="button" class="text-black min-w-fit mx-5" [ngClass]="stylesColor(single.alarm)">
       {{ single.values[0].name }}

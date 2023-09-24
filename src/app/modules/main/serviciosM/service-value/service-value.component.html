@@ -1,0 +1,12 @@
+
+<ng-http-loader></ng-http-loader>
+
+<div *ngIf="!tableIsEmpty" class="mx-5 mt-5">
+  <app-breadcrumb
+    [breadcrumbsData]="breadcrumbs"
+    [title]="'Metricas'"
+  ></app-breadcrumb>
+</div>
+
+
+<app-pie-chart  *ngIf="!tableIsEmpty" [dataIn]="data" [type]="type"> </app-pie-chart>
