@@ -51,7 +51,7 @@ export class ServiceValueComponent implements OnInit, AfterViewInit {
     this.activateRouter.params.subscribe((params) => {
       const id = params['id'];
       const app = params['app'];
-      this.breadcrumbService.agregarRuta(`/service-values/${app}/${id}`,'metricas');
+      this.breadcrumbService.agregarRuta(`/service-values/${app}/${id}`,'valores');
       this.breadcrumbs = this.breadcrumbService.obtenerBreadcrumbs();
     });
     this,this.getMetricas();

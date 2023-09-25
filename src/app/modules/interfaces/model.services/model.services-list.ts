@@ -108,6 +108,15 @@ export interface ServiceInfo {
       criticValueState?: string;
       comparator?: string;
       actualStateValue?: string;
+      stateAlarm: boolean;
     }
+
+    export enum ColorHex {
+      DEFAULT = "#D3D3D3",
+      VERDE = "#5AA454",
+      AMARILLO = "#A10A28",
+      ROJO = "#C7B42C",
+    }
+    
 
 

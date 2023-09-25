@@ -1,34 +1,73 @@
-<!-- <div class="flex-row flex">
-  <div class="mx-5" *ngFor="let single of single">
-    <ngx-charts-pie-grid
-      class=""
+<div class="text-center flex justify-center">
+  <div *ngFor="let single of data" class="m-5" >
+    <mat-card [ngStyle]="evaluarMetric(single)">
+      <mat-card-title class="mx-5">{{ single.descriptionOfValue }}</mat-card-title>
+      <br />
+      <mat-card-subtitle class="text-lg">{{ sub(single) }}</mat-card-subtitle>
+      <span class="text-xl">valor actual: {{ single.actualStateValue }}</span>
+      <mat-card-actions class="m-2">
+        <button mat-raised-button color="primary">
+          ACTUALIZAR
+          <mat-icon>edit</mat-icon>
+        </button>
+        <button mat-raised-button color="warn">
+          BORRAR
+          <mat-icon>delete</mat-icon>
+        </button>
+      </mat-card-actions>
+    </mat-card>
+    
+    
+  </div>
+</div>
+  
+<div class="text-center flex justify-center">
+  <div *ngFor="let single of valueString" class="m-5">
+    <mat-card>
+      <mat-card-title class="mx-5">{{single.valuePath}}</mat-card-title>
+      <div class="">
+        <span class="text-xl">Normal estatus: {{single.normalValueState}}</span>
+        <br>
+        <span class="text-xl">Valor actual: {{single.actualStateValue}}</span>
+      </div>
+      <mat-card-actions class="m-2">
+        <button mat-raised-button color="primary">
+          ACTUALIZAR
+          <mat-icon>edit</mat-icon>
+        </button>
+        <button mat-raised-button color="warn">
+          BORRAR
+          <mat-icon>delete</mat-icon>
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+</div>
+
+  <!-- <div *ngFor="let single of data" class="m-20 max-lg:">
+    <ngx-charts-linear-gauge
       [view]="view"
-      [scheme]="changeColor(single.alarm)"
-      [results]="single.values"
-      [designatedTotal]="single.valor"
-      [label]="single.values[0].name + ' actuales'"
+      [value]="stringToNumberOrZero(single.actualStateValue)"
+      [previousValue]="stringToNumberOrZero(single.warningValueState)"
+      (select)="onSelect(single)"
+      [scheme]="alarm(single)"
+      [units]="''"
       [animations]="animation"
+      [max]="stringToNumberOrZero(single.criticValueState)"
     >
-    </ngx-charts-pie-grid>
-  </div>
-</div> -->
+    </ngx-charts-linear-gauge>
+  </div> -->
 
-<section *ngFor="let single of data" class="m-20">
-  <ngx-charts-linear-gauge
-    [view]="view"
-    [value]="stringToNumberOrZero(single.criticValueState)"
-    [previousValue]="stringToNumberOrZero(single.criticValueState)"
-    (select)="onSelect(single)"
-    [units]="units"
-  >
-  </ngx-charts-linear-gauge>
-</section>
-
-<!-- <div class="text-center">n
-  <div *ngFor="let single of single" class="inline">
-    <button type="button" class="text-black min-w-fit mx-5" [ngClass]="stylesColor(single.alarm)">
-      {{ single.values[0].name }}
-      <mat-icon>BUTTON_OK</mat-icon>
-    </button>
-  </div>
-</div> -->
+  <!-- <div *ngFor="let single of data" class="m-20 max-lg:">
+    <ngx-charts-linear-gauge
+      [view]="view"
+      [value]="stringToNumberOrZero(single.actualStateValue)"
+      [previousValue]="stringToNumberOrZero(single.warningValueState)"
+      (select)="onSelect(single)"
+      [scheme]="alarm(single)"
+      [units]="''"
+      [animations]="animation"
+      [max]="stringToNumberOrZero(single.criticValueState)"
+    >
+    </ngx-charts-linear-gauge>
+  </div> -->
