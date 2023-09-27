@@ -1,4 +1,4 @@
-<div class="mx-5 mt-5">
+<div class="mx-5 mt-5" *ngIf="update">
   <app-breadcrumb
     [breadcrumbsData]="breadcrumbs"
     [title]="'Servicio ' + title"
@@ -26,12 +26,13 @@
 
       <button mat-raised-button color="primary" (click)="Registry()">
         <mat-icon>format_list_bulleted</mat-icon>
-        Registros historios
+        Historicos
       </button>
 
-      <button mat-raised-button color="primary" (click)="Registry()">
+      <button mat-raised-button color="primary" (click)="
+      GoMetrics()">
         <mat-icon>pie_chart</mat-icon>
-        valores medibles
+        metricas
       </button>
     </div>
   </div>
@@ -42,11 +43,7 @@
         <!-- Contenedor de las columnas -->
         <div class="w-full lg:w-1/2">
           <!-- Primera columna -->
-          <!-- campo 1 -->
-          <mat-form-field appearance="outline" class="" [floatLabel]="'auto'">
-            <mat-label>id del servicio</mat-label>
-            <input matInput formControlName="elementId"/>
-          </mat-form-field>
+      
 
           <!-- campo 2 -->
           <mat-form-field appearance="outline" class="" [floatLabel]="'auto'">
@@ -87,11 +84,6 @@
             <input matInput formControlName="testInterval" >
           </mat-form-field>
 
-          <!-- campo 8 -->
-          <mat-form-field class="" appearance="outline" [floatLabel]="'auto'">
-            <mat-label>URL de purebas</mat-label>
-            <input matInput formControlName="url" />
-          </mat-form-field>
         </div>
       </div>
 
@@ -101,7 +93,7 @@
           (click)="edit()"
           class="w-full"
         >
-          Implementar cambios
+          actualizar
         </button>
       </div>
     </form>

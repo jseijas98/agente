@@ -32,6 +32,12 @@ table {
   box-shadow: inset 0 0 0 2px black;
 }
 
+.card:hover {
+  /* Estilos que deseas aplicar en el hover */
+  transform: scale(1.2); /* Realiza un zoom-in en el hover */
+  cursor: pointer; /* Cambia el cursor en el hover a una mano */
+}
+
 .mat-column-criticalTrigger {
   width: fit-content;
   max-width: 30px;
@@ -101,3 +107,15 @@ td {
   justify-content: center !important;
   margin-left: 10%!important;
 }
+
+
+.grid-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between; /* Ajusta esto según tus necesidades */
+}
+
+.example-card {
+  max-width: 400px;
+}
+

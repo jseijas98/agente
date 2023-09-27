@@ -23,14 +23,19 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   templateUrl: './services-details.component.html',
   styleUrls: ['./services-details.component.css'],
 })
-export class ServicesDetailsComponent implements OnInit {
-  ngOnInit(): void {
+export class ServicesDetailsComponent implements OnInit, AfterViewInit {
+
+  ngAfterViewInit(): void {
     this.obtenerData();
-    this.obtenerRutasDesdeLocalStorage();
-    this.breadcrumbs = this.breadcrumbService.obtenerBreadcrumbs();
+    console.log(this.breadcrumbService.breadcrumbs);
+    
   }
 
-  ngOnDestroy(): void {}
+
+  ngOnInit(): void {
+  }
+
+  ngOnDestroy(): void { }
 
   activatedRoute = inject(ActivatedRoute);
   router = inject(Router);
@@ -138,6 +143,14 @@ export class ServicesDetailsComponent implements OnInit {
     );
   }
 
+  GoMetrics() {
+    this.loadRuta();
+    this.router.navigateByUrl(
+      `service-values/${this.servicesDetails.applicationId}/${this.servicesDetails.serviceId}`
+    );
+  }
+
+
   obtenerData() {
     const url = environment.url.element;
     this.http.post(url, this.getParams()).subscribe({
@@ -150,10 +163,8 @@ export class ServicesDetailsComponent implements OnInit {
   success(response: any) {
     console.log('response', response.data);
     this.servicesDetails = response.data;
-    this.breadcrumbService.agregarRuta(
-      this.router.url,
-      this.servicesDetails.labelApp
-    );
+    this.breadcrumbService.agregarRuta(this.router.url, response.data.labelApp);
+    this.breadcrumbs = this.breadcrumbService.obtenerBreadcrumbs();
     this.title = this.servicesDetails.labelApp;
     this.setForm();
     this.update = true;
@@ -186,10 +197,10 @@ export class ServicesDetailsComponent implements OnInit {
   errroredit(error: any) {
     const message = error?.name
     const code = error?.error?.code
-    if (code !== 400){
-      this.snakbar.open(`${message}`, 'ACEPTAR',{duration:2000});
+    if (code !== 400) {
+      this.snakbar.open(`${message}`, 'ACEPTAR', { duration: 2000 });
     }
-    this.snakbar.open(`${code}`+ " BAD REQUEST", 'ACEPTAR',{duration:2000});
+    this.snakbar.open(`${code}` + " BAD REQUEST", 'ACEPTAR', { duration: 2000 });
     console.log('error', error);
     this.setForm();
   }
@@ -200,7 +211,7 @@ export class ServicesDetailsComponent implements OnInit {
       message =
         response?.status !== 1000 ? 'ERROR: al modificar' : response?.message;
 
-      this.snakbar.open(`${message}`, 'ACEPTAR',{duration:2000});
+      this.snakbar.open(`${message}`, 'ACEPTAR', { duration: 2000 });
     }
   }
 }

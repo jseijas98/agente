@@ -21,6 +21,7 @@ import { ServicesDetailsComponent } from './serviciosM/services-details/services
 import { ApisDetailsComponent } from './apisM/apis-details/apis-details.component';
 import { ElementDetailsComponent } from './element-details/element-details.component';
 import { ServiceValueComponent } from './serviciosM/service-value/service-value.component';
+import { ServicerReplicaDetailComponent } from './serviciosM/servicer-replica-detail/servicer-replica-detail.component';
 
 const routes: Routes = [
   {
@@ -104,8 +105,12 @@ const routes: Routes = [
         component: ApisDetailsComponent,
       },
       {
-        path: 'Seirvice-values/:app/:id',
+        path: 'service-values/:app/:id',
         component: ServiceValueComponent,
+      },
+      {
+        path: 'service-replica/:id',
+        component: ServicerReplicaDetailComponent,
       }
     ],
   },

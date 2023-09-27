@@ -234,8 +234,10 @@ export class ServicesListComponent implements AfterViewInit {
 
 
 
-  setParams(serviceInfo: ServiceInfo) {
 
+
+  
+  setParams(serviceInfo: ServiceInfo) {
     const params = {
       applicationId: serviceInfo.applId,
       type: "service",
@@ -247,6 +249,7 @@ export class ServicesListComponent implements AfterViewInit {
     console.log('fasdsandsa', details);
     return btoa(details)
   }
+  
 
   servicesDetails(serviceInfo: ServiceInfo) {
     let data = this.setParams(serviceInfo)
@@ -273,6 +276,8 @@ export class ServicesListComponent implements AfterViewInit {
     });
   }
 
+
+
   sseFuntion(index: any) {
     const httpApiLIst = `http://180.183.170.56:30446/monitor-agent-service/v2/get/all/${index}/${this.index}/0`;
     this.sseServiceService
@@ -285,6 +290,17 @@ export class ServicesListComponent implements AfterViewInit {
       });
   }
 
+  data:any[];
+
+  algo(){
+      console.log('HOLA');
+      
+  }
+  algo2(){
+      console.log('HOLA');
+      
+  }
+
   Success(response: ResponseModel) {
     console.log(response);
 
@@ -295,7 +311,7 @@ export class ServicesListComponent implements AfterViewInit {
         status: services.status,
         nameSpace: services.nameSpace,
         test_interval: services.testInterv,
-        label_app: services.labelApp,
+        labelApp: services.labelApp,
         response_time: services.response_time,
         last_test: this.utils.formatDate(services.lastTestsDate),
         health: services.health,
@@ -309,6 +325,8 @@ export class ServicesListComponent implements AfterViewInit {
     });
     console.log(datos);
 
+ 
+
     if (datos.length > 0) {
       this.tableIsEmpty = false;
       this.dataSource = new MatTableDataSource<any>(datos);
@@ -318,7 +336,7 @@ export class ServicesListComponent implements AfterViewInit {
 
       this.dataSource.paginator = this.paginator;
 
-
+      this.data = datos;
       this.dataSource.sort = this.sort;
       this.currentPageIndex = this.paginator.pageIndex;
       this.applyFilter();

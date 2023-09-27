@@ -15,6 +15,7 @@ import { SseServiceService } from 'src/app/services/sse/sse-service.service';
 import { Subject, takeUntil } from 'rxjs';
 import { DynamicFilterService } from 'src/app/services/dynamic-Filter/dynamic-filter.service';
 import { BreadcrumbService } from 'src/app/components/breadcrumb/breadcrumb.service';
+import { PayloadType } from 'src/app/services/deleteElement/delete.service';
 
 @Component({
   selector: 'app-services-registry-replica',
@@ -172,10 +173,12 @@ this.dynamicFilterService.dynamicFilter('filterValue')
       console.log(params);
     });
   }
+  
 
   sseFuntion(id: any, ip: any) {
+    const serviceReplica = 'serviceReplica';
     console.log(id,ip);
-    const httpApiLIst = `${this.baseUrl}registry/service/${id}/replica/${ip}`;
+    const httpApiLIst = `http://180.183.170.56:30446/monitor-agent-service/v2/get/registry/${serviceReplica}/${ip}`;
     this.sseServiceService
       .getDataFromServer(httpApiLIst)
       .pipe(takeUntil(this.unsuscribe$))

@@ -23,7 +23,7 @@
   
 <div class="text-center flex justify-center">
   <div *ngFor="let single of valueString" class="m-5">
-    <mat-card>
+    <mat-card [ngStyle]="stringMetric(single)">
       <mat-card-title class="mx-5">{{single.valuePath}}</mat-card-title>
       <div class="">
         <span class="text-xl">Normal estatus: {{single.normalValueState}}</span>
@@ -43,31 +43,3 @@
     </mat-card>
   </div>
 </div>
-
-  <!-- <div *ngFor="let single of data" class="m-20 max-lg:">
-    <ngx-charts-linear-gauge
-      [view]="view"
-      [value]="stringToNumberOrZero(single.actualStateValue)"
-      [previousValue]="stringToNumberOrZero(single.warningValueState)"
-      (select)="onSelect(single)"
-      [scheme]="alarm(single)"
-      [units]="''"
-      [animations]="animation"
-      [max]="stringToNumberOrZero(single.criticValueState)"
-    >
-    </ngx-charts-linear-gauge>
-  </div> -->
-
-  <!-- <div *ngFor="let single of data" class="m-20 max-lg:">
-    <ngx-charts-linear-gauge
-      [view]="view"
-      [value]="stringToNumberOrZero(single.actualStateValue)"
-      [previousValue]="stringToNumberOrZero(single.warningValueState)"
-      (select)="onSelect(single)"
-      [scheme]="alarm(single)"
-      [units]="''"
-      [animations]="animation"
-      [max]="stringToNumberOrZero(single.criticValueState)"
-    >
-    </ngx-charts-linear-gauge>
-  </div> -->

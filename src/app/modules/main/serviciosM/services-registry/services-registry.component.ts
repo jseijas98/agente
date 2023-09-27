@@ -13,6 +13,7 @@ import { GraphServiceService } from 'src/app/services/graph/graph-service.servic
 import { SseServiceService } from 'src/app/services/sse/sse-service.service';
 import { environment } from 'src/environments/environment';
 import { ExportExcelService } from 'src/app/services/export-excel/export-excel.service';
+import { PayloadType } from 'src/app/services/deleteElement/delete.service';
 
 @Component({
   selector: 'app-services-registry',
@@ -112,7 +113,7 @@ export class ServicesRegistryComponent implements OnInit, AfterViewInit {
 
 
   sseFuntion(index: any) {
-    const httpApiLIst = `${environment.baseUrl}registry/application/${index}/service`;
+    const httpApiLIst = `http://180.183.170.56:30446/monitor-agent-service/v2/get/registry/${PayloadType.SERVICE}/${index}`;
     this.sseServiceService
       .getDataFromServer(httpApiLIst)
       .pipe(takeUntil(this.unsuscribe$))
@@ -125,7 +126,9 @@ export class ServicesRegistryComponent implements OnInit, AfterViewInit {
   Success(response: any) {
 
     let datos: any[] = [];
-    response.forEach((servicesRegistry: ServicesRegistry) => {
+    console.log(response);
+    
+    response.data.forEach((servicesRegistry: ServicesRegistry) => {
       datos.push({
         registry_id: servicesRegistry.registry_id,
         servicesId: servicesRegistry.serviceId,
@@ -144,7 +147,7 @@ export class ServicesRegistryComponent implements OnInit, AfterViewInit {
       this.name_element = servicesRegistry.label_app;
     });
 
-    this.dataGraph = [...this.serv.dataGraph_load_balancer(response,this.name_element)]
+    this.dataGraph = [...this.serv.dataGraph_load_balancer(response.data,this.name_element)]
     console.log(this.dataGraph);
     console.log(datos);
 

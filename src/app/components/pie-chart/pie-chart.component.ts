@@ -108,6 +108,20 @@ export class PieChartComponent implements OnInit {
     return { 'background-color': ColorHex.DEFAULT };
   }
 
+  stringMetric(dat: editValue): any {
+
+    const alarm = dat.stateAlarm;
+    let colorSets;
+
+    alarm? colorSets = ColorHex.ROJO: colorSets = ColorHex.VERDE
+
+    return { 'background-color': colorSets };
+
+  }
+
+
+
+
   comparadorMayor(dat: editValue): string {
     const valorActual = parseFloat(dat.actualStateValue || '0');
     const warningValueState = parseFloat(dat.warningValueState || '0');

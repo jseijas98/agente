@@ -13,6 +13,7 @@ import { SseServiceService } from 'src/app/services/sse/sse-service.service';
 import { Subject, takeUntil } from 'rxjs';
 import { DynamicFilterService } from 'src/app/services/dynamic-Filter/dynamic-filter.service';
 import { BreadcrumbService } from 'src/app/components/breadcrumb/breadcrumb.service';
+import { PayloadType } from 'src/app/services/deleteElement/delete.service';
 
 @Component({
   selector: 'app-services-replica',
@@ -172,6 +173,8 @@ export class ServicesReplicaComponent implements OnInit {
   sseServiceReplica() {
     this.activateRouter.params.subscribe((params) => {
       this.sseFuntion(params['id']);
+
+
     });
   }
 
@@ -210,14 +213,13 @@ export class ServicesReplicaComponent implements OnInit {
           ),
           label_hash: ServiceReplicasResgistry.label_hash,
         });
-        this.name = ServiceReplicasResgistry.replica_name.split('-')[0];
-        this.title = this.name
         console.log('titulo',this.title);
 
       });
       console.log(datos);
       if (datos.length > 0) {
         this.tableIsEmpty = false;
+        this.data = datos
         this.dataSource = new MatTableDataSource<any>(datos);
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.sort;
@@ -250,4 +252,27 @@ export class ServicesReplicaComponent implements OnInit {
   Error(error: any) {
     console.log('error sse', error);
   }
+
+   
+  setParams(serviceInfo: ServicesReplica) {
+    const params = {
+      applicationId: "",
+      type: PayloadType.SERVICE,
+      elementId: serviceInfo.serviceId,
+      replicaIp: serviceInfo.replicaIp
+    }
+
+    let details = JSON.stringify(params)
+    console.log('fasdsandsa', details);
+    return btoa(details)
+  }
+  
+
+  servicesDetails(serviceInfo: ServicesReplica) {
+    let data = this.setParams(serviceInfo)
+    console.log("data rows:", data);
+    this.router.navigateByUrl(`service-replica/${data}`);
+  };
+
+
 }
